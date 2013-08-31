@@ -1,18 +1,6 @@
 Test begin.
 num : 1
 
-modify.
-<<<<<<< HEAD
-num : 2
+modify
+num : 1
 
-modify.
-num : 3
-
-modify.
-num : 4
-
-modify.
-num : 5
-=======
-num : 2
->>>>>>> parent of 46fdd9e... modify 3
