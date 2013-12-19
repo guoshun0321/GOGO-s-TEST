@@ -1,7 +1,8 @@
-add 111
+∈
+wsdl2java -uri F:\jnmp_sc20130909\sobey_service\nmp.wsdl -p jetsen.ws.dayang -t -O 60
 
-add 2
+wsdl2axis
+f:
+cd F:\jnmp_sc20130909\sobey_service\axis2-1.6.2-bin\axis2-1.6.2\bin\
+wsdl2java -uri F:\jnmp_sc20130909\sobey_service\nmp.wsdl -p jetsen.ws.dayang -t -O 60
 
-add 3
-
-add 4
