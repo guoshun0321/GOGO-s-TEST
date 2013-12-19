@@ -1,0 +1,49 @@
+HTML部分
+html:5 HTML5结构
+html:xt HTML4过渡型
+html:4s HTML4严格型
+
+#aaa id
+.bbb class
+ul#aaa.bbb ul部分默认为div
+
+> 后代
++ 兄弟
+^ 上级
+* 多份
+() 分组
+[attr] 自定义属性
+
+$ 对生成内容进行编号
+ul>li.item$*5
+<ul>
+	<li class="item1"></li>
+	<li class="item2"></li>
+	<li class="item3"></li>
+	<li class="item4"></li>
+	<li class="item5"></li>
+</ul>
+后面加@-实现倒序
+后面加@N实现从N开始排序
+后面加@-N实现从N开始倒序
+
+生成内容
+a{click}+b{here}
+a>{click}+b{here}
+
+css部分
+w width
+默认单位 px
+p %
+e em
+x ex
+
+m1-2-3-4 多个属性，用（-）连接，如果指定了单位就不需要（-）
+h10m5e 多条语句
+c#3 -> color: #333;
+bd5#0s -> border: 5px #000 solid;
+
+@font-face CSS3
+
+lorem 生成Lorem Ipsum，一段随机文字
+

@@ -1,0 +1,14 @@
+ThreadGroup 线程组
+main() 所属的线程组为main
+通过new Thread(ThreadGroup, ThreadName)的方式指定ThreadGroup
+在未指定ThreadGroup时，线程的ThreadGroup继承自产生线程
+ThreadGroup一经指定就无法改变
+
+ThreadGroup.interrupt可以interrupt所有线程
+ThreadGroup.setmaxPriority设置所有线程的最高优先级
+可以通过enumerate()方法来获得所有的线程
+Thread[] threads = new Thread[threadGroup1.activeCount()];
+threadGroup1,enumerate(threads);
+
+ThreadGroup有一个uncaughtException()方法，当线程组中某个线程发送UncheckedException时由执行环境调用这个方法进行相关处理
+public void uncaughtException(Thread t, Throwable e)

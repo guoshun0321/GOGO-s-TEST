@@ -1,0 +1,40 @@
+﻿链接进程 BIF link(P)
+一个进程退出后，会向相连接的进程发送退出信号。相连接的进程回做如下处理：
+	1、如果没有对这个接收进行特殊处理，那么这个退出信号的默认吹就是让该进程一并退出。
+	2、如果接收进程被设置系统进程，系统进程会处理这个退出信号
+设置为系统进程 process_flag(trap_exit, true)
+['Exit', Pid, Why]
+可以使用exit(Reason)来显式设置退出原因
+用一个数去除以0时，系统会自动将退出原因设置为badarith
+当一个进程成功执行完spawn所指定的函数，退出的原因就设置为normal
+进程Pid1中可以调用exit(Pid2, X)向Pid2发送一个退出信号，但是Pids1可以继续执行
+
+退出信号处理
+捕获状态		退出信号 		动作
+true			kill			消亡，向链接集广播退出信号killed
+true			X				将{'Exit', PID, X}加入到邮箱
+false			normal			继续运行，不做任何事
+false			kill			消亡，向链接集广播退出信号killed
+false			X				消亡，向链接集广播退出信号X
+
+@spec spawn_link(Fun) -> Pid
+创建一个连接的进程，原子操作
+@spec process_flag(trap_exit, true)
+将当前进程转换成系统进程
+@spec link(Pid) -> true
+连接当前进程和Pid
+如果Pid不存在，那么系统抛出noproc
+@spec unlink(Pid) -> true
+移除当前进程和Pid的链接
+@spec exit(Why) -> none()
+当前进程终止，并将原因设置为Why
+@spec exit(Pid, Why) -> true
+向Pid发送退出信号，并将原因设置为Why
+@spec erlang:monitor(process, Item) -> MonitorRef
+建立监视器
+
+监视器
+
+存活进程
+on_exit
+如何创建一直存活的进程？

@@ -1,0 +1,125 @@
+OTP Design Principle:
+Workers are processes which perform computations,
+Supervisors are processes which monitor the behaviour of worker, A Supervisor can restart a worker.
+The supervision tree is a hierarchical arrangement of code into supervisors and workers.
+
+Behaviours divide the code for a process in a behaviour modual and a callback module.
+
+the compiler understands the module attribute -behaviour(Behaviour),eg:
+-behaviour(gen_server).
+
+Application : component with Erlang/OTP terminology
+a library application : a collection of functional modules
+
+Gen_Server Behaviour
+用于资源管理
+gen_server:start_link({local, ch3}, ch3, [], [])
+{local, ch3}：gen_server将在local注册一个进程ch3
+ch3：回调函数模块名称
+[]：init函数的参数
+[]：see gen_server(3)
+注册成功后，gen_server会调用ch3:init([])。期待的返回是{ok, State}
+gen_server:start()返回一个单独的进程
+
+同步请求 Call
+gen_server:call(ch3, alloc)
+ch3：调用进程名称
+alloc：实际请求
+gen_server进程实际上会调用handle_call(Request, From, State)，并返回{reply, Reply, State1}
+
+异步调用 Cast
+gen_server:cast(ch3, {free, Ch}).
+gen_server进程实际上会调用handle_cast(Request, State)，并返回{noreply, State1}
+
+进程停止
+如果在init()中设置了process_flag(trap_exit, true).
+在进程停止时，会调用terminate(shutdown, State).
+
+Stand-Alone Gen_Servers
+stop()
+	针对stop请求返回{stop, normal, State1}，同时会导致gen_server调用terminate(normal, State1)
+
+处理其他信息，比如'Exit'信息
+handle_info({'Exit', Pid, Reason}, State) ->
+	...
+	{noreply, State1}.
+
+状态机Finite State Machine(FSM)
+State(S) * Event(E) -> Actions(A), State(S')
+gen_fsm:start_link({local, code_lock}, code_lock, lists:reverse(Code), []).
+{local, code_lock}：同Gen_Server
+code_lock：模块
+lists:reverse(Code)：init的初始参数
+[]：见gen_fsm(3)
+
+注册成功后进程调用code_lock:init(Code),返回{ok, StateName, StateData}
+stateName 初始状态
+StateData 状态机的内部状态
+
+事件通知
+gen_fsm:send_event(code_lock, {button, Digit})
+事件 {button, Digit}，事件接收到后调用StateName(Event, StateData)，返回结果为{next_state, StateName1, StateData1}
+{next_state, open, {[], Code}, 30000}
+30000ms后，调用StateName(timeout, StateData).
+
+gen_fsm:send_all_state_event(code_lock, stop)
+handle_event(stop, _StateName, StateData)
+
+Gen_Event
+事件管理器：用于接收事件
+可以有0个、1个或多个事件处理器。
+
+gen_event:start_link({local, error_man})
+打开一个事件处理器
+
+gen_event:add_handler(error_man, terminal_logger, []).
+添加一个事件处理器
+
+gen_event:notify(error_man, no_reply).
+发送消息，消息接收器会调用handle_event{Event, State}，并返回{ok, State1}
+
+gen_event:delete_handler(error_man, termial_logger, []).
+移除一个消息处理器
+
+Supervisor Behaviour
+用于开始、结束以及监视一个子处理。
+
+简单调试
+sys:statistics(code_clock, true).
+sys:trace(code_clock, true).
+
+符合OTP设计模式的进程（不使用behaviour）
+使用可以和supervision tree融为一体的方式启动
+支持sys debug facilities
+处理system message
+
+proc_lib
+	spawn_link/3,4 异步
+	start_link/3,4,5 同步
+start_link() -> proc_lib:start_link(ch4, init, [self()]).
+ch4 模块名称
+init 函数名称
+[self()] 参数列表
+新进程采用ch4:init(Pid)初始化
+在init函数中，需要进行名称注册
+proc_lib:start_link 是同步的，在调用proc_lib:init_ack后返回
+
+调试
+Deb = sys:debu_options/1
+sys:handle_debug(Deb, Func, Info, Event) => Deb1
+Func格式{Module, Name}，指定调用的函数。按照Module:Name(Dev, Event, Info)的方式调用。Dev是IO设备，Event和Info从handle_debug传递过来
+Info 附加信息
+Event 系统事件，可以由用户定义展现方式
+handle_debug返回更新后的Deb1
+
+处理系统消息
+{system, From, Request}
+sys:handle_system_msg(Request, From, Parent, Module, Deb, State)
+处理系统消息,在进程继续执行时调用
+Module:system_continue(Parent, Deb, State)
+在进程执行结束时调用
+Module:system_terminate(Reason, Parent, Deb, State)
+
+
+
+

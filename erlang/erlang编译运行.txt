@@ -1,0 +1,30 @@
+开始 erl
+结束 Ctrl+C/erlang:halt()/q()/init:stop()
+
+获取当前加载路径 code:get_path()
+增加新的目录dir到加载路径开头 code:add_patha(Dir)
+增加新的目录dir到加载路径末尾 code:add_pathz(Dir)
+所有已经加载beam code:all_loaded()
+检查问题 code:clash()
+常用做法：在home目录或当前目录添加一个名为.erlang的文件，并将上面这些命令添加进去
+在启动时，可以
+	erl -pa Dir1 -pz Dir2
+获取home目录：init:get_argument(home).
+
+Erlang shell 中编译运行
+	c(hello).
+	hello:start().
+命令提示符下运行
+	erl -noshell -s hello -s init stop
+	erl -eval 'io:format("test")'
+escript脚本
+	?
+
+makefile
+
+Ctrl+G 中止当前shell
+
+崩溃转储
+崩溃后会留下erl_crash.dump的文件
+webtool:start().
+http://localhost:8888

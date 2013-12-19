@@ -1,0 +1,177 @@
+数据类型：
+1、不对变量的类型进行定义，编译时不能发现类型不匹配，可以通过dialyzer来查找不匹配
+2、变量只能被赋值一次
+3、变量以大写字母或下划线开头，大写字母打头和下划线打头的变量有些不同的行为
+
+具体类型：
+Number：
+	1、支持数字和浮点型
+	2、浮点型：-2.3e-3
+	3、$char获取字符的ASCII值
+	4、支持2-36进制，如：3#11
+
+Atom：
+	类似于常量
+	小写字母打头，如果大写字母打头，或者含有除字母，下划线，@之外的字符，需要用单引号引起来
+	Atom保存在atom table，一个i额Atom占用4个或8个字节，不参与垃圾回收，个数不能超过1048577
+	Atom只能进行比较，不能进行任何的其他操作
+	保留字：
+		after and andalso band begin bnot bor bsl bsr bxor case catch cond div end fun if let not of or orelse query receive rem try when xor
+Tuple
+	元组 {Term1,...,TermN}
+
+List
+	[Term1,...,Term2]
+	[Head|Tail] Head可以是任意Term，Tail必须是List
+	长度length(T)
+	查询式操作：
+	NewList = [Expression || GeneratorExp1,GeneratorExp2,...,Condition1,Condition2]
+
+Bit String
+	<<E1,...,En>>
+	Ei : Value或者Value:Size或者Value/TypeSpecifierList或者Type:Size/TypeSpecifierList
+	TypeSpecifierList的形式为：
+		Type-Signedness-Endianness-unit:IntegerLiteral
+	Type : integer(default), float, binary, bytes, bitstring, bits, utf8, utf16, utf32
+	Signedness : signed, unsigned(default)
+	Endianness : big(default), little, native
+	IntegerLiteral : 取值范围1-256，这个数值用来扩展内存区域
+
+	Bit Strings中所有Ei的Size都是8时，叫做Binaries。支持查询式操作
+	List到List
+		[2*N || N <- [1,2,3,4]]
+		[2,4,6,8]
+	List到Binary
+		<<<<(N*2):8>> || N <- [1,2,3,4]>>
+		<<2,4,6,8>>
+	Binary到List，注意<-变成<=
+		[2*N || <<N>> <= <<1,2,3,4>>].
+		[2,4,6,8]
+	Binary到Binary
+		<<<<(N*2):8>> || <<N>> <= <<1,2,3,4>>>>
+		<<2,4,6,8>>
+
+Fun
+函数对象
+将一个匿名函数赋值给函数对象：
+	fun
+		(Pattern11,...,Pattern1N) [when GuardSeq1] ->
+			Body1;
+		...;
+		(PatternK1,...,PatternKN) [when GuardSeqK] ->
+			BodyK
+	end
+将一个已经定义的函数赋值给函数对象
+	fun Name/Arity
+	fun Module:Name/Arity
+
+String
+	用双引号和字符串来表示，其实质是List
+	相邻的两个字符串组合成一个字符串
+
+Record
+类似于Struct，定义
+	-record(Name, {
+		Field1 [= Value1],
+		...
+		FieldN [= ValueN]
+	}).
+新建：
+	#Name{Filed1=Expr1,...,FieldK=ExprK}
+	某些Field可以省略，获得默认值
+多个Field赋同一个值
+	#Name{File1=Expr1,...,FieldK=ExprK,_=ExprL}
+访问Field: Expr#Name.Field
+更新：Expr#Name{Field1=Expr1,...,FieldK=ExprK}
+
+Boolean
+	没有该类型，用原子true和false来代替。可以进行布尔运算
+
+类型转换
+	http://www.cnblogs.com/studynote/p/3218958.html
+
+值是表达式
+
+计算表达式
+算术表达式
+	+-（正负）
+	+-*/
+	div 整除; rem 求余
+	bnot 取反; band &; bor |; bxor 异或
+	bsl 左移; bsr 右移
+
+Boolean表达式
+	not 
+	andalso orelse（短路）
+	and or xor
+
+List计算
+	Expr1 ++ Expr2
+	Expr1 -- Expr2
+	比较慢，慎用
+
+优先级
+	:
+	#
+	Unary + - bnot not
+	/ * div rem band and
+	+ = bor bxor bsl bsr or xor
+	++ --
+	== /= =< < >= > =:= =/=
+	andalso
+	orelse
+	= !
+	catch
+
+变量是表达式
+	必须以大写字母或下划线打头，能包含数字，下划线和@
+	一个变量只能赋值一次
+	_是一种特殊的匿名变量，可以用在任何需要变量但不需要使用该变量的地方。如：[H|_] = [1,2,3]
+	以_开头的变量在不使用时不产生warning.
+
+模式匹配是表达式
+	{X, Y} = {1,2}
+	格式要匹配
+	长度要匹配
+	数据要一致
+
+函数调用是表达式
+	不要定义和BIFs一样的函数
+
+If表达式
+	if
+		GuardSeq1 ->
+			body1;
+		...;
+		GuardSeqN ->
+			bodyN
+	end
+一般必须一个匹配，可以使用true作为最后一个guard
+
+Case表达式
+	case Expr of
+		Pattern1 [when GuardSeq1] ->
+			Body1;
+		...;
+		Pattern2 [when GuardSeqN] ->
+			BodyN
+	end
+必须获得一个匹配，否则会抛出异常，一般最后用_Else做一个通用匹配
+
+Send表达式
+	Expr1 ! Expr2
+
+Receive表达式
+	receive
+		Pattern1 [when GuardSeq1] ->
+			Body1;
+		...;
+		PatternN [when GuardSeqN] ->
+			BodyN
+	end
+
+
+
+= 模式匹配
+	对右边求值，然后将结果与左端进行模式匹配
+
