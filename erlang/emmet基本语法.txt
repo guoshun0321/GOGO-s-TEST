@@ -1,4 +1,4 @@
-数据类型：
+﻿数据类型：
 1、不对变量的类型进行定义，编译时不能发现类型不匹配，可以通过dialyzer来查找不匹配
 2、变量只能被赋值一次
 3、变量以大写字母或下划线开头，大写字母打头和下划线打头的变量有些不同的行为
@@ -13,7 +13,7 @@ Number：
 Atom：
 	类似于常量
 	小写字母打头，如果大写字母打头，或者含有除字母，下划线，@之外的字符，需要用单引号引起来
-	Atom保存在atom table，一个i额Atom占用4个或8个字节，不参与垃圾回收，个数不能超过1048577
+	Atom保存在atom table，一个Atom占用4个或8个字节，不参与垃圾回收，个数不能超过1048577
 	Atom只能进行比较，不能进行任何的其他操作
 	保留字：
 		after and andalso band begin bnot bor bsl bsr bxor case catch cond div end fun if let not of or orelse query receive rem try when xor
