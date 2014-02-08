@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <script type="text/javascript" src="jquery-1.9.1.js"></script>
+    <title>Document</title>
+    <script type="text/javascript">
+    function hello(thing) {
+        console.log(this + " say hello " + thing);
+    }
+    person = {name : "name"};
+    person.hello = hello;
+    person.hello("world");
+    hello("world1");
+    </script>
+</head>
+<body>
+    <div id="click" style="height: 30px; width: 100px; line-height: 30px; border: 1px solid #000000">
+        <span>测试</span>
+    </div>
+</body>
+</html>
