@@ -1,0 +1,191 @@
+UntypedActor
+1、继承UntypedActor，实现onReceive。
+如果使用内部类，内部类必须是静态
+public class MyUntypedActor extends UntypedActor
+{
+    @Override
+    public void onReceive(Object message) throws Exception
+    {
+        if (message instanceof String)
+        {
+            System.out.println("receive message : " + message);
+            getSender().tell(message, getSelf());
+        }
+        else
+        {
+            unhandled(message);
+        }
+    }
+}
+
+2、Actor不能直接new，使用Props构建Actor。
+三种定义方式：
+Props.create(MyUntypedActor.class) // 无参数
+Props.create(MyUntypedActor.class, "...") // 带参数
+// Creator接口
+class MyActorC implements Creator<MyActor> {
+  public MyActorC create() {
+    return new MyActor("...");
+  }
+}
+Props.create(MyUntypedActor.class, "...")
+
+3、启动Actor
+调用ActorSystem或ActorContext的actorOf方法
+ActorSystem创造顶级Actor
+ActorContext创造子Actor
+可以建名称相同的ActorSystem,但是代表的实例不相同
+
+4、依赖注入：IndirectActorProducer
+
+5、API
+onReceive 处理消息
+unhandled 发送UnhandledMessage消息给系统的事件流。在akka.cator.debug.unhandled为on时，将呗转换成Debug消息
+getSelf() 返回自身的ActorRef
+getSender() 消息发送者的ActorRef
+supervisorStrategy() 监管策略
+getContext() 获取上下文
+  actorOf() 生成子Actor
+  parent supervisor
+  supervised children
+  lifecycle monitoring
+  hotswap
+actor实例的路径由path和UID组成
+akka://mySystem/system/dsl/inbox-1#924050286
+当actor实例被停止时，它向所有的watcher发送Termination消息
+actor实例停止后，才能继续使用该路径
+
+5、生命周期
+watch/unwatch unwatch后只处理该非Termination消息
+启动 preStart
+重启 preRestart(旧的actor)
+     生成新的actor
+     postRestart(新的actor) 默认调用preStart
+     只替换实际的actor对象，不影响mailbox，产生异常的消息会被丢弃
+停止
+      postStop
+
+6、ActorSelection
+ActorSelection指向一个或多个path（通配符）
+通过ActorSelection发送Identify消息来获取ActorRef
+通过ActorSelection的resolveOne方法也可以获取
+getContext()/system.actorSelection("/user/level1/child");
+
+7、消息内部的所有字段必须是不可变的，final
+
+8、发送消息
+  tell ： fire-and-forget
+	a>nosender
+		actor1.tell("msg from nosender", ActorRef.noSender());
+	b>inbox
+    正常消息
+		final Inbox inbox = Inbox.create(system);
+		inbox.send(actor1, "msg from inbox");
+    inbox.receive(Duration.create(1, TimeUnit.SECONDS));
+    死亡消息
+    inbox.watch(actor1)
+    inbox.send(actor1, PoisonPill.getInstance())
+    inbox.receive(Duration.create(10, TimeUnit.SECONDS))
+	c>周期执行
+		system.scheduler().schedule(Duration.Zero(), Duration.create(1, TimeUnit.SECONDS), actor1, "loop msg", system.dispatcher(), ActorRef.noSender());
+  ask模式：
+  Future<Object> future = Patterns.ask(actorA, "request", 1000);
+  Object obj = future.result(Duration.create(10, TimeUnit.SECONDS), null);
+
+9、Receive Timeout
+UntypedActorContext.setReceiveTimeout
+给自身发ReceiveTimeoutMessage
+
+10、停止actor
+停止流程：
+    1、挂起mailbox，发送停止命令给children
+    2、处理children发送过来的内部终止信息
+    3、stop自身（调用postStop，dump mailbox，发布Terminated消息到DeathWatch，告诉监视者）
+如果有actor不能停止，会阻塞整个停止流程
+ActorSystem.shutdown() 停止守护actor
+停止方式
+a>ActorContext/ActorSystem.stop()
+停止时，继续处理当前事件
+默认情况下，处理完当前事件后将剩余事件发送到deadletters
+b>PoisonPill
+发送akka.actor.PoisonPill消息
+处理PoisonPill消息时，停止
+PoisonPill不插队
+c>Graceful Stop
+  可用用来等待actor确认停止
+
+8、热替换
+使用getContext().become
+
+9、暂时不处理某些信息 stash
+继承UntypedActorWithStash
+stash()
+unstashAll()
+不能隐藏同一条信息两次
+stash容量在dispatcher的配置中配置
+无限制stach : UntypedActorWithUnboundedStash
+
+10、kill actor
+发送kill消息，akka.actor.Kill.getInstance()
+actor抛出ActorKilledException异常
+actor挂起操作，监视者决定怎样处理异常
+
+11、异常处理
+消息处理时异常，当前消息会被丢失
+mailbox不会产生任何变化，如果actor重启，mailbox可以继续使用，消息都还在
+actor 重启，重用，停止，取决于监视者
+
+12、actor初始化
+constructor
+  每次actor重启时都会调用
+preStart
+  actor初始化时调用preStart
+  postRestart也会调用preStart，通过复写不调用preStart
+通过消息初始化
+
+TypedActor
+1、经常用于连接外部代码和actor代码
+2、接口和实现
+3、4种调用方式
+无返回值 fire-and-forget
+Future
+Option
+其他返回值 阻塞
+
+4、停止
+TypedActor.get(system).stop(mySquarer);
+TypedActor.get(system).poisonPill(otherSquarer);
+
+5、可以使用typedActorOf来代理ActorRefs
+
+
+
+错误兼容性
+策略
+    private static SupervisorStrategy strategy = new OneForOneStrategy(10, Duration.create("1 minute"), new Function<Throwable, Directive>()
+    {
+        public Directive apply(Throwable t)
+        {
+            if (t instanceof ArithmeticException)
+            {
+                return SupervisorStrategy.resume();
+            }
+            else if (t instanceof NullPointerException)
+            {
+                return SupervisorStrategy.restart();
+            }
+            else if (t instanceof IllegalArgumentException)
+            {
+                return SupervisorStrategy.stop();
+            }
+            else
+            {
+                return SupervisorStrategy.escalate();
+            }
+        }
+    });
+
+Dispatcher
+默认dispatcher
+
+路由

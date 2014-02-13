@@ -33,5 +33,6 @@
 	<classpathentry kind="lib" path="D:/开源/akka-2.2.3/akka-2.2.3/lib/akka/slf4j-api-1.7.2.jar"/>
 	<classpathentry kind="lib" path="D:/开源/akka-2.2.3/akka-2.2.3/lib/akka/uncommons-maths-1.2.2a.jar"/>
 	<classpathentry kind="lib" path="D:/开源/akka-2.2.3/akka-2.2.3/lib/akka/zeromq-scala-binding_2.10-0.0.7.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
