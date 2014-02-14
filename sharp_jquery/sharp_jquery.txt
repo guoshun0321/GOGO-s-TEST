@@ -1,0 +1,23 @@
+1、jquery对象和DOM对象相互转换
+jQuery对象转DOM对象
+var $cr = $("#cr");
+var cr = $cr[0];
+var cr = $cr.get(0);
+DOM对象转jQuery对象
+var cr = document.getElementById("cr");
+var $cr = $(cr);
+
+2、选择器
+标签 td {}
+ID #note{}
+类 .dream{}
+群组 td,p,div{}
+后代 a img{}
+通配 *{}
+伪选择 E:PseudoElement{}
+子选择器 E>F{}
+临近选择器 E+F{}
+
+3、判断元素是否存在
+if($('#tt')) {}
+
