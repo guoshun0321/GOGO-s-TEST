@@ -3,6 +3,8 @@ package gogo.test.akka;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import com.typesafe.config.ConfigFactory;
+
 import scala.concurrent.Future;
 import akka.actor.ActorSystem;
 import akka.actor.TypedActor;
@@ -65,7 +67,7 @@ public class SquarerImpl implements Squarer
 
     public static void main(String[] args)
     {
-        ActorSystem system = ActorSystem.create("typed-system");
+        ActorSystem system = ActorSystem.create("typed-system", ConfigFactory.load());
         Squarer mySquarer = TypedActor.get(system).typedActorOf(new TypedProps<SquarerImpl>(Squarer.class, SquarerImpl.class));
         Squarer otherSquarer = TypedActor.get(system).typedActorOf(new TypedProps<SquarerImpl>(Squarer.class, new Creator<SquarerImpl>()
         {
@@ -75,19 +77,19 @@ public class SquarerImpl implements Squarer
                 return new SquarerImpl("foo");
             }
         }));
-        
+
         System.out.println("squareDontCare: " + new Date());
         mySquarer.squareDontCare(2);
         System.out.println("squareDontCare: " + new Date());
-        
+
         System.out.println("square: " + new Date());
         Future<Integer> future = mySquarer.square(2);
         System.out.println("square: " + new Date());
-        
+
         System.out.println("squareNowPlease: " + new Date());
         mySquarer.squareNowPlease(2);
         System.out.println("squareNowPlease: " + new Date());
-        
+
         System.out.println("squareNow: " + new Date());
         mySquarer.squareNow(2);
         System.out.println("squareNow: " + new Date());

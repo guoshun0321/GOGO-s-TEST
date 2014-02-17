@@ -7,6 +7,11 @@ import akka.actor.UntypedActor;
 public class WatchActor extends UntypedActor
 {
     
+    final ActorRef child = this.getContext().actorOf(Props.empty(), "child");
+    {
+        this.getContext().watch(child);
+    }
+    
     @Override
     public void preStart() throws Exception
     {

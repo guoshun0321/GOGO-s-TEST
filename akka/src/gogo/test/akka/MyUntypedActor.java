@@ -66,7 +66,6 @@ public class MyUntypedActor extends UntypedActor {
 //        inbox.send(ref, PoisonPill.getInstance());
 //        System.out.println(inbox.receive(Duration.create(10, TimeUnit.SECONDS)));
         
-        
         inbox.send(ref, PoisonPill.getInstance());
         System.out.println(inbox.receive(Duration.create(10, TimeUnit.SECONDS)));
 

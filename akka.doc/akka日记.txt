@@ -114,28 +114,32 @@ PoisonPill不插队
 c>Graceful Stop
   可用用来等待actor确认停止
 
-8、热替换
-使用getContext().become
+11、热替换
+消息处理主题继承Procedure类，一般写成内部类
+消息处理机制替换时，使用getContext().become
+两种转换方式
+替换
+入栈、出栈（unbecome）
 
-9、暂时不处理某些信息 stash
+12、暂时不处理某些信息 stash
 继承UntypedActorWithStash
-stash()
-unstashAll()
-不能隐藏同一条信息两次
+隐藏：stash()
+取消隐藏：unstashAll()
+已隐藏的消息不能再次隐藏
 stash容量在dispatcher的配置中配置
-无限制stach : UntypedActorWithUnboundedStash
+无限制stach : 继承UntypedActorWithUnboundedStash
 
-10、kill actor
+13、kill actor
 发送kill消息，akka.actor.Kill.getInstance()
 actor抛出ActorKilledException异常
 actor挂起操作，监视者决定怎样处理异常
 
-11、异常处理
+13、异常处理
 消息处理时异常，当前消息会被丢失
 mailbox不会产生任何变化，如果actor重启，mailbox可以继续使用，消息都还在
 actor 重启，重用，停止，取决于监视者
 
-12、actor初始化
+14、actor初始化
 constructor
   每次actor重启时都会调用
 preStart
@@ -148,8 +152,8 @@ TypedActor
 2、接口和实现
 3、4种调用方式
 无返回值 fire-and-forget
-Future
-Option
+Future send-request-reply
+Option send-request-reply
 其他返回值 阻塞
 
 4、停止
@@ -161,7 +165,7 @@ TypedActor.get(system).poisonPill(otherSquarer);
 
 
 错误兼容性
-策略
+监视器策略
     private static SupervisorStrategy strategy = new OneForOneStrategy(10, Duration.create("1 minute"), new Function<Throwable, Directive>()
     {
         public Directive apply(Throwable t)
@@ -184,8 +188,96 @@ TypedActor.get(system).poisonPill(otherSquarer);
             }
         }
     });
+escalate
+ActorInitializationException stop出错的actor
+ActorKilledException stop出错的actor
+Exception 重启actor
+其他Throwable 交给父监视器处理
 
 Dispatcher
 默认dispatcher
 
 路由
+1、路由配置一
+akka {
+  loggers = ["akka.event.slf4j.Slf4jLogger"]
+  loglevel = "DEBUG"
+  stdout-loglevel = "DEBUG"
+  actor{
+    deployment {
+        /myrouter1 {
+          router = round-robin
+          nr-of-instances = 5
+        }
+      }
+  }
+}
+ActorRef router = system.actorOf(Props.create(ExampleActor.class).withRouter(new akka.routing.FromConfig()), "myrouter1");
+2、路由配置二
+ActorRef router = system.actorOf(Props.create(ExampleActor.class).withRouter(new RoundRobinRouter(5)), "myrouter1");
+3、路由配置三
+ActorRef actor1 = system.actorOf(Props.create(ExampleActor.class), "actor1");
+ActorRef actor2 = system.actorOf(Props.create(ExampleActor.class), "actor2");
+ActorRef actor3 = system.actorOf(Props.create(ExampleActor.class), "actor3");
+Iterable<ActorRef> routees = Arrays.asList(new ActorRef[] {actor1, actor2, actor3});
+ActorRef route1 = system.actorOf(Props.empty().withRouter(RoundRobinRouter.create(routees)));
+4、路由配置四
+Iterable<String> routees = Arrays.asList(new String[] {"/user/actor1", "/user/actor1", "/user/actor1"});
+ActorRef route1 = system.actorOf(Props.empty().withRouter(new RoundRobinRouter(routees)));
+5、router传递消息时，不修改消息的sender()
+6、由router生成的routee设置为router的children
+7、监控器配置
+8、route类型
+round-robin 循环发送消息
+random 随机
+smallest-mailbox
+  顺序：
+    空闲routee，空mailbox
+    空mailbox
+    mailbox信息最少
+    远程routee
+broadcast 广播
+scatter-gather 消息发送给所有routee。第一个计算完成的返回消息
+consistent-hashing 一致hash
+9、特殊消息
+Broadcast 广播消息，广播给所有routee
+PoisonPill 自己处理，不发送给routee
+停止所有routee，在Broadcast中包含PoisonPill
+Kill.getInstance 同PoisonPill
+10、动态改变大小
+akka.actor.deployment {
+  /myrouter2 {
+    router = round-robin
+    resizer {
+      lower-bound = 2
+      upper-bound = 15
+    }
+  }
+}
+11、自定义router
+
+配置
+1、可以配置：
+  日志等级、日志backend
+  是否远程
+  消息串行化
+  路由定义
+  dispatcher分发
+2、配置文件
+在ActorSystem初始化时生效。初始化时可以选择是否传入Config对象。如果没有传入Config对象，相当于调用ConfigFactory.load()。
+ActorSystem system = ActorSystem.create("typed-system", ConfigFactory.load());
+配置文件默认为根目录下的所有：application.conf,application.json,application.properties
+读取上述配置文件后，会并入所有的reference.conf文件
+3、格式
+akka {
+  loggers = ["akka.event.slf4j.Slf4jLogger"]
+  loglevel = "DEBUG"
+}
+
+Future的用法：
+1、阻塞
+Timeout timeout = new Timeout(Duration.create(5, "seconds"));
+Future<Object> future = Patterns.ask(actor, msg, timeout);
+String result = (String)Await.result(future, timeout.duration());
+2、将Future的结果直接发送给Actor
+
