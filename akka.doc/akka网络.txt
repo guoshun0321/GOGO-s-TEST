@@ -1,0 +1,7 @@
+1、基本概念
+node
+cluster
+leader
+2、Membership协议
+标识：hostname:port:uid
+Gossip
