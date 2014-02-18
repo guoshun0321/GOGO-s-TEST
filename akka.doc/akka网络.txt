@@ -1,3 +1,4 @@
+概念
 1、基本概念
 node
 cluster
@@ -5,3 +6,34 @@ leader
 2、Membership协议
 标识：hostname:port:uid
 Gossip
+3、Gossip协议
+
+
+实现
+1、基本使用
+修改application.conf文件
+akka {
+	actor {
+		provider = "akka.cluster.ClusterActorRefProvider"
+	}
+	remote {
+		log-remote-lifecycle-events = on
+		netty.tcp {
+			hostname = "127.0.0.1"
+			port = 0
+		}
+	}
+	cluster {
+		seed-nodes = [
+			"akka.tcp://ClusterSystem@127.0.0.1:2551",
+			"akka.tcp://ClusterSystem@127.0.0.1:2552"
+		]
+		auto-down = on
+	}
+}
+设置端口
+System.setProperty("akka.remote.netty.tcp.port", args[0])
+ActorSystem system = ActorSystem.create("ClusterSystem")
+订阅集群事件
+ActorRef clusterListener = system.actorOf(Props.create(SimpleActor.class), "clusterListener")
+Cluster.get(system).subscribe(clusterListener, ClusterDomainEvent.class)
