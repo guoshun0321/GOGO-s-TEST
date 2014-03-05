@@ -1,0 +1,51 @@
+2014-02-20 10:45:40,691 0    INFO  [ClusterSystem-akka.actor.default-dispatcher-3]          akka.event.slf4j.Slf4jLogger     - Slf4jLogger started
+2014-02-20 10:45:40,776 85   INFO  [ClusterSystem-akka.actor.default-dispatcher-2]                              Remoting     - Starting remoting
+2014-02-20 10:45:41,005 314  INFO  [ClusterSystem-akka.actor.default-dispatcher-3]                              Remoting     - Remoting started; listening on addresses :[akka.tcp://ClusterSystem@127.0.0.1:2551]
+2014-02-20 10:45:41,007 316  INFO  [ClusterSystem-akka.actor.default-dispatcher-3]                              Remoting     - Remoting now listens on addresses: [akka.tcp://ClusterSystem@127.0.0.1:2551]
+2014-02-20 10:45:41,019 328  INFO  [ClusterSystem-akka.actor.default-dispatcher-4]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Starting up...
+2014-02-20 10:45:41,085 394  INFO  [ClusterSystem-akka.actor.default-dispatcher-5]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Registered cluster JMX MBean [akka:type=Cluster]
+2014-02-20 10:45:41,085 394  INFO  [ClusterSystem-akka.actor.default-dispatcher-5]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Started up successfully
+2014-02-20 10:45:41,100 409  INFO  [ClusterSystem-akka.actor.default-dispatcher-5]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Metrics will be retreived from MBeans, and may be incorrect on some platforms. To increase metric accuracy add the 'sigar.jar' to the classpath and the appropriate platform-specific native libary to 'java.library.path'. Reason: java.lang.ClassNotFoundException: org.hyperic.sigar.Sigar
+2014-02-20 10:45:41,107 416  INFO  [ClusterSystem-akka.actor.default-dispatcher-13]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Metrics collection has started successfully
+
+2014-02-20 10:45:41,135 444  INFO  [ClusterSystem-akka.actor.default-dispatcher-2]          akka.event.slf4j.Slf4jLogger     - Slf4jLogger started
+2014-02-20 10:45:41,153 462  INFO  [ClusterSystem-akka.actor.default-dispatcher-8]                              Remoting     - Starting remoting
+2014-02-20 10:45:41,202 511  INFO  [ClusterSystem-akka.actor.default-dispatcher-9]                              Remoting     - Remoting started; listening on addresses :[akka.tcp://ClusterSystem@127.0.0.1:2552]
+2014-02-20 10:45:41,202 511  INFO  [ClusterSystem-akka.actor.default-dispatcher-9]                              Remoting     - Remoting now listens on addresses: [akka.tcp://ClusterSystem@127.0.0.1:2552]
+2014-02-20 10:45:41,204 513  INFO  [ClusterSystem-akka.actor.default-dispatcher-9]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2552] - Starting up...
+2014-02-20 10:45:41,215 524  INFO  [ClusterSystem-akka.actor.default-dispatcher-3]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2552] - Started up successfully
+2014-02-20 10:45:41,246 555  INFO  [ClusterSystem-akka.actor.default-dispatcher-4]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2552] - Metrics will be retreived from MBeans, and may be incorrect on some platforms. To increase metric accuracy add the 'sigar.jar' to the classpath and the appropriate platform-specific native libary to 'java.library.path'. Reason: java.lang.ClassNotFoundException: org.hyperic.sigar.Sigar
+2014-02-20 10:45:41,246 555  INFO  [ClusterSystem-akka.actor.default-dispatcher-4]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2552] - Metrics collection has started successfully
+
+2014-02-20 10:45:41,239 548  INFO  [ClusterSystem-akka.actor.default-dispatcher-2]          akka.event.slf4j.Slf4jLogger     - Slf4jLogger started
+2014-02-20 10:45:41,244 553  INFO  [ClusterSystem-akka.actor.default-dispatcher-2]                              Remoting     - Starting remoting
+2014-02-20 10:45:41,320 629  INFO  [ClusterSystem-akka.actor.default-dispatcher-2]                              Remoting     - Remoting started; listening on addresses :[akka.tcp://ClusterSystem@127.0.0.1:3654]
+2014-02-20 10:45:41,321 630  INFO  [ClusterSystem-akka.actor.default-dispatcher-2]                              Remoting     - Remoting now listens on addresses: [akka.tcp://ClusterSystem@127.0.0.1:3654]
+2014-02-20 10:45:41,321 630  INFO  [ClusterSystem-akka.actor.default-dispatcher-2]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3654] - Starting up...
+2014-02-20 10:45:41,331 640  INFO  [ClusterSystem-akka.actor.default-dispatcher-3]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3654] - Started up successfully
+2014-02-20 10:45:41,438 747  INFO  [ClusterSystem-akka.actor.default-dispatcher-9]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3654] - Metrics will be retreived from MBeans, and may be incorrect on some platforms. To increase metric accuracy add the 'sigar.jar' to the classpath and the appropriate platform-specific native libary to 'java.library.path'. Reason: java.lang.ClassNotFoundException: org.hyperic.sigar.Sigar
+2014-02-20 10:45:41,446 755  INFO  [ClusterSystem-akka.actor.default-dispatcher-9]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3654] - Metrics collection has started successfully
+
+2014-02-20 10:45:41,388 697  INFO  [ClusterSystem-akka.actor.default-dispatcher-2]          akka.event.slf4j.Slf4jLogger     - Slf4jLogger started
+2014-02-20 10:45:41,405 714  INFO  [ClusterSystem-akka.actor.default-dispatcher-2]                              Remoting     - Starting remoting
+2014-02-20 10:45:41,487 796  INFO  [ClusterSystem-akka.actor.default-dispatcher-4]                              Remoting     - Remoting started; listening on addresses :[akka.tcp://ClusterSystem@127.0.0.1:3669]
+2014-02-20 10:45:41,487 796  INFO  [ClusterSystem-akka.actor.default-dispatcher-4]                              Remoting     - Remoting now listens on addresses: [akka.tcp://ClusterSystem@127.0.0.1:3669]
+2014-02-20 10:45:41,487 796  INFO  [ClusterSystem-akka.actor.default-dispatcher-4]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3669] - Starting up...
+2014-02-20 10:45:41,492 801  INFO  [ClusterSystem-akka.actor.default-dispatcher-4]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3669] - Started up successfully
+2014-02-20 10:45:41,536 845  INFO  [ClusterSystem-akka.actor.default-dispatcher-7]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3669] - Metrics will be retreived from MBeans, and may be incorrect on some platforms. To increase metric accuracy add the 'sigar.jar' to the classpath and the appropriate platform-specific native libary to 'java.library.path'. Reason: java.lang.ClassNotFoundException: org.hyperic.sigar.Sigar
+2014-02-20 10:45:41,536 845  INFO  [ClusterSystem-akka.actor.default-dispatcher-7]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3669] - Metrics collection has started successfully
+
+2014-02-20 10:45:41,537 846  INFO  [ClusterSystem-akka.actor.default-dispatcher-4]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Node [akka.tcp://ClusterSystem@127.0.0.1:2551] is JOINING, roles [backend]
+2014-02-20 10:45:42,133 1442 INFO  [ClusterSystem-akka.actor.default-dispatcher-3]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Leader is moving node [akka.tcp://ClusterSystem@127.0.0.1:2551] to [Up]
+
+2014-02-20 10:45:41,560 869  INFO  [ClusterSystem-akka.actor.default-dispatcher-3]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Node [akka.tcp://ClusterSystem@127.0.0.1:3669] is JOINING, roles [frontend]
+2014-02-20 10:45:41,595 904  INFO  [ClusterSystem-akka.actor.default-dispatcher-5]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3669] - Welcome from [akka.tcp://ClusterSystem@127.0.0.1:2551]
+2014-02-20 10:45:42,133 1442 INFO  [ClusterSystem-akka.actor.default-dispatcher-3]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Leader is moving node [akka.tcp://ClusterSystem@127.0.0.1:3669] to [Up]
+
+2014-02-20 10:45:46,482 5791 INFO  [ClusterSystem-akka.actor.default-dispatcher-4]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Node [akka.tcp://ClusterSystem@127.0.0.1:3654] is JOINING, roles [backend]
+2014-02-20 10:45:46,486 5795 INFO  [ClusterSystem-akka.actor.default-dispatcher-2]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:3654] - Welcome from [akka.tcp://ClusterSystem@127.0.0.1:2551]
+2014-02-20 10:45:47,118 6427 INFO  [ClusterSystem-akka.actor.default-dispatcher-15]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Leader is moving node [akka.tcp://ClusterSystem@127.0.0.1:3654] to [Up]
+
+2014-02-20 10:45:46,508 5817 INFO  [ClusterSystem-akka.actor.default-dispatcher-14]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Node [akka.tcp://ClusterSystem@127.0.0.1:2552] is JOINING, roles [backend]
+2014-02-20 10:45:46,512 5821 INFO  [ClusterSystem-akka.actor.default-dispatcher-7]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2552] - Welcome from [akka.tcp://ClusterSystem@127.0.0.1:2551]
+2014-02-20 10:45:47,116 6425 INFO  [ClusterSystem-akka.actor.default-dispatcher-15]         Cluster(akka://ClusterSystem)     - Cluster Node [akka.tcp://ClusterSystem@127.0.0.1:2551] - Leader is moving node [akka.tcp://ClusterSystem@127.0.0.1:2552] to [Up]

@@ -1,0 +1,329 @@
+https://jersey.java.net/documentation/latest/user-guide.html#new-from-archetype
+基于Servlet部署
+1、servlet版本2.5及以上
+2、org.glassfish.jersey.servlet.ServletContainer
+Servet：
+<web-app>
+    <servlet>
+        <servlet-name>MyApplication</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            ...
+        </init-param>
+    </servlet>
+    ...
+    <servlet-mapping>
+        <servlet-name>MyApplication</servlet-name>
+        <url-pattern>/myApp/*</url-pattern>
+    </servlet-mapping>
+    ...
+</web-app>
+
+Filter
+<web-app>
+    <filter>
+        <filter-name>MyApplication</filter-name>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+        <init-param>
+            ...
+        </init-param>
+    </filter>
+    ...
+    <filter-mapping>
+        <filter-name>MyApplication</filter-name>
+        <url-pattern>/myApp/*</url-pattern>
+    </filter-mapping>
+    ...
+</web-app>
+
+init-param配置方式：
+一个项目中使用一个javax.ws.rs.Application的子类，在子类中声明资源声明所在的包
+<init-param>
+    <param-name>javax.ws.rs.Application</param-name>
+    <param-value>org.foo.MyApplication</param-value>
+</init-param>
+实际项目中的配置
+<init-param>
+	<param-name>javax.ws.rs.Application</param-name>
+	<param-value>cn.com.vs.RestApplication</param-value>
+</init-param>
+采用这种方式，Application子类中可以添加比较多的控制
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.server.ResourceConfig;
+
+public class RestApplication extends ResourceConfig
+{
+    public RestApplication()
+    {
+        //服务类所在的包路径
+        packages("cn.com.vs.service");
+        register(JacksonJsonProvider.class);
+        //打印访问日志，便于跟踪调试，正式发布可清除 
+        register(LoggingFilter.class);
+    }
+}
+
+包扫描
+<init-param>
+    <param-name>jersey.config.server.provider.packages</param-name>
+    <param-value>
+        org.foo.myresources,org.bar.otherresources
+    </param-value>
+</init-param>
+<init-param>
+    <param-name>jersey.config.server.provider.scanning.recursive</param-name>
+    <param-value>false</param-value>
+</init-param>
+实际项目中
+<init-param>
+	<param-name>jersey.config.server.provider.packages</param-name>
+	<param-value>cn.com.vs.service</param-value>
+</init-param>
+<init-param>
+	<param-name>jersey.config.server.provider.scanning.recursive</param-name>
+	<param-value>false</param-value>
+</init-param>
+
+配置全限定类名
+<init-param>
+    <param-name>jersey.config.server.provider.classnames</param-name>
+    <param-value>
+        org.foo.myresources.MyDogResource,
+        org.bar.otherresources.MyCatResource
+    </param-value>
+</init-param>
+
+以上方式可以配合使用
+
+3、注解
+@Path 相对URI路径，可以包含变量
+@Path("/users/{username}")
+使用正则表达式
+@Path("users/{username: [a-zA-Z][a-zA-Z_0-9]*}")
+@Path("/user/{name1: [a-zA-Z][a-zA-Z_0-9]*}/{name2}")
+public class UserResource {
+ 
+    @GET
+    @Produces("text/xml")
+    public String getUser(@PathParam("username") String userName) {
+        ...
+    }
+}
+
+@GET @PUT @POST @DELETE
+默认支持HEADER/OPTION
+
+@Produces
+用于指定MIME类型
+@Path("/myResource")
+@Produces("text/plain")
+public class SomeResource {
+    @GET
+    public String doGetAsPlainText() {
+        ...
+    }
+ 
+    @GET
+    @Produces("text/html")
+    public String doGetAsHtml() {
+        ...
+    }
+}
+
+声明多种接收类型
+@GET
+@Produces({"application/xml", "application/json"})
+public String doGetAsXmlOrJson() {
+    ...
+}
+
+@Consumes
+指定消耗的类型，方法通常返回void。http返回204
+@POST
+@Consumes("text/plain")
+public void postClichedMessage(String message) {
+    // Store the message
+}
+
+@*Param参数注解
+@PathParam 从@Path提取参数
+@QueryParam 从查询条件中提取参数
+@Path("smooth")
+@GET
+public Response smooth(
+    @DefaultValue("2") @QueryParam("step") int step,
+    @DefaultValue("true") @QueryParam("min-m") boolean hasMin,
+    @DefaultValue("true") @QueryParam("max-m") boolean hasMax,
+    @DefaultValue("true") @QueryParam("last-m") boolean hasLast,
+    @DefaultValue("blue") @QueryParam("min-color") ColorParam minColor,
+    @DefaultValue("green") @QueryParam("max-color") ColorParam maxColor,
+    @DefaultValue("red") @QueryParam("last-color") ColorParam lastColor) {
+    ...
+}
+定义ColorParam
+public class ColorParam extends Color {
+ 
+    public ColorParam(String s) {
+        super(getRGB(s));
+    }
+ 
+    private static int getRGB(String s) {
+        if (s.charAt(0) == '#') {
+            try {
+                Color c = Color.decode("0x" + s.substring(1));
+                return c.getRGB();
+            } catch (NumberFormatException e) {
+                throw new WebApplicationException(400);
+            }
+        } else {
+            try {
+                Field f = Color.class.getField(s);
+                return ((Color)f.get(null)).getRGB();
+            } catch (Exception e) {
+                throw new WebApplicationException(400);
+            }
+        }
+    }
+}
+
+@MatrixParam, @HeaderParam, @CookieParam 和 @QueryParam类似
+
+@FormParam 
+从类型为"application/x-www-form-urlencoded"的请求中提取消息
+通常用于从POSTed消息中获取参数
+@POST
+@Consumes("application/x-www-form-urlencoded")
+public void post(@FormParam("name") String name) {
+    // Store the message
+}
+
+获取头部信息和Cookie信息
+@GET
+public String get(@Context UriInfo ui) {
+    MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
+    MultivaluedMap<String, String> pathParams = ui.getPathParameters();
+}
+
+@BeanParam
+public class MyBeanParam {
+    @PathParam("p")
+    private String pathParam;
+ 
+    @MatrixParam("m")
+    @Encoded
+    @DefaultValue("default")
+    private String matrixParam;
+ 
+    @HeaderParam("header")
+    private String headerParam;
+ 
+    private String queryParam;
+ 
+    public MyBeanParam(@QueryParam("q") String queryParam) {
+        this.queryParam = queryParam;
+    }
+ 
+    public String getPathParam() {
+        return pathParam;
+    }
+    ...
+}
+
+子资源Sub-resources
+不带@GET/@POST的为资源定位器
+@Path("/")或@Path("")匹配class的@Path
+@Path("/item")
+public class ItemResource {
+    @Context UriInfo uriInfo;
+ 
+    @Path("content")
+    public ItemContentResource getItemContentResource() {
+        return new ItemContentResource();
+    }
+ 
+    @GET
+    @Produces("application/xml")
+        public Item get() { ... }
+    }
+}
+ 
+public class ItemContentResource {
+ 
+    @GET
+    public Response get() { ... }
+ 
+    @PUT
+    @Path("{version}")
+    public void put(@PathParam("version") int version,
+                    @Context HttpHeaders headers,
+                    byte[] in) {
+        ...
+    }
+}
+实际项目中的例子
+@Path("/path1")
+public class PResource
+{
+
+    @Path("path2")
+    public SResource getItemContentResource()
+    {
+        return new SResource();
+    }
+
+}
+public class SResource
+{
+
+    @GET
+    @Path("path3")
+    public String get()
+    {
+        return "hello sub!";
+    }
+
+}
+
+import javax.inject.Singleton;
+ 
+@Path("/item")
+public class ItemResource {
+    @Path("content")
+    public Class<ItemContentSingletonResource> getItemContentResource() {
+        return ItemContentSingletonResource.class;
+    }
+}
+ 
+@Singleton
+public class ItemContentSingletonResource {
+    // this class is managed in the singleton life cycle
+}
+
+import org.glassfish.jersey.server.model.Resource;
+ 
+@Path("/item")
+public class ItemResource {
+ 
+    @Path("content")
+    public Resource getItemContentResource() {
+        return Resource.from(ItemContentSingletonResource.class);
+    }
+}
+
+资源的默认范围是per-request
+
+处理POST
+    @POST
+    @Path("/asjson")
+//    @Consumes(MediaType.APPLICATION_JSON)
+    public Response myResourceMethod(String json)
+    {
+        System.out.println(json);
+        return Response.ok().build();
+    }
+
+
+Server-Sent Event（SSE）
+
+Cache

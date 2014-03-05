@@ -10,7 +10,7 @@ Gossip
 
 
 实现
-1、基本使用
+1、配置
 修改application.conf文件
 akka {
 	actor {
@@ -31,9 +31,21 @@ akka {
 		auto-down = on
 	}
 }
-设置端口
+2、设置端口
 System.setProperty("akka.remote.netty.tcp.port", args[0])
 ActorSystem system = ActorSystem.create("ClusterSystem")
-订阅集群事件
+3、订阅集群事件
 ActorRef clusterListener = system.actorOf(Props.create(SimpleActor.class), "clusterListener")
 Cluster.get(system).subscribe(clusterListener, ClusterDomainEvent.class)
+4、角色定义
+akka.cluster.roles 或者
+final Config config = ConfigFactory.parseString("akka.remote.netty.tcp.port=" + port)
+							.withFallback(ConfigFactory.parseString("akka.cluster.roles = [backend]")).withFallback(ConfigFactory.load());
+ActorSystem system = ActorSystem.create("ClusterSystem", config);
+5、角色leader：一般是第一个加入集群的节点
+6、member数量达到一定值后，节点从join转向up的设置：
+akka.cluster.min-nr-of-members = 3
+akka.cluster.role {
+  frontend.min-nr-of-members = 1
+  backend.min-nr-of-members = 1
+}

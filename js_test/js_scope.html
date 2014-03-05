@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>js作用域</title>
+	<script type="text/javascript">
+		// function add(num1, num2) {
+		// 	function add1(num3, num4) {
+		// 		return num3 + num4;	
+		// 	}
+		// 	return add1(num1, num2);
+		// }
+		// alert(add(1, 2));
+
+		// function add() {
+		// 	num3 = "test";
+		// 	var num1;
+		// 	function test() {
+		// 		num2 = 10;
+		// 	}
+		// 	test();
+		// 	var num2;
+		// 	// alert(window.num2); 
+		// }
+		// add();
+		// alert(num3);
+
+		// function add() {
+		// 	var a = 1;
+		// 	function test() {
+		// 		alert(a++);
+		// 	}
+		// 	return test;
+		// }
+		// var objs = [
+		// 	add(), add()
+		// ];
+		// objs[0]();
+		// objs[0]();
+		// objs[1]();
+
+		// function add() {
+		// 	var a = 1;
+		// 	function add1() {
+		// 		var b = 2;
+		// 		return a + b;
+		// 	}
+		// 	return add1;
+		// }
+		// alert(add()());
+
+		// ============闭包测试============
+		// function pageInit() {
+		// 	var obj = {
+		// 		count : 1
+		// 	};
+		// 	for(var i = 1; i < 4; i++) {
+		// 		var ele = document.getElementById("anchor" + i);
+		// 		// ele.onclick = function() {
+		// 		// 	alert("click " + i);
+		// 		// 	alert("count " + obj.count);
+		// 		// }
+		// 		listen(ele, i, obj);
+		// 		obj.count++;
+		// 	}
+		// }
+
+		// function listen(ele, i, obj) {
+		// 	ele.onclick = function() {
+		// 		alert("click " + i);
+		// 		alert("count " + obj.count);
+		// 	}
+		// }
+
+		// window.onload = pageInit;
+
+		function add() {
+			alert(add1);
+			alert(add2);
+			alert(obj1);
+			var obj1 = 1;
+			function add1() {
+
+			}
+			var add2 = function() {
+
+			}
+		}
+		add();
+	</script>
+</head>
+<body>
+	<a id="anchor1" href="#">anchor1</a><br/>
+	<a id="anchor2" href="#">anchor2</a><br/>
+	<a id="anchor3" href="#">anchor3</a><br/>
+</body>
+</html>

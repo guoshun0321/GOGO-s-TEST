@@ -1,0 +1,68 @@
+前端
+1、前端调用代码
+var rest = new REST("资源")
+// rest是否自动将报文解析为WSResult
+rest.isParse = true;
+// ret有两种形式：WSResult/报文内容
+rest.oncallback = function(ret) {
+	
+}
+// ret 报文内容
+rest.onerror = function(ret) {
+	
+}
+// 参数有两种格式。JSON或者多个参数（int/String），如果是多个参数则需要在rest模块转换成JSON格式
+rest.call("子资源", JSON)
+rest.call("子资源", "参数1", "参数2")
+
+2、资源调用json格式
+{
+	userInfo : {
+		// 可以为空
+		userId : xxx,
+		session : xxxx,
+	}, 
+	addInfo : {
+		// 可以为空
+	},
+	params : {
+
+	}
+}
+// params部分，由于通过wadl（和wsdl类似的文档）拿不到方法的输入信息，所有多参数将转换成如下格式。具体对应的数据在后端filter部分进行解析
+params : {
+	param1 : xxxx,
+	param2 : xxx
+}
+// addInfo 为全局附加信息扩展，可以通过在全局JS文件中进行配置。建议使用键值对的形式，不要使用复杂的JSON格式
+
+2、rest模块设计
+注册到jetsen框架
+为了兼容第三方接口，提供多种访问方式：
+get/post
+delete/put 这两个在部分浏览器上不能实现，具体哪些浏览器还需要调查
+call 原WebService格式API，采用post的方式发送数据
+
+后端：
+后端框架
+			官方		实现方式		JSR311		最后更新
+CXF			否			servlet			支持		20140218
+RESTEasy	否			servlet			支持		20131211
+Jersey		是			servlet			支持		20140221
+RESTLet		否			非servlet		支持		20140209
+总的来说，后端框架都支持JSR311标准，可以很方便的通过注解来实现REST。
+RESTLet不是通过servlet来支持rest的，虽然额可以转换到servlet形式，但是可能存在一定的性能损失。
+这四个框架的性能没有进行进一步的测试，但是应该都可以满足我们框架的性能需要。
+目前主要考察的是Jersey框架，基本上能支持目前设计中需要用的功能点。
+具体的REST框架设计，见REST框架设计图
+
+框架图说明：
+1、将传入参数（多参数形式）映射到具体方法的参数需要进一步测试
+2、处理逻辑部分请返回String或int类型数据
+3、异常处理意见如下：
+	框架异常尽可能声明为RuntimeException
+	注意生成异常链，否则会丢失异常发生信息
+	对于常见异常，建议建立异常码
+	通过Web入口进入的操作，如果产生异常后当前线程可以继续执行，请捕获异常。如果不可以，不捕获异常，交由异常处理模块进行处理
+	非Web入口异常，请在异常产生处并打印异常信息
+	
