@@ -1,0 +1,77 @@
+注解：
+提供java程序不能提供的额外信息
+
+Java5内置：
+	@Override 重载
+	@Deprecated 过期
+	@SuppressWarnings 关闭编译器警告
+
+例子：
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Test
+{
+
+}
+@Target 注解使用的地方，方法或域
+@Retention 注解级别，源代码（SOURCE）、类文件（CLASS）、运行时（RUNTIME）
+
+注解中可以包含一些值
+没有值的注解称为标记注解
+
+有值的例子：
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface UseCase
+{
+
+    public int id();
+
+    public String description() default "no description";
+
+}
+default 用来表示默认值
+
+元注解
+@Target 注解使用在什么地方
+	PACKAGE 包
+	FIELD 域声明
+	CONSTUCTOR 构造函数
+	METHOD 方法
+	PARAMETER 参数
+	LOCAL_VARIABLE 局部变量声明
+@Retention 保留级别
+	SOURCE 源码级别，编译后被丢弃
+	CLASS class文件中，运行时会被丢弃
+	RUNTIME 运行时也存在
+@Documented Javadoc
+@Inherited 允许子类继承父类的注解
+
+注解中的元素：
+所有基本类型
+String
+Class
+enum
+Annotation
+以上所有的类型的数组
+非基本类型的元素，无论在源代码中声明，或者是设置默认值时，都不能以null作为其值
+
+注解嵌套注解：
+@Target(ElementType.FIELD)
+@Retetion(RetetionPolicy.RUNTIME)
+public @interface Constraints {
+	boolean primaryKey() default false;
+	boolean allowNull() default true;
+	boolean unique() default false;
+}
+@Target(ElementType.FIELD)
+@Retetion(RetetionPolicy.RUNTIME)
+public @interface SQLString {
+	int value() default 0;
+	String name() default "";
+	Constraints constraints() default @Constraints(unique=true);
+}
+使用注解时，如果注解只有一个值，那么可以不用写键值对的形式
+使用注解时，同一个目标不能使用多个相同的注解
+
+
