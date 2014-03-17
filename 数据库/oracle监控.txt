@@ -1,0 +1,17 @@
+select * from v$session
+select * from v$process
+select * from v$sesstat
+select * from v$sqltext
+select * from v$sql
+
+select a.paddr, a.sid, a.program, a.type, a.PROCESS, a.MACHINE, b.* from v$session a left join v$process b on a.PADDR = b.ADDR where a.type = 'USER' order by a.MACHINE
+
+select c.spid,a.p1,a.p1raw,a.p2,a.event,b.sql_text,b.SQL_FULLTEXT,b.SQL_ID,a.WAIT_CLASS
+from v$session a,v$sql b,v$process c 
+where a.sql_id=b.sql_id and a.PADDR=c.addr 
+order by event;
+
+select * from (
+select parsing_user_id,executions,sorts
+command_type,disk_reads,sql_text from v$sqlarea order by disk_reads desc
+)  where rownum<10
