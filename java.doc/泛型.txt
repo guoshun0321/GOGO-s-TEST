@@ -1,0 +1,56 @@
+泛型：
+	告诉编译器需要什么类型，编译器帮你处理细节
+
+基本用法：
+public class Holder<T> {}
+public class Tuple<A, B> {}
+
+泛型传递
+public class LinkedStack<T> {
+	private static class Node<U> {}
+	top = new Node<T>();
+}
+
+泛型接口
+public interface Generator<T> {
+	T next();
+}
+public class CoffeeGenerator<Coffee> {
+	Coffee next() {}
+}
+泛型传递2
+public class<T> ListGenerator<List<T>> {
+	List<T> next() {}
+}
+
+基本类型无法作为泛型参数
+
+泛型方法
+所在类可以是泛型类也可以不是泛型类
+static方法无法访问泛型类的类型参数
+public class Method {
+	public <T> void f(T x) {}
+}
+f("")
+使用泛型方法时，编译器会进行类型参数推断
+类型推断只对赋值操作有效，包括返回值的赋值
+public class New {
+	public static <K, V> Map<K, V> map() {
+		return new HashMap<K, V>();
+	}
+}
+
+显式说明
+Method m = new Method();
+m.<String>f("")
+
+可变参数和泛型
+public static <T> list<T> makeList(T... args) {}
+
+可以声明为ArrayList.class，不能声明为ArrayList<Integer>.class
+在泛型代码内部，无法获得任何有关泛型参数类型的信息
+List<Integer>和List<String>在运行时是相同的类型
+
+擦除边界
+泛型类型将会被擦除到它的第一个边界
+编译器会把它的类型替换为它的擦除
