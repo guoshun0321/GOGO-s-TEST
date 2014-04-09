@@ -1,0 +1,13 @@
+同一JVM中
+第一次获取连接 fac.createConnection()，创建如下连接
+Thread [ActiveMQ Transport: tcp:///192.168.8.171:61616@11485] (Running)	
+Daemon Thread [ActiveMQ InactivityMonitor WriteCheckTimer] (Running)	
+Daemon Thread [ActiveMQ InactivityMonitor ReadCheckTimer] (Running)	
+等待一段时间后出现
+Daemon Thread [ActiveMQ InactivityMonitor Worker] (Running)	
+创建Consumer时出现线程
+Thread [ActiveMQ Session Task-1] (Running)	
+
+第二次创建连接
+Thread [ActiveMQ Transport: tcp:///192.168.8.171:61616@11505] (Running)	
+Thread [ActiveMQ Session Task-1] (Running)	
