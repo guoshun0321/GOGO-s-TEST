@@ -65,17 +65,17 @@ public class BDBFileParse
             }
 
             // 生成文件
-            for (TableInfo tbl : tblInfoLst)
-            {
-                String fileName = tbl.getTableName();
-                fileName = this.dbName2EntityName(fileName);
-                OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "\\" + fileName + "Entity.java"));
-                String javaFile = this.genJavaFile(tbl);
-                out.write(javaFile.getBytes());
-                out.flush();
-                out.close();
-                out = null;
-            }
+//            for (TableInfo tbl : tblInfoLst)
+//            {
+//                String fileName = tbl.getTableName();
+//                fileName = this.dbName2EntityName(fileName);
+//                OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "\\" + fileName + "Entity.java"));
+//                String javaFile = this.genJavaFile(tbl);
+//                out.write(javaFile.getBytes());
+//                out.flush();
+//                out.close();
+//                out = null;
+//            }
         }
         System.out.println(path);
     }
@@ -111,7 +111,7 @@ public class BDBFileParse
             }
             else if (type.equalsIgnoreCase("long") || type.equalsIgnoreCase("BIGINT"))
             {
-                type = "int";
+                type = "long";
             }
             int length = Integer.valueOf(e.getAttributeValue("LENGTH"));
             int index = Integer.valueOf(e.getAttributeValue("INDEX"));
@@ -219,7 +219,7 @@ public class BDBFileParse
             }
             else if (typeE == FieldTypeEnum.LONG)
             {
-                type = "int";
+                type = "long";
             }
             sb.append("\t@Column(\"").append(attrName).append("\")\n");
             sb.append("\tprivate ").append(type).append(" ").append(aName).append(";\n");
