@@ -3,7 +3,7 @@ package jetsennet.jsmp.nav.cache.xmem;
 import jetsennet.jsmp.nav.config.Config;
 import junit.framework.TestCase;
 
-public class MemcachedOpTest extends TestCase
+public class MemcachedOpTest1 extends TestCase
 {
 
     @Override

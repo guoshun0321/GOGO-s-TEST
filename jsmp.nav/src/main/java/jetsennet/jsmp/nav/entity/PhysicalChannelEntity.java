@@ -7,7 +7,7 @@ import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成，最好不要手动修改！
+ * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
  */
 @Table("NS_PHYSICALCHANNEL")
 public class PhysicalChannelEntity implements Serializable
@@ -102,7 +102,7 @@ public class PhysicalChannelEntity implements Serializable
 	 * 更新时间
 	 */
 	@Column("UPDATE_TIME")
-	private int updateTime;
+	private long updateTime;
 	/**
 	 * 格式
 	 */
@@ -301,12 +301,12 @@ public class PhysicalChannelEntity implements Serializable
 		this.protocolType = protocolType;
 	}
 
-	public int getUpdateTime()
+	public long getUpdateTime()
 	{
 		return updateTime;
 	}
 
-	public void setUpdateTime(int updateTime)
+	public void setUpdateTime(long updateTime)
 	{
 		this.updateTime = updateTime;
 	}

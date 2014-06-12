@@ -7,7 +7,7 @@ import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成，最好不要手动修改！
+ * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
  */
 @Table("NS_PGM2PRODUCT")
 public class Pgm2ProductEntity implements Serializable

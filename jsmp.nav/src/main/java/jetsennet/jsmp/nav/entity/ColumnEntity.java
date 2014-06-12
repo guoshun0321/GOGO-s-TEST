@@ -9,7 +9,7 @@ import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
 
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成，最好不要手动修改！
+ * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
  */
 @Table("NS_COLUMN")
 public class ColumnEntity implements Serializable
@@ -80,7 +80,7 @@ public class ColumnEntity implements Serializable
      */
     @Column("UPDATE_TIME")
     @IdentAnnocation("modifyDate")
-    private int updateTime;
+    private long updateTime;
     /**
      * 排序规则，如：COLUMN_SEQ，根据序号排序
      */
@@ -216,12 +216,12 @@ public class ColumnEntity implements Serializable
         this.columnType = columnType;
     }
 
-    public int getUpdateTime()
+    public long getUpdateTime()
     {
         return updateTime;
     }
 
-    public void setUpdateTime(int updateTime)
+    public void setUpdateTime(long updateTime)
     {
         this.updateTime = updateTime;
     }

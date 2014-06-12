@@ -29,7 +29,7 @@ public class MemcachedOp
     /**
      * 日志
      */
-    private static final Logger logger = LoggerFactory.getLogger(MemcachedOpTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MemcachedOp.class);
 
     private static final MemcachedOp instance = new MemcachedOp();
 

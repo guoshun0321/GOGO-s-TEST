@@ -7,7 +7,7 @@ import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成，最好不要手动修改！
+ * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
  */
 @Table("NS_PLAYBILL")
 public class PlaybillEntity implements Serializable
@@ -64,7 +64,7 @@ public class PlaybillEntity implements Serializable
 	 * 更新时间
 	 */
 	@Column("UPDATE_TIME")
-	private int updateTime;
+	private long updateTime;
 	/**
 	 * 最终修改时间
 	 */
@@ -153,7 +153,7 @@ public class PlaybillEntity implements Serializable
 		this.playDuration = playDuration;
 	}
 
-	public int getUpdateTime()
+	public long getUpdateTime()
 	{
 		return updateTime;
 	}
