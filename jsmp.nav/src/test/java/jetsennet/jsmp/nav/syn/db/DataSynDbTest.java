@@ -69,7 +69,9 @@ public class DataSynDbTest extends TestCase
 		DataSynDb db = new DataSynDb();
 
 		// insert
-		db.insertOrUpdate(column);
+		DataSynDbResult ret = db.insertOrUpdate(column);
+		assertEquals(ret.type, DataSynDbResult.TYPE_INSERT);
+		assertEquals(ret.num, 1);
 		TableInfo table = factory.getTableInfo(column.getClass());
 		ISql sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(column));
 		Object temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(column.getClass(), table));
@@ -77,7 +79,9 @@ public class DataSynDbTest extends TestCase
 
 		// update
 		column.setUpdateTime(3000);
-		db.insertOrUpdate(column);
+		ret = db.insertOrUpdate(column);
+		assertEquals(ret.type, DataSynDbResult.TYPE_UPDATE);
+		assertEquals(ret.num, 1);
 		table = factory.getTableInfo(column.getClass());
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(column));
 		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(column.getClass(), table));
@@ -85,7 +89,8 @@ public class DataSynDbTest extends TestCase
 
 		// not update
 		column.setUpdateTime(1000);
-		db.insertOrUpdate(column);
+		ret = db.insertOrUpdate(column);
+		assertNull(ret);
 		table = factory.getTableInfo(column.getClass());
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(column));
 		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(column.getClass(), table));
@@ -98,7 +103,9 @@ public class DataSynDbTest extends TestCase
 		rc.setRelateRule("rule1");
 
 		// insert
-		db.insertOrUpdate(rc);
+		ret = db.insertOrUpdate(rc);
+		assertEquals(ret.type, DataSynDbResult.TYPE_INSERT);
+		assertEquals(ret.num, 1);
 		table = factory.getTableInfo(RelateColumnEntity.class);
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(rc));
 		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(rc.getClass(), table));
@@ -106,7 +113,9 @@ public class DataSynDbTest extends TestCase
 
 		// update
 		rc.setRelateRule("rule2");
-		db.insertOrUpdate(rc);
+		ret = db.insertOrUpdate(rc);
+		assertEquals(ret.type, DataSynDbResult.TYPE_UPDATE);
+		assertEquals(ret.num, 1);
 		table = factory.getTableInfo(RelateColumnEntity.class);
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(rc));
 		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(rc.getClass(), table));
@@ -123,13 +132,17 @@ public class DataSynDbTest extends TestCase
 		rc.setRelateRule("rule1");
 
 		// insert
-		db.insertOrUpdate(rc);
+		DataSynDbResult ret = db.insertOrUpdate(rc);
+		assertEquals(ret.type, DataSynDbResult.TYPE_INSERT);
+		assertEquals(ret.num, 1);
 		TableInfo table = factory.getTableInfo(RelateColumnEntity.class);
 		ISql sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(rc));
 		Object temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(rc.getClass(), table));
 		assertTrue(ObjectUtil.compare(RelateColumnEntity.class, rc, temp));
 		
-		db.delete(rc);
+		ret = db.delete(rc);
+		assertEquals(ret.type, DataSynDbResult.TYPE_DELETE);
+		assertEquals(ret.num, 1);
 		table = factory.getTableInfo(RelateColumnEntity.class);
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(rc));
 		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(rc.getClass(), table));

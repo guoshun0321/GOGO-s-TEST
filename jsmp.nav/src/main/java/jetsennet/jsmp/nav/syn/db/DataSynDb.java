@@ -19,20 +19,20 @@ public class DataSynDb
 
 	private static final Logger logger = LoggerFactory.getLogger(DataSynDb.class);
 
-	public int insert(Object obj)
+	public static DataSynDbResult insert(Object obj)
 	{
-		return this.insertOrUpdate(obj);
+		return insertOrUpdate(obj);
 	}
 
-	public int update(Object obj)
+	public static DataSynDbResult update(Object obj)
 	{
-		return this.insertOrUpdate(obj);
+		return insertOrUpdate(obj);
 	}
 
-	protected int insertOrUpdate(Object obj)
+	public static DataSynDbResult insertOrUpdate(Object obj)
 	{
-		int retval = -1;
-		Long updateTime = this.getUpdateTime(obj);
+		DataSynDbResult retval = null;
+		Long updateTime = getUpdateTime(obj);
 		Session session = factory.openSession();
 		boolean isSelf = session.transBegin();
 		try
@@ -40,8 +40,16 @@ public class DataSynDb
 			if (updateTime == null)
 			{
 				// 表不存在更新时间
-				session.deleteByObj(obj);
-				retval = session.insert(obj, false);
+				int isUpdate = session.deleteByObj(obj);
+				int temp = session.insert(obj, false);
+				if (isUpdate > 0)
+				{
+					retval = new DataSynDbResult(DataSynDbResult.TYPE_UPDATE, obj, temp);
+				}
+				else
+				{
+					retval = new DataSynDbResult(DataSynDbResult.TYPE_INSERT, obj, temp);
+				}
 			}
 			else
 			{
@@ -52,15 +60,17 @@ public class DataSynDb
 				if (temp == null)
 				{
 					// 不存在旧数据时，新增数据
-					retval = session.insert(obj, false);
+					int num = session.insert(obj, false);
+					retval = new DataSynDbResult(DataSynDbResult.TYPE_INSERT, obj, num);
 				}
 				else
 				{
 					// 存在旧数据时，比较更新时间
-					Long dbUpdateTime = this.getUpdateTime(temp);
+					Long dbUpdateTime = getUpdateTime(temp);
 					if (updateTime > dbUpdateTime)
 					{
-						retval = session.update(obj);
+						int num = session.update(obj);
+						retval = new DataSynDbResult(DataSynDbResult.TYPE_UPDATE, obj, num);
 					}
 				}
 			}
@@ -79,7 +89,7 @@ public class DataSynDb
 	 * @param obj
 	 * @return
 	 */
-	private Long getUpdateTime(Object obj)
+	private static Long getUpdateTime(Object obj)
 	{
 		Long retval = null;
 		try
@@ -98,9 +108,10 @@ public class DataSynDb
 		return retval;
 	}
 
-	public int delete(Object obj)
+	public static DataSynDbResult delete(Object obj)
 	{
 		Session session = factory.openSession();
-		return session.deleteByObj(obj);
+		int num = session.deleteByObj(obj);
+		return new DataSynDbResult(DataSynDbResult.TYPE_DELETE, obj, num);
 	}
 }
