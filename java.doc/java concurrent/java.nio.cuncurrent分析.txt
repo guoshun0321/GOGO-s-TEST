@@ -1,4 +1,4 @@
-Semaphore
+﻿Semaphore
 
 acquire()
 阻塞
@@ -87,3 +87,16 @@ tryAcquire(int permits, long timeout, TimeUnit unit)
 					将状态设置为CANCELLED
 					如果是tail，将tail设置为pred，尝试将tail设置为null
 					如果不是tail，
+
+
+在使用AbstractQueuedSynchronizer进行并发组件开发时：
+1、AQS的本质是一个条件队列。状态满足什么条件时，可以进行尝试进行状态修改操作（CAS，不一定能执行）。不满足该条件时，等待该条件满足后，再次尝试。
+2、注意覆盖
+protected int tryAcquireShared(int arg)
+protected boolean tryReleaseShared(int arg)
+或者
+protected boolean tryAcquire(int arg)
+protected boolean tryRelease(int arg)
+方法
+3、tryAcquireShared返回值小于0时，线程进入条件队列等待
+tryReleaseShared返回值为true时，唤醒条件队列下一个等待节点，重新检查条件
