@@ -1,0 +1,89 @@
+Semaphore
+
+acquire()
+阻塞
+响应中断，抛出interrupted异常
+sync.acquireSharedInterruptibly(1);
+
+acquire(int permits)
+阻塞
+响应中断，抛出interrupted异常
+sync.acquireSharedInterruptibly(permits);
+
+acquireUninterruptibly
+阻塞
+不响应中断
+返回后将重新设置中断状态
+sync.acquireShared(1);
+
+acquireUninterruptibly(int permits)
+sync.acquireShared(permits);
+
+tryAcquire
+不阻塞
+nofair
+fair : tryAcquire(0, TimeUnit.SECONDS)
+sync.nonfairTryAcquireShared(1) >= 0;
+
+tryAcquire(int permits)
+sync.nonfairTryAcquireShared(permits) >= 0;
+
+tryAcquire(long timeout, TimeUnit unit)
+阻塞
+时间限制
+响应中断
+sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
+
+tryAcquire(int permits, long timeout, TimeUnit unit)
+sync.tryAcquireSharedNanos(permits, unit.toNanos(timeout));
+
+release()
+sync.releaseShared(1);
+
+基本分类：
+1、是否阻塞
+2、是否有时间限制
+3、是否响应中断
+
+关于队列的操作：
+acquire(arg)
+	acquireSharedInterruptibly(arg);
+		// 尝试更新条件队列
+		tryAcquireShared(arg);
+		doAcquireSharedInterruptibly(arg);
+			作为SHARE节点入队
+			如果前辈是头节点，且tryAcquireShared(arg) >= 0
+				setHeadAndPropagate(node, r)
+					将head设置为node（node.thread = null;node.prev = null;）
+					doReleaseShared()
+				head的next节点赋null
+			确定状态SIGNAL为前辈节点，这里会转换前辈节点的状态
+			进入等待
+
+acquireUninterruptibly
+	acquireShared(int arg)
+		tryAcquireShared(arg)
+		doAcquireShared(int arg)
+			方法的实现和doAcquireSharedInterruptibly差不多。在出现中断时，记录中断状态，并在release后返回中断状态。
+
+release
+	releaseShared
+		tryReleaseShared is true
+			doReleaseShared（）
+				获取当前头部head
+				如果head的状态为SIGNAL，unparkSuccessor(h)
+				这里head的状态会发生变化：SIGNAL->0->PROPAGATE
+
+tryAcquire(int permits, long timeout, TimeUnit unit)
+	tryAcquireSharedNanos(int arg, long nanosTimeout)
+		tryAcquireShared(arg)
+		doAcquireSharedNanos(arg, nanosTimeout);
+			作为SHARE节点入队
+			如果前辈是头节点，且tryAcquireShared(arg) >= 0
+				setHeadAndPropagate(node, r)
+			如果等待时间<0
+				cancelAcquire(Node node)
+					找到前一个不为cancel的节点pred
+					将状态设置为CANCELLED
+					如果是tail，将tail设置为pred，尝试将tail设置为null
+					如果不是tail，
