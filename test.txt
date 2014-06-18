@@ -1,0 +1,15 @@
+EventExecutorGroup 接口。负责通过next()函数提供EventExecutor，同时管理它们的生命周期
+	AbstractEventExecutorGroup 类。基本实现
+		MultithreadEventExecutorGroup 内部由多个SingleThreadEventExecutor组成，负责管理这个多个Executor
+			DefaultEventExecutorGroup 提供方法用于生成EventExecutor，new DefaultEventExecutor(this, threadFactory);
+			MultithreadEventLoopGroup 提供DEFAULT_EVENT_LOOP_THREADS为线程数目
+				EpollEventLoopGroup 生成EpollEventLoop
+				LocalEventLoopGroup 生成LocalEventLoop
+				NioEventLoopGroup 生成NioEventLoop
+		ThreadPerChannelEventLoopGroup 生成ThreadPerChannelEventLoop，包含：activeChildren和idleChildren
+			OioEventLoopGroup 设置ThreadFactory为Executors.defaultThreadFactory()
+	EventExecutor 接口。
+		AbstractEventExecutor 
+			EmbeddedEventLoop runTasks()
+			GlobalEventExecutor 单例
+
