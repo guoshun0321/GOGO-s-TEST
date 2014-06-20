@@ -1,0 +1,42 @@
+EventExecutorGroup 接口。负责通过next()函数提供EventExecutor，同时管理它们的生命周期
+	AbstractEventExecutorGroup 类。基本实现
+		MultithreadEventExecutorGroup 内部由多个SingleThreadEventExecutor组成，负责管理这个多个Executor
+			DefaultEventExecutorGroup 提供方法用于生成EventExecutor，new DefaultEventExecutor(this, threadFactory);
+			MultithreadEventLoopGroup 提供DEFAULT_EVENT_LOOP_THREADS为线程数目
+				EpollEventLoopGroup 生成EpollEventLoop
+				LocalEventLoopGroup 生成LocalEventLoop
+				NioEventLoopGroup 生成NioEventLoop
+		ThreadPerChannelEventLoopGroup 生成ThreadPerChannelEventLoop，包含：activeChildren和idleChildren
+			OioEventLoopGroup 设置ThreadFactory为Executors.defaultThreadFactory()
+	EventExecutor 接口。
+		AbstractEventExecutor 
+			EmbeddedEventLoop runTasks()
+			GlobalEventExecutor 单例，单线程，任务队列，延迟队列
+			ImmediateEventExecutor 在本线程执行任务
+			SingleThreadEventExecutor 单线程执行任务
+				SingleThreadEventLoop
+					EpollEventLoop
+					NioEventLoop 实现了Nio的逻辑
+					LocalEventLoop
+	EventLoopGroup 
+		EmbeddedEventLoop 重复
+		SingleThreadEventLoop 重复
+
+Future<V> 接口，继承java.util.concurrent.Future接口。添加监听事件相关的接口
+	AbstractFuture 实现get方法，通过调用await()
+		CompleteFuture 将Executor注册到实例。实现事件监听函数。采用添加线程直接执行和提交到Executor相结合的方式实现
+			CompleteChannelFuture 将Channel注册到实例
+				FailedChannelFuture 
+				SucceededChannelFuture
+			FailedFuture 将Throwable注册到实例
+			SucceededFuture 将结果注册到实例
+		DefaultPromise 将Executor注册到实例。在Executor上等待，await()。在cancel/setSuccess/setFailure后释放。释放时，同时通知所有listener，并调用listener的方法
+			DefaultChannelGroupFuture 将ChannelGroup/Collection<ChannelFuture>/EventExecutor关联
+			DefaultChannelPromise 将Channel关联
+				CloseFuture
+			DefaultProgressivePromise 将EventExecutor关联
+		VoidChannelPromise 所有操作都失败
+
+Channel
+	AbstractChannel
+		AbstractNioChannel
