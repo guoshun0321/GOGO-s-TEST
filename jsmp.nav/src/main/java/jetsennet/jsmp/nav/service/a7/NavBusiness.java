@@ -27,7 +27,7 @@ import jetsennet.jsmp.nav.service.a7.entity.GetFolderContentsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetItemDataRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetProgramRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetRootContentsRequest;
-import jetsennet.jsmp.nav.service.a7.entity.GetSelectionStartRequest;
+import jetsennet.jsmp.nav.service.a7.entity.SelectionStartRequest;
 import jetsennet.jsmp.nav.service.a7.entity.RequestEntityUtil;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntity;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntityUtil;
@@ -309,7 +309,7 @@ public class NavBusiness
 	@IdentAnnocation("SelectionStart")
 	public String selectionStart(Map<String, String> map)
 	{
-		GetSelectionStartRequest req = RequestEntityUtil.map2Obj(GetSelectionStartRequest.class, map);
+		SelectionStartRequest req = RequestEntityUtil.map2Obj(SelectionStartRequest.class, map);
 		
 		// 获取数据
 		ProgramEntity prog = cache.get(CachedKeyUtil.programAsset(req.getTitleAssetId()));
@@ -322,6 +322,7 @@ public class NavBusiness
 		// 返回结果
 		ResponseEntity tempResp = new ResponseEntity("StartResponse");
 		tempResp.addAttr("purchaseToken", token);
+		tempResp.addAttr("previewAssetId", token);
 		return tempResp.toXml(null).toString();
 	}
 
