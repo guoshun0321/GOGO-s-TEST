@@ -2,7 +2,7 @@ package jetsennet.jsmp.nav.service.a7.entity;
 
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 
-public class GetSelectionStartRequest
+public class SelectionStartRequest
 {
 
 	@IdentAnnocation("clientId")
