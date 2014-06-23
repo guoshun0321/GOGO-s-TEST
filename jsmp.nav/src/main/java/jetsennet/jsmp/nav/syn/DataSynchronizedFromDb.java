@@ -5,9 +5,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jetsennet.jsmp.nav.dal.DataSourceManager;
+import jetsennet.jsmp.nav.syn.db.DataSourceManager;
 import jetsennet.jsmp.nav.syn.db.DataSynDbResult;
 import jetsennet.orm.session.Session;
+import jetsennet.orm.tableinfo.TableInfo;
 
 public class DataSynchronizedFromDb
 {
@@ -39,15 +40,18 @@ public class DataSynchronizedFromDb
 		Session session = DataSourceManager.MEDIA_FACTORY.openSession();
 		for (String table : tables)
 		{
-			logger.debug("加载表：" + table);
-			String sql = "SELECT * FROM " + table;
-			Class<?> cls = DataSourceManager.MEDIA_FACTORY.getTableInfo(table).getCls();
-			List<?> objs = session.query(sql, cls);
-			for (Object obj : objs)
+			TableInfo tableInfo = DataSourceManager.MEDIA_FACTORY.getTableInfo(table);
+			if (tableInfo != null)
 			{
-				DataHandleUtil.updateCache(obj, DataSynDbResult.TYPE_INSERT, 1);
+				logger.info("加载表：" + table);
+				String sql = "SELECT * FROM " + table;
+				Class<?> cls = tableInfo.getCls();
+				List<?> objs = session.query(sql, cls);
+				for (Object obj : objs)
+				{
+					DataHandleUtil.updateCache(obj, DataSynDbResult.TYPE_INSERT, 1);
+				}
 			}
 		}
 	}
-
 }

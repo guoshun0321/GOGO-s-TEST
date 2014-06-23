@@ -1,4 +1,4 @@
-package jetsennet.jsmp.nav.dal;
+package jetsennet.jsmp.nav.syn.db;
 
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.Column2RelateruleEntity;

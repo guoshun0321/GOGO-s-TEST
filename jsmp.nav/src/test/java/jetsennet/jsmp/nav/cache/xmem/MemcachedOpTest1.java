@@ -21,7 +21,7 @@ public class MemcachedOpTest1 extends TestCase
 
     public void testMemcached()
     {
-        MemcachedOp client = MemcachedOp.getInstance();
+        DataCacheOp client = DataCacheOp.getInstance();
 
         assertEquals("192.168.8.175:12000 192.168.8.175:12001", Config.CACHE_SERVERS);
         assertEquals(5, Config.CACHE_POOLSIZE);

@@ -1,5 +1,7 @@
 package jetsennet.jsmp.nav.service.a7.entity;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,16 +29,12 @@ public class RequestEntityUtilTest extends TestCase
 		testMap.put("testBool", "Y");
 		testMap.put("testDate", "19870121112233");
 		
-		RequestTestEntity re = new RequestTestEntity();
-		Class clz = re.getClass();
-		System.out.println(clz);
-		System.out.println(clz.getFields());
 		RequestTestEntity entity = RequestEntityUtil.map2Obj(RequestTestEntity.class, testMap);
 		assertNotNull(entity);
 		assertEquals(12, entity.getId());
 		assertEquals("string", entity.getStr1());
 		assertEquals(true, entity.isBoolean1());
-		assertEquals("19870121112233", SafeDateFormater.format(entity.getDate1(), "YYYYMMDDHHmmss"));
+		assertEquals("19870121112233", SafeDateFormater.format(entity.getDate1(), A7Constants.DATE_FORMATE));
 	}
 
 }

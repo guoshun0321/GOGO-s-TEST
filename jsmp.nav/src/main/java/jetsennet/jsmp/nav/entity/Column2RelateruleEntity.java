@@ -17,7 +17,7 @@ public class Column2RelateruleEntity implements Serializable
      * 
      */
     @Id
-    @Column("ID")
+    @Column("REL_ID")
     private int id;
     /**
      * 关联栏目
@@ -37,7 +37,7 @@ public class Column2RelateruleEntity implements Serializable
     /**
      * 优先级，数字越小，优先级越高
      */
-    @Column("LEVEL")
+    @Column("REL_LEVEL")
     private int level;
 
     private static final long serialVersionUID = 1L;

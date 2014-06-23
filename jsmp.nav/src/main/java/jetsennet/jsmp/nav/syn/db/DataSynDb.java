@@ -1,6 +1,5 @@
 package jetsennet.jsmp.nav.syn.db;
 
-import jetsennet.jsmp.nav.dal.DataSourceManager;
 import jetsennet.orm.executor.resultset.ResultSetHandleFactory;
 import jetsennet.orm.session.Session;
 import jetsennet.orm.session.SqlSessionFactory;

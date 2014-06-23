@@ -32,9 +32,13 @@
 		</layout>
 	</appender>
 
-	<root>
+	<category name="jetsennet" additivity="false">
 		<priority value="DEBUG" />
 		<appender-ref ref="CONSOLE" />
+	</category>
+
+	<root>
+		<priority value="DEBUG" />
 		<appender-ref ref="PANEL1" />
 	</root>
 

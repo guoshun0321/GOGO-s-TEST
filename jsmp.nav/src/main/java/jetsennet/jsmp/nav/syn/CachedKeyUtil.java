@@ -89,9 +89,9 @@ public class CachedKeyUtil
 		return "PGM_AUTH$" + pgmId;
 	}
 
-	public static final String pgmPicture(String id)
+	public static final String pgmPicture(int picId)
 	{
-		return "PGM_PIC$" + id;
+		return "PGM_PIC$" + picId;
 	}
 
 	public static final String pgmPictures(int pgmId)
@@ -182,5 +182,4 @@ public class CachedKeyUtil
 	{
 		return "SELECTION_START$" + uuid;
 	}
-
 }

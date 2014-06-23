@@ -1,5 +1,7 @@
 package jetsennet.jsmp.nav.service.a7;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import jetsennet.jsmp.nav.cache.xmem.MemcachedOp;
+import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
@@ -37,8 +39,13 @@ import jetsennet.jsmp.nav.syn.cache.DataSynCacheColumn;
 import jetsennet.jsmp.nav.util.DateUtil;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
+import jetsennet.util.IOUtil;
 import static jetsennet.jsmp.nav.syn.CachedKeyUtil.*;
 
+import org.jdom.Attribute;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +55,7 @@ public class NavBusiness
 	/**
 	 * 缓存操作
 	 */
-	private MemcachedOp cache = MemcachedOp.getInstance();
+	private DataCacheOp cache = DataCacheOp.getInstance();
 	/**
 	 * 方法映射map
 	 */
@@ -191,7 +198,7 @@ public class NavBusiness
 			for (String tempKey : tempKeys)
 			{
 				ProgramEntity pgm = (ProgramEntity) pgmMap.get(tempKey);
-				retval.addChild(NavBusinessUtil.getItemInfo(pgm));
+				retval.addChild(A7Util.getItemInfo(pgm));
 			}
 		}
 
@@ -273,7 +280,7 @@ public class NavBusiness
 	{
 		GetItemDataRequest req = RequestEntityUtil.map2Obj(GetItemDataRequest.class, map);
 		ProgramEntity prog = cache.get(CachedKeyUtil.programAsset(req.getTitleAssetId()));
-		return NavBusinessUtil.getItemInfo(prog).toXml(null).toString();
+		return A7Util.getItemInfo(prog).toXml(null).toString();
 	}
 
 	@IdentAnnocation("GetEntitlement")
@@ -310,15 +317,15 @@ public class NavBusiness
 	public String selectionStart(Map<String, String> map)
 	{
 		SelectionStartRequest req = RequestEntityUtil.map2Obj(SelectionStartRequest.class, map);
-		
+
 		// 获取数据
 		ProgramEntity prog = cache.get(CachedKeyUtil.programAsset(req.getTitleAssetId()));
-		
+
 		// 生成token
 		String token = UUID.randomUUID().toString();
 		String key = CachedKeyUtil.selectionStartKey(token);
 		cache.putTimeout(key, null, Config.SM_TIMEOUT);
-		
+
 		// 返回结果
 		ResponseEntity tempResp = new ResponseEntity("StartResponse");
 		tempResp.addAttr("purchaseToken", token);

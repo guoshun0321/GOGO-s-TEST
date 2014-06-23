@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jetsennet.jsmp.nav.cache.xmem.CacheException;
-import jetsennet.jsmp.nav.cache.xmem.MemcachedOp;
+import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.util.IOUtil;
 import jetsennet.util.PropertiesUtil;
 
@@ -51,6 +51,10 @@ public class Config
 	 */
 	public static final int SM_TIMEOUT;
 	/**
+	 * 是否调试状态
+	 */
+	public static boolean ISDEBUG = true;
+	/**
 	 * 日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(Config.class);
@@ -60,7 +64,7 @@ public class Config
 		InputStream in = null;
 		try
 		{
-			in = MemcachedOp.class.getResourceAsStream("/config.properties");
+			in = DataCacheOp.class.getResourceAsStream("/config.properties");
 			Properties prop = new Properties();
 			prop.load(in);
 

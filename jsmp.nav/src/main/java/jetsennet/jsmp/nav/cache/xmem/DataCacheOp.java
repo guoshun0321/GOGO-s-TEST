@@ -15,7 +15,7 @@ import net.rubyeye.xmemcached.utils.AddrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MemcachedOp
+public class DataCacheOp
 {
 
 	/**
@@ -29,11 +29,11 @@ public class MemcachedOp
 	/**
 	 * 日志
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(MemcachedOp.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataCacheOp.class);
 
-	private static final MemcachedOp instance = new MemcachedOp();
+	private static final DataCacheOp instance = new DataCacheOp();
 
-	private MemcachedOp()
+	private DataCacheOp()
 	{
 		try
 		{
@@ -52,7 +52,7 @@ public class MemcachedOp
 		}
 	}
 
-	public static MemcachedOp getInstance()
+	public static DataCacheOp getInstance()
 	{
 		return instance;
 	}

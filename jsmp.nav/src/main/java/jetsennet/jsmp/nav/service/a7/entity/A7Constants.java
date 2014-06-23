@@ -17,6 +17,6 @@ public class A7Constants
 	/**
 	 * 时间格式
 	 */
-	public static final String DATE_FORMATE = "YYYYMMDDHHmmss";
+	public static final String DATE_FORMATE = "yyyyMMddHHmmss";
 
 }

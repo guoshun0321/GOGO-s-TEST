@@ -3,7 +3,7 @@ package jetsennet.jsmp.nav.syn;
 import java.lang.reflect.Field;
 import java.sql.Date;
 
-import jetsennet.jsmp.nav.dal.DataSourceManager;
+import jetsennet.jsmp.nav.syn.db.DataSourceManager;
 import jetsennet.orm.tableinfo.FieldInfo;
 import jetsennet.orm.tableinfo.TableInfo;
 import jetsennet.util.SafeDateFormater;

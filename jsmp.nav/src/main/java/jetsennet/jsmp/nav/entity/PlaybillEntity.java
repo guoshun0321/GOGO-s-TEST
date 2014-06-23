@@ -35,13 +35,7 @@ public class PlaybillEntity implements Serializable
 	@Column("PB_TYPE")
 	private int pbType;
 	/**
-	 * 播出单状态：
-10：内容审核中（待审）
-50：内容审核通过
-70: 被打回
-20：注入；
-23:取消注入；
-
+	 * 播出单状态：10：内容审核中（待审） 50：内容审核通过 70: 被打回 20：注入； 23:取消注入；
 	 */
 	@Column("PB_STATE")
 	private int pbState;
