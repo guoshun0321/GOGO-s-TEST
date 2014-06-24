@@ -40,3 +40,6 @@ Future<V> 接口，继承java.util.concurrent.Future接口。添加监听事件�
 Channel
 	AbstractChannel
 		AbstractNioChannel
+
+ByteBuf 接口
+	
