@@ -1,5 +1,6 @@
 package jetsennet.jsmp.nav.cache.xmem;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -73,7 +74,7 @@ public class DataCacheOp
 	{
 		putTimeout(key, value, Config.CACHE_TIMEOUT);
 	}
-	
+
 	/**
 	 * 往缓存放置数据，并设置过期时间
 	 * 
@@ -161,6 +162,10 @@ public class DataCacheOp
 
 	public Map<String, Object> gets(List<String> keys)
 	{
+		if (keys == null)
+		{
+			return new HashMap<String, Object>(0);
+		}
 		Map<String, Object> retval = null;
 		try
 		{

@@ -1,10 +1,8 @@
 package jetsennet.jsmp.nav.service.a7;
 
-import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.service.a7.entity.GetFolderContentsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.NavCheckRequest;
 import jetsennet.jsmp.nav.service.a7.entity.RequestEntityUtil;
-import jetsennet.jsmp.nav.util.TestObjGenUtil;
 import junit.framework.TestCase;
 
 public class NavBusinessTest extends TestCase
@@ -12,12 +10,10 @@ public class NavBusinessTest extends TestCase
 
 	protected void setUp() throws Exception
 	{
-		//		TestObjGenUtil.builderCache();
 	}
 
 	protected void tearDown() throws Exception
 	{
-		//		DataCacheOp.getInstance().deleteAll();
 	}
 
 	public void testInvoke()
@@ -48,6 +44,12 @@ public class NavBusinessTest extends TestCase
 
 		NavBusiness nb = new NavBusiness();
 		String str = nb.getRootContents(A7Util.requestXml2Map(xml));
+		assertNotNull(str);
+		System.out.println(str);
+
+		xml = "<GetRootContents  clientId='1' deviceId='2' startAt='4' maxItems='10'/>";
+		str = nb.getRootContents(A7Util.requestXml2Map(xml));
+		assertNotNull(str);
 		System.out.println(str);
 	}
 

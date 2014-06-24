@@ -20,6 +20,10 @@ public class CachedKeyUtil
 
 	public static final List<String> columnKey(List<Integer> columnIds)
 	{
+		if (columnIds == null)
+		{
+			return new ArrayList<String>(0);
+		}
 		List<String> retval = new ArrayList<String>(columnIds.size());
 		for (Integer columnId : columnIds)
 		{

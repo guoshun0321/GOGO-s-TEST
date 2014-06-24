@@ -30,8 +30,6 @@ import jetsennet.util.IOUtil;
 public class A7Util
 {
 
-	private static final DataCacheOp cache = DataCacheOp.getInstance();
-
 	/**
 	 * 将a7请求转换成HashMap
 	 * 
@@ -117,6 +115,7 @@ public class A7Util
 	 */
 	public static final ResponseEntity getItemInfo(ProgramEntity prog)
 	{
+		DataCacheOp cache = DataCacheOp.getInstance();
 		ResponseEntity resp = ResponseEntityUtil.obj2Resp(prog, "Selectableltem", null);
 		PgmBaseEntity pgmBase = cache.get(pgmBaseKey(prog.getPgmId()));
 		ResponseEntityUtil.obj2Resp(pgmBase, null, resp);

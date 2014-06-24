@@ -213,6 +213,10 @@ public class NavBusiness
 	{
 		GetRootContentsRequest entity = RequestEntityUtil.map2Obj(GetRootContentsRequest.class, map);
 		List<Integer> topKeys = cache.getListInt(CachedKeyUtil.topColumn());
+		if (topKeys == null)
+		{
+			throw new UncheckedNavException("获取顶级栏目列表失败！");
+		}
 		List<String> topKeyStrs = CachedKeyUtil.columnKey(topKeys);
 		Map<String, Object> objMap = cache.gets(topKeyStrs);
 

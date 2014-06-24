@@ -33,7 +33,7 @@ public class DataCachedTest extends TestCase
 
 	protected void tearDown() throws Exception
 	{
-		cache.deleteAll();
+//		cache.deleteAll();
 	}
 
 	public void testChannel() throws Exception

@@ -120,6 +120,7 @@ public class TestObjGenUtil
 			special.put("PARENT_ID", 0);
 			special.put("ASSET_ID", "UUID");
 			special.put("LANGUAGE_CODE", "zh_CN");
+			special.put("REGION_CODE", "");
 			level1Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, 10, special));
 			multiInsert(level1Chs);
 
@@ -131,6 +132,7 @@ public class TestObjGenUtil
 				special.put("PARENT_ASSETID", level1Ch.getAssetId());
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				level2Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, 10, special));
 			}
 			multiInsert(level2Chs);
@@ -143,6 +145,7 @@ public class TestObjGenUtil
 				special.put("PARENT_ASSETID", level2Ch.getAssetId());
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				level3Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, 10, special));
 			}
 			multiInsert(level3Chs);
@@ -155,6 +158,7 @@ public class TestObjGenUtil
 				special.put("COLUMN_ASSETID", level3Ch.getAssetId());
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				progs.addAll(TestObjGenUtil.genObj(ProgramEntity.class, 10, special));
 			}
 			multiInsert(progs);
@@ -173,16 +177,19 @@ public class TestObjGenUtil
 				special.put("PGM_ASSETID", prog.getAssetId());
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				pgmBases.addAll(TestObjGenUtil.genObj(PgmBaseEntity.class, 1, special));
 
 				special = new HashMap<String, Object>();
 				special.put("PGM_ID", prog.getPgmId());
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				creators.addAll(TestObjGenUtil.genObj(CreatorEntity.class, 1, special));
 
 				special = new HashMap<String, Object>();
 				special.put("PGM_ID", prog.getPgmId());
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				authors.addAll(TestObjGenUtil.genObj(DescauthorizeEntity.class, 1, special));
 
 				special = new HashMap<String, Object>();
@@ -190,6 +197,7 @@ public class TestObjGenUtil
 				special.put("PGM_ASSETID", prog.getAssetId());
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				pics.addAll(TestObjGenUtil.genObj(PictureEntity.class, 5, special));
 
 				special = new HashMap<String, Object>();
@@ -197,15 +205,18 @@ public class TestObjGenUtil
 				special.put("PGM_ASSETID", prog.getAssetId());
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				files.addAll(TestObjGenUtil.genObj(FileItemEntity.class, 5, special));
 
 				special = new HashMap<String, Object>();
 				special.put("ASSET_ID", prog.getAssetId());
+				special.put("REGION_CODE", "");
 				ChannelEntity ch = TestObjGenUtil.genObj(ChannelEntity.class, 1, special).get(0);
 				chls.add(ch);
 
 				special = new HashMap<String, Object>();
 				special.put("CHL_ID", ch.getChlId());
+				special.put("REGION_CODE", "");
 				phys.addAll(TestObjGenUtil.genObj(PhysicalChannelEntity.class, 1, special));
 			}
 			multiInsert(pgmBases);
@@ -221,6 +232,7 @@ public class TestObjGenUtil
 			special = new HashMap<String, Object>();
 			special.put("ASSET_ID", "UUID");
 			special.put("LANGUAGE_CODE", "zh_CN");
+			special.put("REGION_CODE", "");
 			bills.addAll(TestObjGenUtil.genObj(PlaybillEntity.class, 10, special));
 			multiInsert(bills);
 
@@ -231,6 +243,7 @@ public class TestObjGenUtil
 				special.put("PB_ID", bill.getPbId());
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
 				items.addAll(TestObjGenUtil.genObj(PlaybillItemEntity.class, 100, special));
 			}
 			multiInsert(items);
@@ -239,51 +252,21 @@ public class TestObjGenUtil
 		{
 			logger.error("", ex);
 		}
+		DataCacheOp.getInstance().shutdown();
 	}
+
+	private static int count = 1;
 
 	public static void multiInsert(List objs)
 	{
 		for (Object obj : objs)
 		{
 			DataSyn4Cache.getHandle(obj).insert(obj);
-		}
-	}
-
-	public static void stopAll(final ThreadPoolExecutor pool)
-	{
-		Thread t = new Thread()
-		{
-			public void run()
+			if ((count++ % 100) == 0)
 			{
-				try
-				{
-					for (;;)
-					{
-						int length = pool.getQueue().size();
-						if (length == 0)
-						{
-							pool.shutdownNow();
-							break;
-						}
-						else
-						{
-							TimeUnit.SECONDS.sleep(10);
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					logger.error("", ex);
-				}
-				logger.info("stop");
-
-				// 数据同步到缓存
-				DataCacheOp.getInstance().deleteAll();
-				DataSynchronizedFromDb.synFromDb();
-				logger.info("cached all");
+				logger.info("count : " + count);
 			}
-		};
-		t.start();
+		}
 	}
 
 	/**
