@@ -2,7 +2,6 @@ package jetsennet.jsmp.nav.syn;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CachedKeyUtil
 {
@@ -107,6 +106,11 @@ public class CachedKeyUtil
 	{
 		return "PGM_FILE$" + id;
 	}
+	
+	public static final String pgmFileItemAsset(String id)
+	{
+		return "PGM_FILE_ASSET$" + id;
+	}
 
 	public static final String pgmFileItems(int pgmId)
 	{
@@ -139,6 +143,16 @@ public class CachedKeyUtil
 		return "PCHL$" + chlId;
 	}
 
+	public static final List<String> physicalChannelKeys(List<Integer> pchlIds)
+	{
+		List<String> retval = new ArrayList<String>();
+		for (Integer pchlId : pchlIds)
+		{
+			retval.add(physicalChannelKey(pchlId));
+		}
+		return retval;
+	}
+
 	public static final String channel2pchannel(int chlId)
 	{
 		return "CHL_PCHL$" + chlId;
@@ -163,6 +177,11 @@ public class CachedKeyUtil
 	public static final String playbillItemList(int pbId)
 	{
 		return "PLAYBILITEMLIST$" + pbId;
+	}
+	
+	public static final String playbillItemListAsset(String assetId)
+	{
+		return "PLAYBILITEMLISTASSET$" + assetId;
 	}
 
 	// 产品相关

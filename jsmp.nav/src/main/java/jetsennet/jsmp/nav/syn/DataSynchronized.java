@@ -119,6 +119,10 @@ public class DataSynchronized
 				try
 				{
 					xml = ((TextMessage) msg).getText();
+					if (Config.ISDEBUG)
+					{
+						logger.debug("收到消息：" + xml);
+					}
 					DataSynEntity synData = DataSynXmlParse.parseXml(xml);
 					DataHandleUtil.handleData(synData, xml);
 					mmsg.setEndTime(System.currentTimeMillis());

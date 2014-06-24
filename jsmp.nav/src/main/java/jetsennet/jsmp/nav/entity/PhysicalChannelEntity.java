@@ -3,6 +3,7 @@ package jetsennet.jsmp.nav.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
@@ -57,31 +58,37 @@ public class PhysicalChannelEntity implements Serializable
 	 * serviceId
 	 */
 	@Column("SERVICE_ID")
+	@IdentAnnocation("serviceId")
 	private String serviceId;
 	/**
 	 * tsId
 	 */
 	@Column("TSID")
+	@IdentAnnocation("tsId")
 	private String tsid;
 	/**
 	 * 频率
 	 */
 	@Column("FREQ")
+	@IdentAnnocation("frequency")
 	private String freq;
 	/**
 	 * 调制方式
 	 */
 	@Column("QAM")
+	@IdentAnnocation("qam")
 	private String qam;
 	/**
 	 * 符号率
 	 */
 	@Column("SYMBOL_RATE")
+	@IdentAnnocation("symbolRate")
 	private String symbolRate;
 	/**
 	 * 码率
 	 */
 	@Column("BIT_RATE")
+	@IdentAnnocation("bitRate")
 	private String bitRate;
 	/**
 	 * 组播IP:PORT/单播URL

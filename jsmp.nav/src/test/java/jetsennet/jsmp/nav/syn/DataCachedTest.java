@@ -33,13 +33,15 @@ public class DataCachedTest extends TestCase
 
 	protected void tearDown() throws Exception
 	{
-//		cache.deleteAll();
+		//		cache.deleteAll();
 	}
 
 	public void testChannel() throws Exception
 	{
 		Map<String, Object> special = new HashMap<String, Object>();
 		special.put("ASSET_ID", "UUID");
+		special.put("LANGUAGE_CODE", "zh_CN");
+		special.put("REGION_CODE", "");
 		List<ChannelEntity> channels = TestObjGenUtil.genObj(ChannelEntity.class, 10, special);
 		List<PhysicalChannelEntity> pchannels = new ArrayList<PhysicalChannelEntity>(100);
 		for (ChannelEntity channel : channels)
@@ -47,6 +49,8 @@ public class DataCachedTest extends TestCase
 			DataSyn4Cache.getHandle(ChannelEntity.class).insert(channel);
 			special = new HashMap<String, Object>();
 			special.put("CHL_ID", channel.getChlId());
+			special.put("LANGUAGE_CODE", "zh_CN");
+			special.put("REGION_CODE", "");
 			List<PhysicalChannelEntity> temp = TestObjGenUtil.genObj(PhysicalChannelEntity.class, 10, special);
 			pchannels.addAll(temp);
 			for (PhysicalChannelEntity pch : temp)
@@ -61,7 +65,7 @@ public class DataCachedTest extends TestCase
 			assertTrue(ObjectUtil.compare(ChannelEntity.class, channel, cache.get(key)));
 
 			key = CachedKeyUtil.channel2pchannel(channel.getChlId());
-			HashSet<Integer> relSet = (HashSet<Integer>) cache.get(CachedKeyUtil.channel2pchannel(channel.getChlId()));
+			List<Integer> relSet = (List<Integer>) cache.get(CachedKeyUtil.channel2pchannel(channel.getChlId()));
 			for (Integer rel : relSet)
 			{
 				for (PhysicalChannelEntity pchannel : pchannels)
@@ -72,6 +76,10 @@ public class DataCachedTest extends TestCase
 					}
 				}
 			}
+
+			key = CachedKeyUtil.channelIndex(channel.getRegionCode(), channel.getLanguageCode());
+			Object obj = cache.get(key);
+			System.out.println(obj);
 		}
 
 		for (PhysicalChannelEntity pch : pchannels)
@@ -147,7 +155,7 @@ public class DataCachedTest extends TestCase
 			assertEquals(ch.getColumnId(), id);
 		}
 
-		HashSet<Integer> tops = cache.get(CachedKeyUtil.topColumn());
+		List<Integer> tops = cache.get(CachedKeyUtil.topColumn());
 		assertEquals(10, tops.size());
 		for (Integer top : tops)
 		{

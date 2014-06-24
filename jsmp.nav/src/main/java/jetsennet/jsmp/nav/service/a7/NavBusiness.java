@@ -15,6 +15,7 @@ import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
+import jetsennet.jsmp.nav.entity.FileItemEntity;
 import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
 import jetsennet.jsmp.nav.entity.PgmBaseEntity;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
@@ -24,6 +25,7 @@ import jetsennet.jsmp.nav.monitor.MonitorMsg;
 import jetsennet.jsmp.nav.monitor.MethodInvokeMMsg;
 import jetsennet.jsmp.nav.monitor.MonitorServlet;
 import jetsennet.jsmp.nav.service.a7.entity.A7Constants;
+import jetsennet.jsmp.nav.service.a7.entity.ChannelSelectionStartRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetChannelsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetFolderContentsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetItemDataRequest;
@@ -139,6 +141,7 @@ public class NavBusiness
 			}
 			temp.addAttr("displayName", column.getColumnName());
 			temp.addAttr("folderType", Integer.toString(column.getColumnType()));
+			retval.addChild(temp);
 		}
 
 		int[] pageInfo = null;
@@ -157,48 +160,56 @@ public class NavBusiness
 		// 子栏目
 		if (entity.getIncludeSubFolder())
 		{
-			int start = (pageInfo[3] - 1) * pageInfo[2];
-			int end = start + pageInfo[2];
-			List<Integer> subIds = cache.getListInt(CachedKeyUtil.columnPgm(column.getColumnId()));
-			int totalSizeSub = subIds.size();
-			total += totalSizeSub;
-			subIds = subIds.subList(start, end);
-			if (totalSizeSub > end)
+			List<Integer> subIds = cache.getListInt(CachedKeyUtil.subColumn(column.getColumnId(), column.getRegionCode()));
+			if (subIds != null)
 			{
-				retPageInfo[3] = end;
-			}
-			List<String> tempKeys = columnKey(subIds);
-			selTotal += tempKeys.size();
-			Map<String, Object> subMap = cache.gets(tempKeys);
-			for (String tempKey : tempKeys)
-			{
-				ColumnEntity temp = (ColumnEntity) subMap.get(tempKey);
-				ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(temp, "ChildFolder", null);
-				tempResp.addAttr("selectableltemSortby", column.getSortRule());
-				tempResp.addAttr("selectableltemSortDirection", Integer.toString(column.getSortDirection()));
+				int start = (pageInfo[3] - 1) * pageInfo[2];
+				int end = start + pageInfo[2];
+				int totalSizeSub = subIds.size();
+				total += totalSizeSub;
+				subIds = subIds.subList(start, end);
+				if (totalSizeSub > end)
+				{
+					retPageInfo[3] = end;
+				}
+				List<String> tempKeys = columnKey(subIds);
+				selTotal += tempKeys.size();
+				Map<String, Object> subMap = cache.gets(tempKeys);
+				for (String tempKey : tempKeys)
+				{
+					ColumnEntity temp = (ColumnEntity) subMap.get(tempKey);
+					ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(temp, "ChildFolder", null);
+					tempResp.addAttr("selectableltemSortby", column.getSortRule());
+					tempResp.addAttr("selectableltemSortDirection", Integer.toString(column.getSortDirection()));
+					retval.addChild(tempResp);
+				}
 			}
 		}
 
 		// 影片
 		if (entity.getIncludeSelectableItem())
 		{
-			int start = (pageInfo[3] - 1) * pageInfo[2];
-			int end = start + pageInfo[2];
 			List<Integer> programIds = cache.getListInt(CachedKeyUtil.columnPgm(column.getColumnId()));
-			int totalSizePgm = programIds.size();
-			total += totalSizePgm;
-			programIds = programIds.subList(start, end);
-			if (totalSizePgm > end)
+			if (programIds != null)
 			{
-				retPageInfo[1] = end;
-			}
-			List<String> tempKeys = programKeys(programIds);
-			selTotal += tempKeys.size();
-			Map<String, Object> pgmMap = cache.gets(tempKeys);
-			for (String tempKey : tempKeys)
-			{
-				ProgramEntity pgm = (ProgramEntity) pgmMap.get(tempKey);
-				retval.addChild(A7Util.getItemInfo(pgm));
+				int start = (pageInfo[3] - 1) * pageInfo[2];
+				int end = start + pageInfo[2];
+
+				int totalSizePgm = programIds.size();
+				total += totalSizePgm;
+				programIds = programIds.subList(start, end);
+				if (totalSizePgm > end)
+				{
+					retPageInfo[1] = end;
+				}
+				List<String> tempKeys = programKeys(programIds);
+				selTotal += tempKeys.size();
+				Map<String, Object> pgmMap = cache.gets(tempKeys);
+				for (String tempKey : tempKeys)
+				{
+					ProgramEntity pgm = (ProgramEntity) pgmMap.get(tempKey);
+					retval.addChild(A7Util.getItemInfo(pgm));
+				}
 			}
 		}
 
@@ -323,24 +334,58 @@ public class NavBusiness
 		SelectionStartRequest req = RequestEntityUtil.map2Obj(SelectionStartRequest.class, map);
 
 		// 获取数据
-		ProgramEntity prog = cache.get(CachedKeyUtil.programAsset(req.getTitleAssetId()));
+		String itemId = cache.get(CachedKeyUtil.pgmFileItemAsset(req.getFileAssetId()));
+		FileItemEntity item = cache.get(CachedKeyUtil.pgmFileItem(itemId));
 
-		// 生成token
-		String token = UUID.randomUUID().toString();
-		String key = CachedKeyUtil.selectionStartKey(token);
-		cache.putTimeout(key, null, Config.SM_TIMEOUT);
+		String retval = null;
+		if (SelectionStartRequest.OTT.equals(req.getServiceCode()))
+		{
+			retval = item.getPlayUrl();
+		}
+		else
+		{
+			// 生成token
+			String token = UUID.randomUUID().toString();
+			String key = CachedKeyUtil.selectionStartKey(token);
+			cache.putTimeout(key, item.getPlayUrl(), Config.SM_TIMEOUT);
+			retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
+		}
 
 		// 返回结果
 		ResponseEntity tempResp = new ResponseEntity("StartResponse");
-		tempResp.addAttr("purchaseToken", token);
-		tempResp.addAttr("previewAssetId", token);
+		tempResp.addAttr("purchaseToken", retval);
+		//		tempResp.addAttr("previewAssetId", token);
 		return tempResp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("ChannelSelectionStart")
 	public String channelSelectionStart(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("ChannelSelectionStart");
+		ChannelSelectionStartRequest req = RequestEntityUtil.map2Obj(ChannelSelectionStartRequest.class, map);
+
+		// 获取数据
+		int itemId = cache.get(CachedKeyUtil.playbillItemListAsset(req.getAssetId()));
+		PlaybillItemEntity item = cache.get(CachedKeyUtil.playbillItemKey(itemId));
+
+		String retval = null;
+		if (SelectionStartRequest.OTT.equals(req.getServiceCode()))
+		{
+			retval = item.getPlayUrl();
+		}
+		else
+		{
+			// 生成token
+			String token = UUID.randomUUID().toString();
+			String key = CachedKeyUtil.selectionStartKey(token);
+			cache.putTimeout(key, item.getPlayUrl(), Config.SM_TIMEOUT);
+			retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
+		}
+
+		// 返回结果
+		ResponseEntity tempResp = new ResponseEntity("ChannelSelectionStartResponse");
+		tempResp.addAttr("purchaseToken", retval);
+		//		tempResp.addAttr("previewAssetId", token);
+		return tempResp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("SelectionResume")
@@ -385,6 +430,10 @@ public class NavBusiness
 		int end = start + max;
 		int i = 0;
 		List<Integer> chIds = cache.getListInt(channelIndex(req.getRegionCode(), req.getLanguageCode()));
+		if (chIds == null)
+		{
+			throw new UncheckedNavException("获取频道列表失败！");
+		}
 		for (Integer chId : chIds)
 		{
 			if (i >= start)
@@ -397,8 +446,28 @@ public class NavBusiness
 				else
 				{
 					ChannelEntity chl = cache.get(channelKey(chId));
-					retval.addChild(ResponseEntityUtil.obj2Resp(chl, "Channel", null));
+					ResponseEntity chlResp = ResponseEntityUtil.obj2Resp(chl, "Channel", null);
+					retval.addChild(chlResp);
+
+					List<Integer> pchlIds = cache.getListInt(channel2pchannel(chId));
+					if (pchlIds != null)
+					{
+						List<String> pkeys = physicalChannelKeys(pchlIds);
+						Map<String, Object> temp = cache.gets(pkeys);
+						if (temp != null)
+						{
+							for (String pkey : pkeys)
+							{
+								Object obj = temp.get(pkey);
+								if (obj != null)
+								{
+									chlResp.addChild(ResponseEntityUtil.obj2Resp(obj, "Parameter", null));
+								}
+							}
+						}
+					}
 				}
+				i++;
 			}
 		}
 		return retval.toXml(null).toString();

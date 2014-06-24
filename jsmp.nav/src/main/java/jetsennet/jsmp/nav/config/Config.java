@@ -47,6 +47,10 @@ public class Config
 	 */
 	public static final String SM_RTSP;
 	/**
+	 * SM服务器
+	 */
+	public static final String SM_SERVERID;
+	/**
 	 * SM交互Token保存时间
 	 */
 	public static final int SM_TIMEOUT;
@@ -78,7 +82,8 @@ public class Config
 			MQ_QUEUE = PropertiesUtil.getProperties(prop, "mq.queue", null, false);
 			
 			SM_RTSP = PropertiesUtil.getProperties(prop, "sm.rtsp", null, false);
-			SM_TIMEOUT = PropertiesUtil.getProperties(prop, "sm.timeout", 5 * 60, true);
+			SM_TIMEOUT = PropertiesUtil.getProperties(prop, "sm.timeout", 30 * 60, true);
+			SM_SERVERID = PropertiesUtil.getProperties(prop, "sm.serverId", null, false);
 		}
 		catch (Exception ex)
 		{

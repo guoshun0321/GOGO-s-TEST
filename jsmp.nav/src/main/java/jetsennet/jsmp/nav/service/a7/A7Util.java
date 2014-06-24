@@ -69,7 +69,7 @@ public class A7Util
 	public static int[] columnAndMoviePageInfo(String str)
 	{
 		int[] retval = new int[4];
-		str = str.substring(1, str.length());
+		str = str.substring(1, str.length() - 1);
 		String[] couples = str.split(",");
 		if (couples.length != 4)
 		{
@@ -79,11 +79,11 @@ public class A7Util
 		{
 			String couple = couples[i];
 			String[] tempLst = couple.split(":");
-			if (couples.length != 2)
+			if (tempLst.length != 2)
 			{
 				throw new UncheckedNavException("错误参数：" + str);
 			}
-			retval[i] = Integer.valueOf(tempLst[1]);
+			retval[i] = Integer.valueOf(tempLst[1].trim());
 		}
 		return retval;
 	}
@@ -121,36 +121,42 @@ public class A7Util
 		ResponseEntityUtil.obj2Resp(pgmBase, null, resp);
 
 		List<Integer> picIds = cache.getListInt(pgmPictures(prog.getPgmId()));
-		List<String> picKeys = new ArrayList<>(picIds.size());
-		for (Integer picId : picIds)
+		if (picIds != null)
 		{
-			picKeys.add(pgmPicture(picId));
-		}
-		Map<String, Object> picMap = cache.gets(picKeys);
-		Set<String> keys = picMap.keySet();
-		for (String key : keys)
-		{
-			Object obj = picMap.get(key);
-			if (obj != null)
+			List<String> picKeys = new ArrayList<String>(picIds.size());
+			for (Integer picId : picIds)
 			{
-				resp.addChild(ResponseEntityUtil.obj2Resp(obj, "Image", null));
+				picKeys.add(pgmPicture(picId));
 			}
-		}
-
-		List<String> itemIds = cache.getListString(pgmFileItems(prog.getPgmId()));
-		List<String> itemKeys = new ArrayList<>(itemIds.size());
-		for (String itemId : itemIds)
-		{
-			picKeys.add(pgmFileItem(itemId));
-		}
-		Map<String, Object> itemMap = cache.gets(itemKeys);
-		keys = itemMap.keySet();
-		for (String key : keys)
-		{
-			Object obj = itemMap.get(key);
-			if (obj != null)
+			Map<String, Object> picMap = cache.gets(picKeys);
+			Set<String> keys = picMap.keySet();
+			for (String key : keys)
 			{
-				resp.addChild(ResponseEntityUtil.obj2Resp(obj, "SelectionChoice", null));
+				Object obj = picMap.get(key);
+				if (obj != null)
+				{
+					resp.addChild(ResponseEntityUtil.obj2Resp(obj, "Image", null));
+				}
+			}
+
+			List<String> itemIds = cache.getListString(pgmFileItems(prog.getPgmId()));
+			if (itemIds != null)
+			{
+				List<String> itemKeys = new ArrayList<>(itemIds.size());
+				for (String itemId : itemIds)
+				{
+					itemKeys.add(pgmFileItem(itemId));
+				}
+				Map<String, Object> itemMap = cache.gets(itemKeys);
+				keys = itemMap.keySet();
+				for (String key : keys)
+				{
+					Object obj = itemMap.get(key);
+					if (obj != null)
+					{
+						resp.addChild(ResponseEntityUtil.obj2Resp(obj, "SelectionChoice", null));
+					}
+				}
 			}
 		}
 		return resp;

@@ -118,6 +118,7 @@ public class TestObjGenUtil
 			List<ColumnEntity> level1Chs = new ArrayList<ColumnEntity>(10);
 			Map<String, Object> special = new HashMap<String, Object>();
 			special.put("PARENT_ID", 0);
+			special.put("PARENT_ASSETID", "");
 			special.put("ASSET_ID", "UUID");
 			special.put("LANGUAGE_CODE", "zh_CN");
 			special.put("REGION_CODE", "");
@@ -151,11 +152,11 @@ public class TestObjGenUtil
 			multiInsert(level3Chs);
 
 			List<ProgramEntity> progs = new ArrayList<ProgramEntity>(10 * 10 * 10 * 10);
-			for (ColumnEntity level3Ch : level3Chs)
+			for (ColumnEntity level2Ch : level2Chs)
 			{
 				special = new HashMap<String, Object>();
-				special.put("COLUMN_ID", level3Ch.getColumnId());
-				special.put("COLUMN_ASSETID", level3Ch.getAssetId());
+				special.put("COLUMN_ID", level2Ch.getColumnId());
+				special.put("COLUMN_ASSETID", level2Ch.getAssetId());
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
 				special.put("REGION_CODE", "");
@@ -206,16 +207,19 @@ public class TestObjGenUtil
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
 				special.put("REGION_CODE", "");
+				special.put("VIDEO_QUALITY", 2);
 				files.addAll(TestObjGenUtil.genObj(FileItemEntity.class, 5, special));
 
 				special = new HashMap<String, Object>();
 				special.put("ASSET_ID", prog.getAssetId());
+				special.put("LANGUAGE_CODE", "zh_CN");
 				special.put("REGION_CODE", "");
 				ChannelEntity ch = TestObjGenUtil.genObj(ChannelEntity.class, 1, special).get(0);
 				chls.add(ch);
 
 				special = new HashMap<String, Object>();
 				special.put("CHL_ID", ch.getChlId());
+				special.put("LANGUAGE_CODE", "zh_CN");
 				special.put("REGION_CODE", "");
 				phys.addAll(TestObjGenUtil.genObj(PhysicalChannelEntity.class, 1, special));
 			}

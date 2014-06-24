@@ -124,7 +124,7 @@ public class ResponseEntityUtil
 				}
 				else
 				{
-					throw new UncheckedNavException("找不到枚举对应的值：" + value);
+					throw new UncheckedNavException(String.format("找不到枚举对应的值：%s, %s", field.getName(), value));
 				}
 			}
 
@@ -132,7 +132,7 @@ public class ResponseEntityUtil
 			if (type.equalsIgnoreCase("date"))
 			{
 				Date tempDate = null;
-				if (field.getType() == long.class)
+				if (field.getType() == long.class || field.getType() == int.class)
 				{
 					tempDate = new Date(Long.valueOf(value));
 				}
