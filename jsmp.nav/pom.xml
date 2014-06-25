@@ -8,6 +8,23 @@
 	<name>jsmp.nav</name>
 	<url>http://maven.apache.org</url>
 
+	<distributionManagement>
+		<repository>
+			<id>jetsen-release</id>
+			<name>jetsen distribution repository</name>
+			<url>http://192.168.8.171:8081/nexus/content/repositories/jetsen/</url>
+		</repository>
+		<snapshotRepository>
+			<id>jetsen-snapshots</id>
+			<name>jetsen distribution snapshot repository</name>
+			<url>http://192.168.8.171:8081/nexus/content/repositories/jetsen/</url>
+		</snapshotRepository>
+		<site>
+			<id>www.jetsen.com</id>
+			<url>file://Z:/orm</url>
+		</site>
+	</distributionManagement>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -36,7 +53,7 @@
 		<dependency>
 			<groupId>com.googlecode.xmemcached</groupId>
 			<artifactId>xmemcached</artifactId>
-			<version>1.4.3</version>
+			<version>2.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>jetsennet</groupId>
@@ -75,8 +92,10 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>3.8.2</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
+			<version>4.8.1</version> <type>jar</type> <scope>compile</scope> </dependency> -->
 	</dependencies>
 </project>

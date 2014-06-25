@@ -113,7 +113,7 @@ public class DataSynFrame extends BaseMgrFrm
     {
         if (ds != null)
         {
-            ds.close();
+            ds.stop();
             ds = null;
         }
         if (monitor != null)

@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jetsennet.jsmp.nav.cache.xmem.CacheException;
-import jetsennet.jsmp.nav.cache.xmem.MemcachedOp;
+import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.util.IOUtil;
 import jetsennet.util.PropertiesUtil;
 
@@ -47,9 +47,17 @@ public class Config
 	 */
 	public static final String SM_RTSP;
 	/**
+	 * SM服务器
+	 */
+	public static final String SM_SERVERID;
+	/**
 	 * SM交互Token保存时间
 	 */
 	public static final int SM_TIMEOUT;
+	/**
+	 * 是否调试状态
+	 */
+	public static boolean ISDEBUG = true;
 	/**
 	 * 日志
 	 */
@@ -60,7 +68,7 @@ public class Config
 		InputStream in = null;
 		try
 		{
-			in = MemcachedOp.class.getResourceAsStream("/config.properties");
+			in = DataCacheOp.class.getResourceAsStream("/config.properties");
 			Properties prop = new Properties();
 			prop.load(in);
 
@@ -74,7 +82,8 @@ public class Config
 			MQ_QUEUE = PropertiesUtil.getProperties(prop, "mq.queue", null, false);
 			
 			SM_RTSP = PropertiesUtil.getProperties(prop, "sm.rtsp", null, false);
-			SM_TIMEOUT = PropertiesUtil.getProperties(prop, "sm.timeout", 5 * 60, true);
+			SM_TIMEOUT = PropertiesUtil.getProperties(prop, "sm.timeout", 30 * 60, true);
+			SM_SERVERID = PropertiesUtil.getProperties(prop, "sm.serverId", null, false);
 		}
 		catch (Exception ex)
 		{

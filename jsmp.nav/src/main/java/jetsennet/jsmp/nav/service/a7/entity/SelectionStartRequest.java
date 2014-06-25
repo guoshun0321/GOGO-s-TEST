@@ -32,7 +32,7 @@ public class SelectionStartRequest
 	@IdentAnnocation("indefiniteRental")
 	private String indefiniteRental;
 
-	@IdentAnnocation("rentalPeriod")
+	@IdentAnnocation(value = "rentalPeriod", def = "-1")
 	private int rentalPeriod;
 
 	@IdentAnnocation("price")
@@ -40,6 +40,16 @@ public class SelectionStartRequest
 
 	@IdentAnnocation("playPreview")
 	private String playPreview;
+
+	@IdentAnnocation("fileAssetId")
+	private String fileAssetId;
+
+	@IdentAnnocation("serviceCode")
+	private String serviceCode;
+	
+	public static final String VOD = "VOD";
+	
+	public static final String OTT = "OTT";
 
 	public String getClientId()
 	{
@@ -159,6 +169,26 @@ public class SelectionStartRequest
 	public void setPlayPreview(String playPreview)
 	{
 		this.playPreview = playPreview;
+	}
+
+	public String getFileAssetId()
+	{
+		return fileAssetId;
+	}
+
+	public void setFileAssetId(String fileAssetId)
+	{
+		this.fileAssetId = fileAssetId;
+	}
+
+	public String getServiceCode()
+	{
+		return serviceCode;
+	}
+
+	public void setServiceCode(String serviceCode)
+	{
+		this.serviceCode = serviceCode;
 	}
 
 }

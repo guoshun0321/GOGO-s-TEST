@@ -9,7 +9,7 @@ public class DataSynCachePChannel extends DataSynCache<PhysicalChannelEntity>
     @Override
     protected String genKey(PhysicalChannelEntity obj)
     {
-        return CachedKeyUtil.physicalChannelKey(obj.getChlId());
+        return CachedKeyUtil.physicalChannelKey(obj.getPhychlId());
     }
 
     @Override

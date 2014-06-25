@@ -3,7 +3,7 @@ package jetsennet.jsmp.nav.syn;
 import java.lang.reflect.Field;
 import java.sql.Date;
 
-import jetsennet.jsmp.nav.dal.DataSourceManager;
+import jetsennet.jsmp.nav.syn.db.DataSourceManager;
 import jetsennet.orm.tableinfo.FieldInfo;
 import jetsennet.orm.tableinfo.TableInfo;
 import jetsennet.util.SafeDateFormater;
@@ -47,11 +47,18 @@ public class DataSynContentEntity
 			{
 				Class<?> type = f.getClass();
 				Object temp = f.get(this.obj);
-				
-				value = temp.toString();
-				if (type == Date.class)
+
+				if (temp == null)
 				{
-					value = SafeDateFormater.format((Date) temp);
+					value = "";
+				}
+				else
+				{
+					value = temp.toString();
+					if (type == Date.class)
+					{
+						value = SafeDateFormater.format((Date) temp);
+					}
 				}
 			}
 			sb.append("<").append(f.getName()).append(">").append(value);

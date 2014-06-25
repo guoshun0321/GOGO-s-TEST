@@ -1,6 +1,7 @@
 package jetsennet.jsmp.nav.syn;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.jms.Connection;
 import javax.jms.Message;
@@ -65,7 +66,7 @@ public class DataSynchronized
 		}
 	}
 
-	public void close()
+	public void stop()
 	{
 		try
 		{
@@ -118,6 +119,10 @@ public class DataSynchronized
 				try
 				{
 					xml = ((TextMessage) msg).getText();
+					if (Config.ISDEBUG)
+					{
+						logger.debug("收到消息：" + xml);
+					}
 					DataSynEntity synData = DataSynXmlParse.parseXml(xml);
 					DataHandleUtil.handleData(synData, xml);
 					mmsg.setEndTime(System.currentTimeMillis());
@@ -154,5 +159,13 @@ public class DataSynchronized
 				logger.error("", ex);
 			}
 		}
+	}
+
+	public static void main(String[] args) throws Exception
+	{
+		DataSynchronized syn = new DataSynchronized();
+		syn.start();
+		TimeUnit.SECONDS.sleep(5);
+		syn.stop();
 	}
 }

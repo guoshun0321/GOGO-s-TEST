@@ -1,7 +1,7 @@
 package jetsennet.jsmp.nav.service.a7.entity;
 
 import java.lang.reflect.Field;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jetsennet.jsmp.nav.entity.ChannelEntity;
+import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
 import jetsennet.util.SafeDateFormater;
@@ -90,7 +92,7 @@ public class RequestEntityUtil
 		}
 		else if (f.getType() == Date.class)
 		{
-			SafeDateFormater.parse(valueS, A7Constants.DATE_FORMATE);
+			retval = SafeDateFormater.parse(valueS, A7Constants.DATE_FORMATE);
 		}
 		else
 		{
@@ -115,7 +117,7 @@ public class RequestEntityUtil
 		else
 		{
 			retval = new RequestEntityInfo();
-			Field[] fields = cls.getFields();
+			Field[] fields = cls.getDeclaredFields();
 			for (Field field : fields)
 			{
 				if (field.isAnnotationPresent(IdentAnnocation.class))
@@ -140,6 +142,14 @@ public class RequestEntityUtil
 		public Map<String, Field> fieldMap = new HashMap<String, Field>();
 
 		public Map<String, String> defValueMap = new HashMap<String, String>();
+	}
+	
+	public static void main(String[] args)
+	{
+		ChannelEntity cl = new ChannelEntity();
+		Class clz = CreatorEntity.class;
+		System.out.println(clz);
+		System.out.println(clz.getFields().length);
 	}
 
 }

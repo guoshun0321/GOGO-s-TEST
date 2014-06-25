@@ -6,8 +6,10 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-import jetsennet.jsmp.nav.dal.DataSourceManager;
+import jetsennet.jsmp.nav.config.Config;
+import jetsennet.jsmp.nav.syn.db.DataSourceManager;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
+import jetsennet.orm.tableinfo.FieldInfo;
 import jetsennet.orm.tableinfo.TableInfo;
 
 import org.jdom.Document;
@@ -168,12 +170,31 @@ public class DataSynXmlParse
 		{
 			throw new DataSynException(ex);
 		}
+		if (Config.ISDEBUG)
+		{
+			logger.debug("表名：" + name);
+		}
 		List<Element> children = ele.getChildren();
 		for (Element child : children)
 		{
 			String key = child.getName();
 			String value = child.getText();
-			table.getFieldInfo(key).set(retval, value);
+			if (Config.ISDEBUG)
+			{
+				logger.debug(String.format("处理参数：%s, %s", key, value));
+			}
+			FieldInfo fieldInfo = table.getFieldInfo(key);
+			if (fieldInfo != null)
+			{
+				fieldInfo.set(retval, value);
+			}
+			else
+			{
+				if (Config.ISDEBUG)
+				{
+					logger.debug("不处理参数：" + key);
+				}
+			}
 		}
 		return retval;
 	}

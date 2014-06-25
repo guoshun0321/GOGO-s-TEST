@@ -1,5 +1,6 @@
 package jetsennet.jsmp.nav.cache.xmem;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -15,7 +16,7 @@ import net.rubyeye.xmemcached.utils.AddrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MemcachedOp
+public class DataCacheOp
 {
 
 	/**
@@ -29,11 +30,11 @@ public class MemcachedOp
 	/**
 	 * 日志
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(MemcachedOp.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataCacheOp.class);
 
-	private static final MemcachedOp instance = new MemcachedOp();
+	private static final DataCacheOp instance = new DataCacheOp();
 
-	private MemcachedOp()
+	private DataCacheOp()
 	{
 		try
 		{
@@ -52,7 +53,7 @@ public class MemcachedOp
 		}
 	}
 
-	public static MemcachedOp getInstance()
+	public static DataCacheOp getInstance()
 	{
 		return instance;
 	}
@@ -73,7 +74,7 @@ public class MemcachedOp
 	{
 		putTimeout(key, value, Config.CACHE_TIMEOUT);
 	}
-	
+
 	/**
 	 * 往缓存放置数据，并设置过期时间
 	 * 
@@ -161,6 +162,10 @@ public class MemcachedOp
 
 	public Map<String, Object> gets(List<String> keys)
 	{
+		if (keys == null)
+		{
+			return new HashMap<String, Object>(0);
+		}
 		Map<String, Object> retval = null;
 		try
 		{

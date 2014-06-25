@@ -3,7 +3,6 @@ package jetsennet.jsmp.nav.syn.db;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jetsennet.jsmp.nav.dal.DataSourceManager;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.RelateColumnEntity;
 import jetsennet.jsmp.nav.syn.DataSynContentEntity;
