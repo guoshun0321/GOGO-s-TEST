@@ -159,9 +159,9 @@ public class CachedKeyUtil
 	}
 
 	// 节目单相关
-	public static final String playbillKey(int pbId, long time)
+	public static final String playbillKey(int pbId)
 	{
-		return "PLAYBILL$" + pbId + "$" + time;
+		return "PLAYBILL$" + pbId;
 	}
 
 	public static final String channelPlaybill(int chlId, long time)

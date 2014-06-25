@@ -531,32 +531,36 @@ public class NavBusiness
 		{
 			for (Long day : dayLst)
 			{
-				PlaybillEntity chl = cache.get(CachedKeyUtil.channelPlaybill(chId, day), true);
-				if (chl != null)
+				Integer pbId = cache.get(CachedKeyUtil.channelPlaybill(chId, day), true);
+				if (pbId != null)
 				{
-					List<Integer> itemIds = cache.getListInt(CachedKeyUtil.playbillItemList(chl.getPbId()));
-					for (Integer itemId : itemIds)
+					PlaybillEntity pb = cache.get(CachedKeyUtil.playbillKey(pbId));
+					if (pb != null)
 					{
-						if (i >= start)
+						List<Integer> itemIds = cache.getListInt(CachedKeyUtil.playbillItemList(pb.getPbId()));
+						for (Integer itemId : itemIds)
 						{
-							if (i == end)
+							if (i >= start)
 							{
-								retval.addAttr("restartAtToken", Integer.toString(i));
-								break;
+								if (i == end)
+								{
+									retval.addAttr("restartAtToken", Integer.toString(i));
+									break;
+								}
+								else
+								{
+									PlaybillItemEntity item = cache.get(CachedKeyUtil.playbillItemKey(itemId));
+									ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(item, "Program", null);
+									itemResp.addAttr("channelId", chId.toString());
+									long startTime = day + item.getStartTime();
+									long endTime = startTime + item.getDuration() * 1000;
+									itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
+									itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
+									retval.addChild(itemResp);
+								}
 							}
-							else
-							{
-								PlaybillItemEntity item = cache.get(CachedKeyUtil.playbillItemKey(itemId));
-								ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(item, "Program", null);
-								itemResp.addAttr("channelId", chId.toString());
-								long startTime = day + item.getStartTime();
-								long endTime = startTime + item.getDuration() * 1000;
-								itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
-								itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
-								retval.addChild(itemResp);
-							}
+							i++;
 						}
-						i++;
 					}
 				}
 			}

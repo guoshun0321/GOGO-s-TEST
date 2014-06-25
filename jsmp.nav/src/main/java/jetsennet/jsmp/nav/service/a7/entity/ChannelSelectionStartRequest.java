@@ -20,7 +20,7 @@ public class ChannelSelectionStartRequest
 	private String channelId;
 
 	@IdentAnnocation("startDateTime")
-	private Date startDateTime;
+	private String startDateTime;
 
 	@IdentAnnocation("assetId")
 	private String assetId;
@@ -68,12 +68,12 @@ public class ChannelSelectionStartRequest
 		this.channelId = channelId;
 	}
 
-	public Date getStartDateTime()
+	public String getStartDateTime()
 	{
 		return startDateTime;
 	}
 
-	public void setStartDateTime(Date startDateTime)
+	public void setStartDateTime(String startDateTime)
 	{
 		this.startDateTime = startDateTime;
 	}

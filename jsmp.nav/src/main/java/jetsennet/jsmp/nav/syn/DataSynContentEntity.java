@@ -47,11 +47,18 @@ public class DataSynContentEntity
 			{
 				Class<?> type = f.getClass();
 				Object temp = f.get(this.obj);
-				
-				value = temp.toString();
-				if (type == Date.class)
+
+				if (temp == null)
 				{
-					value = SafeDateFormater.format((Date) temp);
+					value = "";
+				}
+				else
+				{
+					value = temp.toString();
+					if (type == Date.class)
+					{
+						value = SafeDateFormater.format((Date) temp);
+					}
 				}
 			}
 			sb.append("<").append(f.getName()).append(">").append(value);

@@ -33,7 +33,7 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 	 * @param cachedKey
 	 * @param discard
 	 */
-	protected void del2CachedSet(String cachedKey, int discard)
+	protected void del2CachedSet(String cachedKey, Integer discard)
 	{
 		Object cachedValue = cache.get(cachedKey, true);
 		if (cachedValue != null && (cachedValue instanceof List))

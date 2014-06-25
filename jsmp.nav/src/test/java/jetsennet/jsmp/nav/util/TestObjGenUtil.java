@@ -108,7 +108,9 @@ public class TestObjGenUtil
 	public static void builderCache() throws Exception
 	{
 
-		Session session = null;
+		Date date = SafeDateFormater.parse("1987-11-22 11:22:33");
+		Date now = new Date();
+
 		try
 		{
 			// clean
@@ -232,25 +234,52 @@ public class TestObjGenUtil
 			multiInsert(phys);
 
 			// playbill
-			List<PlaybillEntity> bills = new ArrayList<PlaybillEntity>(10);
-			special = new HashMap<String, Object>();
-			special.put("ASSET_ID", "UUID");
-			special.put("LANGUAGE_CODE", "zh_CN");
-			special.put("REGION_CODE", "");
-			bills.addAll(TestObjGenUtil.genObj(PlaybillEntity.class, 10, special));
-			multiInsert(bills);
-
-			List<PlaybillItemEntity> items = new ArrayList<PlaybillItemEntity>(1000);
-			for (PlaybillEntity bill : bills)
+			for (ChannelEntity channel : chls)
 			{
+				List<PlaybillEntity> bills = new ArrayList<PlaybillEntity>(10);
 				special = new HashMap<String, Object>();
-				special.put("PB_ID", bill.getPbId());
+				special.put("CHL_ID", channel.getChlId());
+				special.put("PLAY_DATE", now);
 				special.put("ASSET_ID", "UUID");
 				special.put("LANGUAGE_CODE", "zh_CN");
 				special.put("REGION_CODE", "");
-				items.addAll(TestObjGenUtil.genObj(PlaybillItemEntity.class, 100, special));
+				bills.addAll(TestObjGenUtil.genObj(PlaybillEntity.class, 1, special));
+				multiInsert(bills);
+
+				List<PlaybillItemEntity> items = new ArrayList<PlaybillItemEntity>(1000);
+				for (PlaybillEntity bill : bills)
+				{
+					special = new HashMap<String, Object>();
+					special.put("PB_ID", bill.getPbId());
+					special.put("ASSET_ID", "UUID");
+					special.put("LANGUAGE_CODE", "zh_CN");
+					special.put("REGION_CODE", "");
+					items.addAll(TestObjGenUtil.genObj(PlaybillItemEntity.class, 100, special));
+				}
+				multiInsert(items);
+
+				bills = new ArrayList<PlaybillEntity>(10);
+				special = new HashMap<String, Object>();
+				special.put("CHL_ID", channel.getChlId());
+				special.put("PLAY_DATE", DateUtil.preDate(now, 1));
+				special.put("ASSET_ID", "UUID");
+				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
+				bills.addAll(TestObjGenUtil.genObj(PlaybillEntity.class, 1, special));
+				multiInsert(bills);
+
+				items = new ArrayList<PlaybillItemEntity>(1000);
+				for (PlaybillEntity bill : bills)
+				{
+					special = new HashMap<String, Object>();
+					special.put("PB_ID", bill.getPbId());
+					special.put("ASSET_ID", "UUID");
+					special.put("LANGUAGE_CODE", "zh_CN");
+					special.put("REGION_CODE", "");
+					items.addAll(TestObjGenUtil.genObj(PlaybillItemEntity.class, 100, special));
+				}
+				multiInsert(items);
 			}
-			multiInsert(items);
 		}
 		catch (Exception ex)
 		{
