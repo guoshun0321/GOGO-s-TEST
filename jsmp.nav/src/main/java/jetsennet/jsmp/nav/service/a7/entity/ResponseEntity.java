@@ -11,6 +11,8 @@ public class ResponseEntity
 
 	private String name;
 
+	private String value;
+
 	private Map<String, String> attrMap;
 
 	private List<ResponseEntity> children;
@@ -22,9 +24,22 @@ public class ResponseEntity
 		this.children = new ArrayList<ResponseEntity>(15);
 	}
 
+	public ResponseEntity(String name, String value)
+	{
+		this.name = name;
+		this.value = value;
+		this.attrMap = new HashMap<String, String>(30);
+		this.children = new ArrayList<ResponseEntity>(15);
+	}
+
 	public void addAttr(String key, String value)
 	{
 		this.attrMap.put(key, value);
+	}
+
+	public void addAttr(String key, int value)
+	{
+		this.attrMap.put(key, Integer.toString(value));
 	}
 
 	public void addChild(ResponseEntity child)
@@ -63,6 +78,10 @@ public class ResponseEntity
 		for (ResponseEntity child : children)
 		{
 			child.toXml(sb);
+		}
+		if (this.value != null)
+		{
+			sb.append(this.value);
 		}
 		sb.append("</");
 		this.appendLabel(sb, name).append(">");

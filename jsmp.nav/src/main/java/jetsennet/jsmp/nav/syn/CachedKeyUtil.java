@@ -92,9 +92,9 @@ public class CachedKeyUtil
 		return "PGM_AUTH$" + pgmId;
 	}
 
-	public static final String pgmPicture(int picId)
+	public static final String pgmPictureKey(int pgmId)
 	{
-		return "PGM_PIC$" + picId;
+		return "PGM_PIC$" + pgmId;
 	}
 
 	public static final String pgmPictures(int pgmId)
@@ -102,11 +102,11 @@ public class CachedKeyUtil
 		return "PGM_PICS$" + pgmId;
 	}
 
-	public static final String pgmFileItem(String id)
+	public static final String pgmFileItemKey(int pgmId)
 	{
-		return "PGM_FILE$" + id;
+		return "PGM_FILE$" + pgmId;
 	}
-	
+
 	public static final String pgmFileItemAsset(String id)
 	{
 		return "PGM_FILE_ASSET$" + id;
@@ -178,7 +178,7 @@ public class CachedKeyUtil
 	{
 		return "PLAYBILITEMLIST$" + pbId;
 	}
-	
+
 	public static final String playbillItemListAsset(String assetId)
 	{
 		return "PLAYBILITEMLISTASSET$" + assetId;

@@ -74,4 +74,22 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 		}
 		cache.put(cachedKey, cachedValue);
 	}
+
+	/**
+	 * 将字符数据添加到cache
+	 * 
+	 * @param cachedKey
+	 * @param addition
+	 */
+	protected void add2CachedSet(String cachedKey, Object addition)
+	{
+		Object cachedValue = cache.get(cachedKey, true);
+		if (cachedValue == null || !(cachedValue instanceof List))
+		{
+			cachedValue = new ArrayList<Object>();
+		}
+		((List<Object>) cachedValue).add(addition);
+		cache.put(cachedKey, cachedValue);
+	}
+
 }

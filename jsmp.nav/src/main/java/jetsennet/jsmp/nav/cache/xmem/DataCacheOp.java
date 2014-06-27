@@ -16,6 +16,8 @@ import net.rubyeye.xmemcached.utils.AddrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.code.yanf4j.core.impl.StandardSocketOption;
+
 public class DataCacheOp
 {
 
@@ -43,7 +45,8 @@ public class DataCacheOp
 			// 使用二进制文件  
 			builder.setCommandFactory(new BinaryCommandFactory());
 			// 连接池大小
-			builder.setConnectionPoolSize(Config.CACHE_POOLSIZE);
+			//			builder.setConnectionPoolSize(Config.CACHE_POOLSIZE);
+			builder.setSocketOption(StandardSocketOption.TCP_NODELAY, false);
 			client = builder.build();
 		}
 		catch (Exception ex)
@@ -96,11 +99,19 @@ public class DataCacheOp
 
 	public <T> T get(String key)
 	{
+		if (key == null)
+		{
+			return null;
+		}
 		return this.get(key, false);
 	}
 
 	public int getInt(String key)
 	{
+		if (key == null)
+		{
+			return -1;
+		}
 		return (int) this.get(key, false);
 	}
 
@@ -149,6 +160,20 @@ public class DataCacheOp
 	public List<String> getListString(String key)
 	{
 		List<String> retval = null;
+		try
+		{
+			retval = client.get(key, Config.CACHE_TIMEOUT);
+		}
+		catch (Exception ex)
+		{
+			this.exceptionHandle(ex);
+		}
+		return retval;
+	}
+
+	public <T> List<T> getList(String key)
+	{
+		List<T> retval = null;
 		try
 		{
 			retval = client.get(key, Config.CACHE_TIMEOUT);

@@ -6,6 +6,7 @@ import java.util.Date;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
+
 /**
  * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
  */
@@ -48,6 +49,38 @@ public class CreatorEntity implements Serializable
 	 */
 	@Column("UPDATE_TIME")
 	private long updateTime;
+	// 导演/男主角/女主角/男配角/女配角
+	public static final String MODE_DIRECTOR = "42";
+	public static final String MODE_HERO = "43";
+	public static final String MODE_HEROINE = "44";
+	public static final String MODE_MALE_SUPPORT = "45";
+	public static final String MODE_FEMALE_SUPPORT = "46";
+
+	// 出品人/制作人/编剧
+	public static final String MODE_PRESENTER = "47";
+	public static final String MODE_PRODUCER = "48";
+	public static final String MODE_WRITER = "49";
+
+	// 配音演员/摄像/剪辑/监制/录音/化妆
+	public static final String MODE_DUBBER = "50";
+	public static final String MODE_CAMERA = "51";
+	public static final String MODE_CUTTING = "52";
+	public static final String MODE_SUPERVISED = "53";
+	public static final String MODE_AUDIO = "54";
+	public static final String MODE_MAKEUP = "55";
+
+	// 美术指导/武术指导/配乐/片头曲/片尾曲/插曲
+	public static final String MODE_ART = "56";
+	public static final String MODE_ACTION = "57";
+	public static final String MODE_DUB = "58";
+	public static final String MODE_OP = "59";
+	public static final String MODE_ED = "60";
+	public static final String MODE_StringERLUDE = "61";
+
+	// 服装/视觉特效/其他幕后人员
+	public static final String MODE_DRESS = "62";
+	public static final String MODE_VFX = "63";
+	public static final String MODE_BEHIND = "64";
 
 	private static final long serialVersionUID = 1L;
 

@@ -105,7 +105,7 @@ public class TestObjGenUtil
 		return retval;
 	}
 
-	public static void builderCache() throws Exception
+	public static void builderCache(int baseColumn) throws Exception
 	{
 
 		Date date = SafeDateFormater.parse("1987-11-22 11:22:33");
@@ -117,17 +117,17 @@ public class TestObjGenUtil
 			DataCacheOp.getInstance().deleteAll();
 
 			// column
-			List<ColumnEntity> level1Chs = new ArrayList<ColumnEntity>(10);
+			List<ColumnEntity> level1Chs = new ArrayList<ColumnEntity>(baseColumn);
 			Map<String, Object> special = new HashMap<String, Object>();
 			special.put("PARENT_ID", 0);
 			special.put("PARENT_ASSETID", "");
 			special.put("ASSET_ID", "UUID");
 			special.put("LANGUAGE_CODE", "zh_CN");
 			special.put("REGION_CODE", "");
-			level1Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, 10, special));
+			level1Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, baseColumn, special));
 			multiInsert(level1Chs);
 
-			List<ColumnEntity> level2Chs = new ArrayList<ColumnEntity>(10 * 10);
+			List<ColumnEntity> level2Chs = new ArrayList<ColumnEntity>(baseColumn * 10);
 			for (ColumnEntity level1Ch : level1Chs)
 			{
 				special = new HashMap<String, Object>();
@@ -140,7 +140,7 @@ public class TestObjGenUtil
 			}
 			multiInsert(level2Chs);
 
-			List<ColumnEntity> level3Chs = new ArrayList<ColumnEntity>(10 * 10 * 10);
+			List<ColumnEntity> level3Chs = new ArrayList<ColumnEntity>(baseColumn * 100);
 			for (ColumnEntity level2Ch : level2Chs)
 			{
 				special = new HashMap<String, Object>();
@@ -153,7 +153,7 @@ public class TestObjGenUtil
 			}
 			multiInsert(level3Chs);
 
-			List<ProgramEntity> progs = new ArrayList<ProgramEntity>(10 * 10 * 10 * 10);
+			List<ProgramEntity> progs = new ArrayList<ProgramEntity>(baseColumn * 100);
 			for (ColumnEntity level2Ch : level2Chs)
 			{
 				special = new HashMap<String, Object>();
@@ -166,13 +166,13 @@ public class TestObjGenUtil
 			}
 			multiInsert(progs);
 
-			List<PgmBaseEntity> pgmBases = new ArrayList<PgmBaseEntity>(10000);
-			List<CreatorEntity> creators = new ArrayList<CreatorEntity>(10000);
-			List<DescauthorizeEntity> authors = new ArrayList<DescauthorizeEntity>(10000);
-			List<PictureEntity> pics = new ArrayList<PictureEntity>(50000);
-			List<FileItemEntity> files = new ArrayList<FileItemEntity>(50000);
-			List<ChannelEntity> chls = new ArrayList<ChannelEntity>(10000);
-			List<PhysicalChannelEntity> phys = new ArrayList<PhysicalChannelEntity>(10000);
+			List<PgmBaseEntity> pgmBases = new ArrayList<PgmBaseEntity>(baseColumn * 100);
+			List<CreatorEntity> creators = new ArrayList<CreatorEntity>(baseColumn * 100);
+			List<DescauthorizeEntity> authors = new ArrayList<DescauthorizeEntity>(baseColumn * 100);
+			List<PictureEntity> pics = new ArrayList<PictureEntity>(baseColumn * 500);
+			List<FileItemEntity> files = new ArrayList<FileItemEntity>(baseColumn * 500);
+			List<ChannelEntity> chls = new ArrayList<ChannelEntity>(baseColumn * 100);
+			List<PhysicalChannelEntity> phys = new ArrayList<PhysicalChannelEntity>(baseColumn * 100);
 			for (ProgramEntity prog : progs)
 			{
 				special = new HashMap<String, Object>();
@@ -236,7 +236,7 @@ public class TestObjGenUtil
 			// playbill
 			for (ChannelEntity channel : chls)
 			{
-				List<PlaybillEntity> bills = new ArrayList<PlaybillEntity>(10);
+				List<PlaybillEntity> bills = new ArrayList<PlaybillEntity>(baseColumn * 100);
 				special = new HashMap<String, Object>();
 				special.put("CHL_ID", channel.getChlId());
 				special.put("PLAY_DATE", now);
@@ -246,7 +246,7 @@ public class TestObjGenUtil
 				bills.addAll(TestObjGenUtil.genObj(PlaybillEntity.class, 1, special));
 				multiInsert(bills);
 
-				List<PlaybillItemEntity> items = new ArrayList<PlaybillItemEntity>(1000);
+				List<PlaybillItemEntity> items = new ArrayList<PlaybillItemEntity>(baseColumn * 10000);
 				for (PlaybillEntity bill : bills)
 				{
 					special = new HashMap<String, Object>();
@@ -258,7 +258,7 @@ public class TestObjGenUtil
 				}
 				multiInsert(items);
 
-				bills = new ArrayList<PlaybillEntity>(10);
+				bills = new ArrayList<PlaybillEntity>(baseColumn * 100);
 				special = new HashMap<String, Object>();
 				special.put("CHL_ID", channel.getChlId());
 				special.put("PLAY_DATE", DateUtil.preDate(now, 1));
@@ -268,7 +268,7 @@ public class TestObjGenUtil
 				bills.addAll(TestObjGenUtil.genObj(PlaybillEntity.class, 1, special));
 				multiInsert(bills);
 
-				items = new ArrayList<PlaybillItemEntity>(1000);
+				items = new ArrayList<PlaybillItemEntity>(baseColumn * 10000);
 				for (PlaybillEntity bill : bills)
 				{
 					special = new HashMap<String, Object>();
@@ -335,6 +335,6 @@ public class TestObjGenUtil
 
 	public static void main(String[] args) throws Exception
 	{
-		TestObjGenUtil.builderCache();
+		TestObjGenUtil.builderCache(200);
 	}
 }
