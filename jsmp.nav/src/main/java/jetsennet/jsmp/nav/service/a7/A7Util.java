@@ -177,7 +177,10 @@ public class A7Util
 
 		int pgmId = tempProg.getPgmId();
 		PgmBaseEntity pgmBase = NavBusinessDal.getPgmBase(pgmId);
-		ResponseEntityUtil.obj2Resp(pgmBase, null, resp);
+		if (pgmBase != null)
+		{
+			ResponseEntityUtil.obj2Resp(pgmBase, null, resp);
+		}
 
 		List<PictureEntity> pics = NavBusinessDal.getPgmPictures(pgmId);
 		for (PictureEntity pic : pics)
@@ -218,7 +221,7 @@ public class A7Util
 				}
 				else if (roleMode.equals(CreatorEntity.MODE_PRODUCER))
 				{
-					resp.addChild(new ResponseEntity("Director", creator.getName()));
+					resp.addChild(new ResponseEntity("Producter", creator.getName()));
 				}
 			}
 		}

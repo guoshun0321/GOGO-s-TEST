@@ -8,6 +8,7 @@ import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
+import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.service.a7.entity.A7Constants;
 import jetsennet.jsmp.nav.service.a7.entity.GetFolderContentsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.NavCheckRequest;
@@ -41,22 +42,31 @@ public class NavBusinessTest extends TestCase
 
 	public void testGetFolderContents() throws Exception
 	{
+		DataCacheOp op = DataCacheOp.getInstance();
 		String xml =
-			"<?xml version='1.0' encoding=\"UTF-8\" ?><GetFolderContents clientId='1232' includeFolderProperties='Y' startAt=\"{moviePageSize:2,movieCurrentPage:1,folderPageSize:2,folderCurrentPage:1}\" assetId ='%s'/>";
+			"<?xml version='1.0' encoding=\"UTF-8\" ?><GetFolderContents clientId='1232' includeFolderProperties='Y' includeSubFolder='Y' includeSelectableItem='Y' startAt=\"0\" assetId ='%s'/>";
 
-		List<Integer> tops = DataCacheOp.getInstance().get(CachedKeyUtil.topColumn());
-		ColumnEntity column = DataCacheOp.getInstance().get(CachedKeyUtil.columnKey(tops.get(0)));
+		// top
+		List<Integer> tops = op.get(CachedKeyUtil.topColumn());
+		ColumnEntity column = op.get(CachedKeyUtil.columnKey(tops.get(0)));
 		assertNotNull(column);
-
 		String xml1 = String.format(xml, column.getAssetId());
 		NavBusiness nb = new NavBusiness();
 		String str = nb.getFolderContents(A7Util.requestXml2Map(xml1));
 		System.out.println(str);
 
-		List<Integer> subs = DataCacheOp.getInstance().getListInt(CachedKeyUtil.subColumn(column.getColumnId(), column.getRegionCode()));
-		ColumnEntity column1 = DataCacheOp.getInstance().get(CachedKeyUtil.columnKey(subs.get(0)));
+		// level2
+		List<Integer> subs = op.getListInt(CachedKeyUtil.subColumn(column.getColumnId(), column.getRegionCode()));
+		ColumnEntity column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
 		assertNotNull(column1);
-
+		xml1 = String.format(xml, column1.getAssetId());
+		str = nb.getFolderContents(A7Util.requestXml2Map(xml1));
+		System.out.println(str);
+		
+		// level3
+		subs = op.getListInt(CachedKeyUtil.subColumn(column1.getColumnId(), column1.getRegionCode()));
+		column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
+		assertNotNull(column1);
 		xml1 = String.format(xml, column1.getAssetId());
 		str = nb.getFolderContents(A7Util.requestXml2Map(xml1));
 		System.out.println(str);
@@ -64,7 +74,7 @@ public class NavBusinessTest extends TestCase
 
 	public void testGetRootContents() throws Exception
 	{
-		String xml = "<GetRootContents  clientId='1' deviceId='2' startAt='2' maxItems='2'/>";
+		String xml = "<GetRootContents  clientId='1' deviceId='2' startAt='0' maxItems='2'/>";
 		GetFolderContentsRequest req = RequestEntityUtil.map2Obj(GetFolderContentsRequest.class, A7Util.requestXml2Map(xml));
 
 		NavBusiness nb = new NavBusiness();
@@ -116,35 +126,38 @@ public class NavBusinessTest extends TestCase
 
 	public void testSelectionStart() throws Exception
 	{
-//		DataCacheOp op = DataCacheOp.getInstance();
-//		List<Integer> tops = op.get(CachedKeyUtil.topColumn());
-//		ColumnEntity column = op.get(CachedKeyUtil.columnKey(tops.get(0)));
-//		assertNotNull(column);
-//
-//		List<Integer> subs = op.getListInt(CachedKeyUtil.subColumn(column.getColumnId(), column.getRegionCode()));
-//		ColumnEntity column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
-//		assertNotNull(column1);
-//
-//		subs = op.getListInt(CachedKeyUtil.columnPgm(column1.getColumnId()));
-//		List<String> subs1 = op.getListString(CachedKeyUtil.pgmFileItems(subs.get(0)));
-//		assertNotNull(subs1);
-//
-//		FileItemEntity file = op.get(CachedKeyUtil.pgmFileItem(subs1.get(0)));
-//		assertNotNull(file);
-//
-//		String xml =
-//			"<?xml version='1.0' encoding=\"UTF-8\" ?><SelectionStart clientId='1232' deviceId ='12345' fileAssetId='" + file.getAssetId() + "' />";
-//		NavBusiness nb = new NavBusiness();
-//		String str = nb.selectionStart(A7Util.requestXml2Map(xml));
-//		System.out.println(str);
-//
-//		xml =
-//			"<?xml version='1.0' encoding=\"UTF-8\" ?><SelectionStart clientId='1232' deviceId ='12345' serviceCode='OTT' fileAssetId='"
-//				+ file.getAssetId()
-//				+ "' />";
-//		nb = new NavBusiness();
-//		str = nb.selectionStart(A7Util.requestXml2Map(xml));
-//		System.out.println(str);
+		DataCacheOp op = DataCacheOp.getInstance();
+		List<Integer> tops = op.get(CachedKeyUtil.topColumn());
+		ColumnEntity column = op.get(CachedKeyUtil.columnKey(tops.get(0)));
+		assertNotNull(column);
+
+		List<Integer> subs = op.getListInt(CachedKeyUtil.subColumn(column.getColumnId(), column.getRegionCode()));
+		ColumnEntity column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
+		assertNotNull(column1);
+
+		subs = op.getListInt(CachedKeyUtil.subColumn(column1.getColumnId(), column1.getRegionCode()));
+		column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
+		assertNotNull(column1);
+
+		subs = op.getListInt(CachedKeyUtil.columnPgm(column1.getColumnId()));
+		ProgramEntity pgm = op.get(CachedKeyUtil.programKey(subs.get(0)));
+		List<FileItemEntity> files = op.getList(CachedKeyUtil.pgmFileItemKey(pgm.getPgmId()));
+		assertNotNull(files);
+		FileItemEntity file = files.get(0);
+
+		String xml =
+			"<?xml version='1.0' encoding=\"UTF-8\" ?><SelectionStart clientId='1232' deviceId ='12345' fileAssetId='" + file.getAssetId() + "' />";
+		NavBusiness nb = new NavBusiness();
+		String str = nb.selectionStart(A7Util.requestXml2Map(xml));
+		System.out.println(str);
+
+		xml =
+			"<?xml version='1.0' encoding=\"UTF-8\" ?><SelectionStart clientId='1232' deviceId ='12345' serviceCode='OTT' fileAssetId='"
+				+ file.getAssetId()
+				+ "' />";
+		nb = new NavBusiness();
+		str = nb.selectionStart(A7Util.requestXml2Map(xml));
+		System.out.println(str);
 	}
 
 	public void testChannelSelectionStart() throws Exception
@@ -206,6 +219,11 @@ public class NavBusinessTest extends TestCase
 		String str = nb.getChannels(A7Util.requestXml2Map(xml));
 		assertNotNull(str);
 		System.out.println(str);
+
+		xml = "<?xml version='1.0' encoding=\"UTF-8\" ?> <GetChannels clientId='1232' deviceId='123' startAt='20' maxItems='5'/>";
+		str = nb.getChannels(A7Util.requestXml2Map(xml));
+		assertNotNull(str);
+		System.out.println(str);
 	}
 
 	public void testGetPrograms() throws Exception
@@ -227,7 +245,7 @@ public class NavBusinessTest extends TestCase
 		str = nb.getPrograms(A7Util.requestXml2Map(xml));
 		assertNotNull(str);
 		System.out.println(str);
-		
+
 		xml = "<?xml version='1.0' encoding=\"UTF-8\" ?> <GetPrograms clientId='1232'  channelIds='%s' startAt='30' maxItems='20' days='-1'/>";
 		xml = String.format(xml, chlIds.get(0));
 		str = nb.getPrograms(A7Util.requestXml2Map(xml));

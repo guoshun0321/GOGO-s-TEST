@@ -1,8 +1,5 @@
 package jetsennet.jsmp.nav.service.a7;
 
-import static jetsennet.jsmp.nav.syn.CachedKeyUtil.columnAssetKey;
-import static jetsennet.jsmp.nav.syn.CachedKeyUtil.columnKey;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
+import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.monitor.MethodInvokeMMsg;
@@ -29,7 +26,6 @@ import jetsennet.jsmp.nav.service.a7.entity.RequestEntityUtil;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntity;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntityUtil;
 import jetsennet.jsmp.nav.service.a7.entity.SelectionStartRequest;
-import jetsennet.jsmp.nav.syn.CachedKeyUtil;
 import jetsennet.jsmp.nav.util.ArrayUtil;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
@@ -116,7 +112,6 @@ public class NavBusiness
 		ResponseEntity retval = new ResponseEntity("FolderContents");
 
 		// 栏目自身信息FolderFrame
-
 		ColumnEntity column = NavBusinessDal.getColumnByAssetId(entity.getAssetId());
 		if (entity.getIncludeFolderProperties())
 		{
@@ -135,18 +130,13 @@ public class NavBusiness
 		if (entity.getIncludeSubFolder())
 		{
 			List<Integer> subIds = NavBusinessDal.subColumnIds(column);
-			if (subIds != null && !subIds.isEmpty())
+			List<ColumnEntity> cols = NavBusinessDal.getColumns(subIds);
+			for (ColumnEntity col : cols)
 			{
-				Map<String, Object> subMap = NavBusinessDal.getColumns(subIds);
-				Set<String> tempKeys = subMap.keySet();
-				for (String tempKey : tempKeys)
-				{
-					ColumnEntity temp = (ColumnEntity) subMap.get(tempKey);
-					ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(temp, "ChildFolder", null);
-					tempResp.addAttr("selectableltemSortby", column.getSortRule());
-					tempResp.addAttr("selectableltemSortDirection", Integer.toString(column.getSortDirection()));
-					retval.addChild(tempResp);
-				}
+				ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(col, "ChildFolder", null);
+				tempResp.addAttr("selectableltemSortby", column.getSortRule());
+				tempResp.addAttr("selectableltemSortDirection", Integer.toString(column.getSortDirection()));
+				retval.addChild(tempResp);
 			}
 		}
 
@@ -169,19 +159,10 @@ public class NavBusiness
 				}
 
 				// 填充ContentItem数据
-				Map<String, Object> pgmMap = NavBusinessDal.getPrograms(ArrayUtil.subList(programIds, start, end));
-				if (pgmMap != null && pgmMap.size() > 0)
+				List<ProgramEntity> pgms = NavBusinessDal.getPrograms(ArrayUtil.subList(programIds, start, end));
+				for (ProgramEntity pgm : pgms)
 				{
-					retSelTotal = pgmMap.size();
-					Set<String> tempKeys = pgmMap.keySet();
-					for (String tempKey : tempKeys)
-					{
-						ProgramEntity pgm = (ProgramEntity) pgmMap.get(tempKey);
-						if (pgm != null)
-						{
-							retval.addChild(A7Util.getContentItem(pgm, column));
-						}
-					}
+					retval.addChild(A7Util.getContentItem(pgm, column));
 				}
 			}
 		}
@@ -267,8 +248,7 @@ public class NavBusiness
 	public String getItemData(Map<String, String> map)
 	{
 		GetItemDataRequest req = RequestEntityUtil.map2Obj(GetItemDataRequest.class, map);
-		ProgramEntity prog = cache.get(CachedKeyUtil.programAsset(req.getTitleAssetId()));
-		return A7Util.getContentItem(prog, null).toXml(null).toString();
+		return A7Util.getContentItem(NavBusinessDal.getProgramByAssetId(req.getTitleAssetId()), null).toXml(null).toString();
 	}
 
 	@IdentAnnocation("GetEntitlement")
@@ -406,26 +386,17 @@ public class NavBusiness
 		chIds = ArrayUtil.subList(chIds, start, end);
 		if (chIds != null)
 		{
-			Map<String, Object> channels = NavBusinessDal.getChannels(chIds);
-			Set<String> chKeys = channels.keySet();
-			for (String chKey : chKeys)
+			List<ChannelEntity> channels = NavBusinessDal.getChannels(chIds);
+
+			for (ChannelEntity chl : channels)
 			{
-				ChannelEntity chl = (ChannelEntity) channels.get(chKey);
 				ResponseEntity chlResp = ResponseEntityUtil.obj2Resp(chl, "Channel", null);
 				retval.addChild(chlResp);
 
-				Map<String, Object> temp = NavBusinessDal.getPhysicalChannels(chl.getChlId());
-				if (temp != null)
+				List<PhysicalChannelEntity> phys = NavBusinessDal.getPhysicalChannels(chl.getChlId());
+				for (PhysicalChannelEntity phy : phys)
 				{
-					Set<String> phyKeys = temp.keySet();
-					for (String phyKey : phyKeys)
-					{
-						Object obj = temp.get(phyKey);
-						if (obj != null)
-						{
-							chlResp.addChild(ResponseEntityUtil.obj2Resp(obj, "Parameter", null));
-						}
-					}
+					chlResp.addChild(ResponseEntityUtil.obj2Resp(phy, "Parameter", null));
 				}
 			}
 		}

@@ -98,7 +98,7 @@ public class TestObjGenUtil
 						if (special.get(columnValue).equals("UUID"))
 						{
 							//							f.set(t, UUID.randomUUID().toString());
-							f.set(t, f.getName() + "_UUID_" + seq);
+							f.set(t, clz.getName() + "_" + f.getName() + "_UUID_" + seq);
 						}
 						else
 						{
@@ -225,7 +225,7 @@ public class TestObjGenUtil
 			List<CreatorEntity> creators = new ArrayList<CreatorEntity>(progSize * 8);
 			List<PictureEntity> pics = new ArrayList<PictureEntity>(progSize * 3);
 			List<FileItemEntity> files = new ArrayList<FileItemEntity>(progSize * 4);
-			for (ProgramEntity prog : progs)
+			for (ProgramEntity prog : allProgs)
 			{
 				clearMap(special);
 				special.put("PGM_ID", prog.getPgmId());

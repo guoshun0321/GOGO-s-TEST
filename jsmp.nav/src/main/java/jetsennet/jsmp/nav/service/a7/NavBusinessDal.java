@@ -16,14 +16,17 @@ import java.util.UUID;
 
 import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.config.Config;
+import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
 import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
 import jetsennet.jsmp.nav.entity.PgmBaseEntity;
+import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
+import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntity;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntityUtil;
 import jetsennet.jsmp.nav.syn.CachedKeyUtil;
@@ -61,14 +64,25 @@ public class NavBusinessDal
 	 * @param columnIds
 	 * @return
 	 */
-	public static final Map<String, Object> getColumns(List<Integer> columnIds)
+	public static final List<ColumnEntity> getColumns(List<Integer> columnIds)
 	{
+
 		if (columnIds != null && !columnIds.isEmpty())
 		{
 			List<String> tempKeys = columnKey(columnIds);
-			return cache.gets(tempKeys);
+			Map<String, Object> colMap = cache.gets(tempKeys);
+			List<ColumnEntity> retval = new ArrayList<ColumnEntity>(colMap.size());
+			for (String tempKey : tempKeys)
+			{
+				Object obj = colMap.get(tempKey);
+				if (obj != null && obj instanceof ColumnEntity)
+				{
+					retval.add((ColumnEntity) obj);
+				}
+			}
+			return retval;
 		}
-		return new HashMap<String, Object>(0);
+		return new ArrayList<ColumnEntity>(0);
 	}
 
 	/**
@@ -88,13 +102,24 @@ public class NavBusinessDal
 	 * @param pgmIds
 	 * @return
 	 */
-	public static final Map<String, Object> getPrograms(List<Integer> pgmIds)
+	public static final List<ProgramEntity> getPrograms(List<Integer> pgmIds)
 	{
 		if (pgmIds == null || pgmIds.isEmpty())
 		{
 			return null;
 		}
-		return cache.gets(programKeys(pgmIds));
+		List<String> keys = programKeys(pgmIds);
+		Map<String, Object> pgmMap = cache.gets(programKeys(pgmIds));
+		List<ProgramEntity> retval = new ArrayList<ProgramEntity>(pgmMap.size());
+		for (String key : keys)
+		{
+			Object obj = pgmMap.get(key);
+			if (obj != null && obj instanceof ProgramEntity)
+			{
+				retval.add((ProgramEntity) obj);
+			}
+		}
+		return retval;
 	}
 
 	/**
@@ -105,23 +130,30 @@ public class NavBusinessDal
 	public static final Map<String, Object> getSubPrograms(int pgmId)
 	{
 		List<Integer> progIds = null;
-		Pgm2PgmEntity p2p = cache.get(CachedKeyUtil.pgm2pgmKey(pgmId));
-		String p2pDesc = p2p.getRelDesc();
-		if (p2pDesc != null && !p2pDesc.isEmpty())
+		Pgm2PgmEntity p2p = cache.get(CachedKeyUtil.pgm2pgmKey(pgmId), true);
+		if (p2p != null)
 		{
-			String[] subs = p2pDesc.split(":");
-			if (subs != null && subs.length > 0)
+			String p2pDesc = p2p.getRelDesc();
+			if (p2pDesc != null && !p2pDesc.isEmpty())
 			{
-				progIds = new ArrayList<Integer>(subs.length);
-				for (String sub : subs)
+				String[] subs = p2pDesc.split(";");
+				if (subs != null && subs.length > 0)
 				{
-					String[] temp = sub.split(",");
-					if (temp.length == 2)
+					progIds = new ArrayList<Integer>(subs.length);
+					for (String sub : subs)
 					{
-						progIds.add(Integer.valueOf(temp[0]));
+						String[] temp = sub.split(",");
+						if (temp.length == 2)
+						{
+							progIds.add(Integer.valueOf(temp[0]));
+						}
 					}
 				}
 			}
+		}
+		else
+		{
+			return new HashMap<>(0);
 		}
 		return cache.gets(CachedKeyUtil.programKeys(progIds));
 	}
@@ -133,7 +165,7 @@ public class NavBusinessDal
 	 */
 	public static final PgmBaseEntity getPgmBase(int pgmId)
 	{
-		return cache.get(pgmBaseKey(pgmId));
+		return cache.get(pgmBaseKey(pgmId), true);
 	}
 
 	/**
@@ -143,7 +175,12 @@ public class NavBusinessDal
 	 */
 	public static final List<PictureEntity> getPgmPictures(int pgmId)
 	{
-		return cache.getList(CachedKeyUtil.pgmPictureKey(pgmId));
+		List<PictureEntity> retval = cache.getList(CachedKeyUtil.pgmPictureKey(pgmId));
+		if (retval == null)
+		{
+			retval = new ArrayList<PictureEntity>(0);
+		}
+		return retval;
 	}
 
 	/**
@@ -154,7 +191,29 @@ public class NavBusinessDal
 	 */
 	public static final List<FileItemEntity> getPgmItems(int pgmId)
 	{
-		return cache.getList(CachedKeyUtil.pgmFileItemKey(pgmId));
+		List<FileItemEntity> retval = cache.getList(CachedKeyUtil.pgmFileItemKey(pgmId));
+		if (retval == null)
+		{
+			retval = new ArrayList<FileItemEntity>(0);
+		}
+		return retval;
+	}
+
+	/**
+	 * 根据assetId获取节目信息
+	 * 
+	 * @param assetId
+	 * @return
+	 */
+	public static final ProgramEntity getProgramByAssetId(String assetId)
+	{
+		ProgramEntity retval = null;
+		Integer pgmId = cache.get(CachedKeyUtil.programAsset(assetId), true);
+		if (pgmId != null)
+		{
+			retval = cache.get(CachedKeyUtil.programKey(pgmId));
+		}
+		return retval;
 	}
 
 	/**
@@ -237,18 +296,37 @@ public class NavBusinessDal
 	 * @param chIds
 	 * @return
 	 */
-	public static final Map<String, Object> getChannels(List<Integer> chIds)
+	public static final List<ChannelEntity> getChannels(List<Integer> chIds)
 	{
+		List<ChannelEntity> retval = null;
 		if (chIds == null)
 		{
-			return null;
+			return retval;
 		}
+
 		List<String> chKeys = new ArrayList<String>(chIds.size());
 		for (Integer chId : chIds)
 		{
 			chKeys.add(CachedKeyUtil.channelKey(chId));
 		}
-		return cache.gets(chKeys);
+		Map<String, Object> chlMap = cache.gets(chKeys);
+		if (chlMap != null)
+		{
+			retval = new ArrayList<ChannelEntity>(chlMap.size());
+			for (String chKey : chKeys)
+			{
+				Object obj = chlMap.get(chKey);
+				if (obj != null && obj instanceof ChannelEntity)
+				{
+					retval.add((ChannelEntity) obj);
+				}
+			}
+		}
+		if (retval == null)
+		{
+			return new ArrayList<ChannelEntity>(0);
+		}
+		return retval;
 	}
 
 	/**
@@ -257,14 +335,27 @@ public class NavBusinessDal
 	 * @param chlId
 	 * @return
 	 */
-	public static final Map<String, Object> getPhysicalChannels(int chlId)
+	public static final List<PhysicalChannelEntity> getPhysicalChannels(int chlId)
 	{
-		Map<String, Object> retval = null;
+		List<PhysicalChannelEntity> retval = null;
+		Map<String, Object> tempMap = null;
 		List<Integer> pchlIds = cache.getListInt(channel2pchannel(chlId));
 		if (pchlIds != null)
 		{
 			List<String> pkeys = physicalChannelKeys(pchlIds);
-			retval = cache.gets(pkeys);
+			tempMap = cache.gets(pkeys);
+			if (tempMap != null)
+			{
+				retval = new ArrayList<PhysicalChannelEntity>(tempMap.size());
+				for (String pkey : pkeys)
+				{
+					Object obj = tempMap.get(pkey);
+					if (obj != null && obj instanceof PhysicalChannelEntity)
+					{
+						retval.add((PhysicalChannelEntity) obj);
+					}
+				}
+			}
 		}
 		return retval;
 	}
@@ -291,8 +382,15 @@ public class NavBusinessDal
 		return retval;
 	}
 
+	/**
+	 * 获取PlayBillItem
+	 * 
+	 * @param itemId
+	 * @return
+	 */
 	public static final PlaybillItemEntity getPalyBillItem(int itemId)
 	{
 		return cache.get(CachedKeyUtil.playbillItemKey(itemId));
 	}
+
 }
