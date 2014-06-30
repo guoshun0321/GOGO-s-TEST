@@ -116,35 +116,35 @@ public class NavBusinessTest extends TestCase
 
 	public void testSelectionStart() throws Exception
 	{
-		DataCacheOp op = DataCacheOp.getInstance();
-		List<Integer> tops = op.get(CachedKeyUtil.topColumn());
-		ColumnEntity column = op.get(CachedKeyUtil.columnKey(tops.get(0)));
-		assertNotNull(column);
-
-		List<Integer> subs = op.getListInt(CachedKeyUtil.subColumn(column.getColumnId(), column.getRegionCode()));
-		ColumnEntity column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
-		assertNotNull(column1);
-
-		subs = op.getListInt(CachedKeyUtil.columnPgm(column1.getColumnId()));
-		List<String> subs1 = op.getListString(CachedKeyUtil.pgmFileItems(subs.get(0)));
-		assertNotNull(subs1);
-
-		FileItemEntity file = op.get(CachedKeyUtil.pgmFileItem(subs1.get(0)));
-		assertNotNull(file);
-
-		String xml =
-			"<?xml version='1.0' encoding=\"UTF-8\" ?><SelectionStart clientId='1232' deviceId ='12345' fileAssetId='" + file.getAssetId() + "' />";
-		NavBusiness nb = new NavBusiness();
-		String str = nb.selectionStart(A7Util.requestXml2Map(xml));
-		System.out.println(str);
-
-		xml =
-			"<?xml version='1.0' encoding=\"UTF-8\" ?><SelectionStart clientId='1232' deviceId ='12345' serviceCode='OTT' fileAssetId='"
-				+ file.getAssetId()
-				+ "' />";
-		nb = new NavBusiness();
-		str = nb.selectionStart(A7Util.requestXml2Map(xml));
-		System.out.println(str);
+//		DataCacheOp op = DataCacheOp.getInstance();
+//		List<Integer> tops = op.get(CachedKeyUtil.topColumn());
+//		ColumnEntity column = op.get(CachedKeyUtil.columnKey(tops.get(0)));
+//		assertNotNull(column);
+//
+//		List<Integer> subs = op.getListInt(CachedKeyUtil.subColumn(column.getColumnId(), column.getRegionCode()));
+//		ColumnEntity column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
+//		assertNotNull(column1);
+//
+//		subs = op.getListInt(CachedKeyUtil.columnPgm(column1.getColumnId()));
+//		List<String> subs1 = op.getListString(CachedKeyUtil.pgmFileItems(subs.get(0)));
+//		assertNotNull(subs1);
+//
+//		FileItemEntity file = op.get(CachedKeyUtil.pgmFileItem(subs1.get(0)));
+//		assertNotNull(file);
+//
+//		String xml =
+//			"<?xml version='1.0' encoding=\"UTF-8\" ?><SelectionStart clientId='1232' deviceId ='12345' fileAssetId='" + file.getAssetId() + "' />";
+//		NavBusiness nb = new NavBusiness();
+//		String str = nb.selectionStart(A7Util.requestXml2Map(xml));
+//		System.out.println(str);
+//
+//		xml =
+//			"<?xml version='1.0' encoding=\"UTF-8\" ?><SelectionStart clientId='1232' deviceId ='12345' serviceCode='OTT' fileAssetId='"
+//				+ file.getAssetId()
+//				+ "' />";
+//		nb = new NavBusiness();
+//		str = nb.selectionStart(A7Util.requestXml2Map(xml));
+//		System.out.println(str);
 	}
 
 	public void testChannelSelectionStart() throws Exception
