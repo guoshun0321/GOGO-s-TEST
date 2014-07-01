@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
@@ -181,7 +180,7 @@ public class NavBusiness
 	{
 		GetRootContentsRequest entity = RequestEntityUtil.map2Obj(GetRootContentsRequest.class, map);
 
-		Map<String, Object> topColumnMap = NavBusinessDal.getTopColumns();
+		List<ColumnEntity> topColumns = NavBusinessDal.getTopColumns();
 
 		ResponseEntity resp = new ResponseEntity("RootContents");
 		// 分页处理
@@ -191,32 +190,27 @@ public class NavBusiness
 		int end = begin + entity.getMaxItems();
 		int lastPos = -1;
 
-		Set<String> topKeys = topColumnMap.keySet();
 		int j = -1;
-		for (String topKey : topKeys)
+		for (ColumnEntity column : topColumns)
 		{
-			Object obj = topColumnMap.get(topKey);
-			if (obj != null)
+			if (column.getLanguageCode().equals(entity.getLanguageCode()) && column.getRegionCode().equals(entity.getRegionCode()))
 			{
-				ColumnEntity column = (ColumnEntity) obj;
-				if (column.getLanguageCode().equals(entity.getLanguageCode()) && column.getRegionCode().equals(entity.getRegionCode()))
+				j++;
+				if (j >= begin)
 				{
-					j++;
-					if (j >= begin)
+					if (j == end)
 					{
-						if (j == end)
-						{
-							lastPos = j;
-							break;
-						}
-						else
-						{
-							ResponseEntity child = ResponseEntityUtil.obj2Resp(obj, "ChildFolder", null);
-							resp.addChild(child);
-						}
+						lastPos = j;
+						break;
+					}
+					else
+					{
+						ResponseEntity child = ResponseEntityUtil.obj2Resp(column, "ChildFolder", null);
+						resp.addChild(child);
 					}
 				}
 			}
+
 		}
 		resp.addAttr("totalResults", Integer.toString(resp.getChildSize()));
 		if (lastPos > 0)

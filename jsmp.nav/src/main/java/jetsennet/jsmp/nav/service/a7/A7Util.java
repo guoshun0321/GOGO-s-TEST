@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
@@ -141,20 +140,15 @@ public class A7Util
 		retval.addChild(contentFrameResp);
 
 		// 子节目
-		Map<String, Object> subProgs = NavBusinessDal.getSubPrograms(prog.getPgmId());
+		List<ProgramEntity> subProgs = NavBusinessDal.getSubPrograms(prog.getPgmId());
 		if (subProgs != null && subProgs.size() > 0)
 		{
 			// 如果存在子节目，添加子节目信息
-			Set<String> progKeys = subProgs.keySet();
-			for (String progKey : progKeys)
+			for (ProgramEntity subProg : subProgs)
 			{
-				ProgramEntity tempProg = (ProgramEntity) subProgs.get(progKey);
-				if (tempProg != null)
-				{
-					ResponseEntity tempResp = getSelectableltem(tempProg);
-					addCreatorInfo(tempProg, tempResp);
-					retval.addChild(tempResp);
-				}
+				ResponseEntity tempResp = getSelectableltem(subProg);
+				addCreatorInfo(subProg, tempResp);
+				retval.addChild(tempResp);
 			}
 		}
 		else
