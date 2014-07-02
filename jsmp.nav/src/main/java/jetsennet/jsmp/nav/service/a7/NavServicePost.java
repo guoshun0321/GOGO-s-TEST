@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jetsennet.jsmp.nav.util.ServletUtil;
 import jetsennet.util.IOUtil;
 
 import org.jdom.Attribute;
@@ -54,7 +55,7 @@ public class NavServicePost extends HttpServlet
 				method = method.substring(pos + 1);
 				try
 				{
-					Map<String, String> map = A7Util.requestXml2Map(this.getStream(req));
+					Map<String, String> map = A7Util.requestXml2Map(ServletUtil.getStream(req));
 					String str = busi.invoke(method, map);
 					resp.setHeader("Content-type", "text/html;charset=UTF-8");
 					out.write(str.getBytes("UTF-8"));
@@ -76,23 +77,6 @@ public class NavServicePost extends HttpServlet
 		{
 			IOUtil.close(out);
 		}
-	}
-
-	private String getStream(HttpServletRequest request) throws IOException
-	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
-		StringBuilder sb = new StringBuilder();
-		char[] chs = new char[1024];
-		while (true)
-		{
-			int l = br.read(chs);
-			sb.append(chs);
-			if (l < 0)
-			{
-				break;
-			}
-		}
-		return sb.toString();
 	}
 
 }

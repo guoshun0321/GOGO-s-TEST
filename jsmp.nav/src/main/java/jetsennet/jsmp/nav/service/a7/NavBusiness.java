@@ -34,11 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class NavBusiness
 {
-
-	/**
-	 * 缓存操作
-	 */
-	//	private DataCacheOp cache = DataCacheOp.getInstance();
+	
 	/**
 	 * 方法映射map
 	 */

@@ -1,4 +1,4 @@
-package jetsennet.jsmp.nav.service.a7;
+package jetsennet.jsmp.nav.service.s2;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,31 +12,40 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jetsennet.jsmp.nav.service.a7.A7Util;
+import jetsennet.jsmp.nav.service.a7.ErrorHandle;
+import jetsennet.jsmp.nav.util.ServletUtil;
 import jetsennet.util.IOUtil;
 
-public class NavServiceGet extends HttpServlet
+public class S2ServiceServlet extends HttpServlet
 {
 
-	private static final NavBusiness busi = new NavBusiness();
-	/**
-	 * 日志
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(NavServiceGet.class);
+	private static final S2Business busi = new S2Business();
+
+	private static final Logger logger = LoggerFactory.getLogger(S2ServiceServlet.class);
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
+		ErrorHandle.illegalRequest(resp);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+	{
 		OutputStream out = resp.getOutputStream();
+
 		try
 		{
-			String method = req.getParameter("method");
-			if (method != null)
+			String method = req.getRequestURI();
+			int pos = method.lastIndexOf("/");
+			if (pos > 0 && pos != (method.length() - 1))
 			{
-				Map<String, String> map = req.getParameterMap();
+				method = method.substring(pos + 1);
 				try
 				{
+					Map<String, String> map = A7Util.requestXml2Map(ServletUtil.getStream(req));
 					String str = busi.invoke(method, map);
-					str = str == null ? "" : str;
 					resp.setHeader("Content-type", "text/html;charset=UTF-8");
 					out.write(str.getBytes("UTF-8"));
 					out.flush();
@@ -49,7 +58,7 @@ public class NavServiceGet extends HttpServlet
 			}
 			else
 			{
-				logger.error("找不到方法名称！");
+				logger.error("不合法的方法名称：" + method);
 				ErrorHandle.illegalRequest(resp);
 			}
 		}
@@ -58,12 +67,4 @@ public class NavServiceGet extends HttpServlet
 			IOUtil.close(out);
 		}
 	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
-	{
-		logger.error("NavServiceGet不支持POST操作！");
-		ErrorHandle.illegalRequest(resp);
-	}
-
 }
