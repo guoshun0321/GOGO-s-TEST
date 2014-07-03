@@ -56,28 +56,33 @@ public class BDBFileParse
                 }
             }
 
-            //             更新数据库
+            // 更新数据库
+            System.out.println("数据库初始化开始！");
             MySqlDdl ddl = new MySqlDdl(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
             for (TableInfo tbl : tblInfoLst)
             {
+                System.out.println("初始化表：" + tbl.getTableName());
                 ddl.delete(tbl.getTableName());
                 ddl.create(tbl);
+                System.out.println("");
             }
 
             // 生成文件
-//            for (TableInfo tbl : tblInfoLst)
-//            {
-//                String fileName = tbl.getTableName();
-//                fileName = this.dbName2EntityName(fileName);
-//                OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "\\" + fileName + "Entity.java"));
-//                String javaFile = this.genJavaFile(tbl);
-//                out.write(javaFile.getBytes());
-//                out.flush();
-//                out.close();
-//                out = null;
-//            }
+            //            for (TableInfo tbl : tblInfoLst)
+            //            {
+            //                String fileName = tbl.getTableName();
+            //                fileName = this.dbName2EntityName(fileName);
+            //                OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "\\" + fileName + "Entity.java"));
+            //                String javaFile = this.genJavaFile(tbl);
+            //                out.write(javaFile.getBytes());
+            //                out.flush();
+            //                out.close();
+            //                out = null;
+            //            }
         }
-        System.out.println(path);
+        //        System.out.println(path);
+        System.out.println("数据库初始化完成！");
+
     }
 
     public TableInfo genTableInfo(String path) throws Exception
@@ -323,7 +328,7 @@ public class BDBFileParse
     {
         BDBFileParse reader = new BDBFileParse();
         //        reader.parseXmlFile("F:\\JSMP\\JSMP\\trunk\\DB\\JPortal\\数据库脚本new\\dbscript\\scheme\\NS_PGM2PGM.ax");
-        reader.parseFolder("F:\\JSMP\\JSMP\\trunk\\DB\\JPortal\\数据库脚本new\\dbscript\\scheme");
+        reader.parseFolder(".\\dbscript\\scheme");
     }
 
 }

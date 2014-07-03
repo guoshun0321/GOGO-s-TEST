@@ -9,22 +9,15 @@ import javax.swing.JMenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jetsennet.jsmp.nav.monitor.MonitorServlet;
-import jetsennet.jsmp.nav.syn.DataSynchronized;
-
 public class DataSynFrame extends BaseMgrFrm
 {
 
     private JMenuItem startSynMenuItem;
     private JMenuItem stopSynMenuItem;
     /**
-     * 数据同步
+     * 启动线程
      */
-    private DataSynchronized ds;
-    /**
-     * 监控
-     */
-    private MonitorServlet monitor;
+    private SetupThread st;
     /**
      * 同步
      */
@@ -51,7 +44,7 @@ public class DataSynFrame extends BaseMgrFrm
             {
                 try
                 {
-                    startSyn(e);
+                    startSynEvent(e);
                 }
                 catch (Exception ex)
                 {
@@ -70,7 +63,7 @@ public class DataSynFrame extends BaseMgrFrm
             {
                 try
                 {
-                    stopSyn(e);
+                    stopSynEvent(e);
                 }
                 catch (Exception ex)
                 {
@@ -86,49 +79,60 @@ public class DataSynFrame extends BaseMgrFrm
         addMenu(extendMenu);
     }
 
-    private void startSyn(ActionEvent e)
+    private void startSynEvent(ActionEvent e)
     {
-        if (ds == null)
+        Thread t = new Thread(new Runnable()
         {
-            ds = new DataSynchronized();
-            ds.start();
-        }
-        if (monitor == null)
-        {
-            try
+
+            @Override
+            public void run()
             {
-                monitor = new MonitorServlet();
-                monitor.init();
+                if (st == null)
+                {
+                    st = new SetupThread(DataSynFrame.this);
+                }
+                st.start();
             }
-            catch (Exception ex)
-            {
-                logger.error("", ex);
-            }
-        }
-        startSynMenuItem.setEnabled(false);
-        stopSynMenuItem.setEnabled(true);
+        });
+        t.start();
     }
 
-    private void stopSyn(ActionEvent e)
+    private void stopSynEvent(ActionEvent e)
     {
-        if (ds != null)
+        if (st != null)
         {
-            ds.stop();
-            ds = null;
+            st.stop();
         }
-        if (monitor != null)
+    }
+
+    public void startSyn()
+    {
+        java.awt.EventQueue.invokeLater(new Runnable()
         {
-            monitor.destroy();
-            monitor = null;
-        }
-        startSynMenuItem.setEnabled(true);
-        stopSynMenuItem.setEnabled(false);
+            public void run()
+            {
+                startSynMenuItem.setEnabled(false);
+                stopSynMenuItem.setEnabled(true);
+            }
+        });
+    }
+
+    public void stopSyn()
+    {
+        java.awt.EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                startSynMenuItem.setEnabled(true);
+                stopSynMenuItem.setEnabled(false);
+            }
+        });
     }
 
     @Override
     protected void stop()
     {
-        stopSyn(null);
+        stopSynEvent(null);
     }
 
     public static void main(String[] args)

@@ -35,11 +35,11 @@
 	<category name="jetsennet" additivity="false">
 		<priority value="DEBUG" />
 		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="PANEL1" />
 	</category>
 
 	<root>
 		<priority value="DEBUG" />
-		<appender-ref ref="PANEL1" />
 	</root>
 
 </log4j:configuration>
