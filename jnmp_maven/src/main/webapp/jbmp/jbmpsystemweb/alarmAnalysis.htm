@@ -1,0 +1,286 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>报警事件分析</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/alarmAnalysis.js"></script>
+		
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom:3px;">
+			<table width="835" cellspacing="0" cellpadding="0" class="table-info" style="padding: 1px">
+				<tr>
+					<td align="left" width=95>
+						<input type="button" value="设置" onclick="setParam()" class="button" />
+					</td>
+					<td align="left" width=460>
+						查询时间：
+						<input type="text" id="txtSDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtSTime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReport)" validatetype="NotEmpty" />
+						-
+						<input type="text" id="txtEDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtETime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReport)" validatetype="NotEmpty" />
+						<input id="hid_REPORT_ID" type="hidden" />
+					</td>
+					<td align="left">
+						<input type="button" value="查找" onclick="searchReport()" class="button" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divReport1List" class="webfx-columnlist"  
+			style="border: 0px" onfocus="this.blur();">
+			<iframe id="reportInfo" style="width: 100%; height: 100%; border-width: 0px; position: absolute;"
+				frameborder="0" border="0"></iframe>
+		</div>
+		<div id="divBottom" class="list-bottom">
+			<div class="list-bottom-right">
+				<div id="divReport1Page" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				报警事件分析
+			</div>
+		</div>
+		<div id="divParam" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info" id="baseInfo">
+				<tr>
+					<td class="field-head" style="vertical-align: top;width:100px;">
+						报警类型：
+					</td>
+					<td style="width:200px;">
+						<select id="showAlarmTypeOption" multiple style="width: 200px; height: 100px;">
+						</select>
+					</td>
+					<td style="width:20px;"></td>
+					<td class="field-head" style="vertical-align: top;width:100px;">
+						报警等级：
+					</td>
+					<td style="width:200px;">
+						<select id="showAlarmLevelOption" multiple style="width: 200px; height: 100px;">
+						</select>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="field-head"></td>
+					<td>
+						<input type="button" value=" 添加 " class="button" id="btnAlarmTypeAdd" onclick="alarmTypeAdd();" />
+                        <input type="button" value=" 删除 " class="button" id="btnAlarmTypeDel" onclick="selectOptionsDel($('showAlarmTypeOption'));" />
+					</td>
+					<td></td>
+					<td class="field-head"></td>
+					<td>
+						<input type="button" value=" 添加 " class="button" id="btnAlarmLevelAdd" onclick="alarmLevelAdd();" />
+                        <input type="button" value=" 删除 " class="button" id="btnAlarmLevelDel" onclick="selectOptionsDel($('showAlarmLevelOption'));" />
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="field-head" style="vertical-align: top;">
+						对象：
+					</td>
+					<td>
+						<select id="showObjOption" multiple style="width: 200px; height: 100px;">
+						</select>
+					</td>
+					<td style="vertical-align: top">
+						<span style="color: Red">*</span>
+					</td>
+					<td class="field-head" style="vertical-align: top;">
+						对象属性：
+					</td>
+					<td>
+						<select id="showAttrOption" multiple style="width: 200px; height: 100px;">
+						</select>
+					</td>
+					<td style="vertical-align: top">
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head"></td>
+					<td>
+						<input type="button" value=" 添加 " class="button" id="btnObjAdd" onclick="objAdd();" />
+                        <input type="button" value=" 删除 " class="button" id="btnObjDel" onclick="selectOptionsDel($('showObjOption'));" />
+					</td>
+					<td></td>
+					<td class="field-head"></td>
+					<td>
+						<input type="button" value=" 添加 " class="button" id="btnAttrAdd" onclick="attrAdd();" />
+                        <input type="button" value=" 删除 " class="button" id="btnAttrDel" onclick="selectOptionsDel($('showAttrOption'));" />
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="field-head"></td>
+					<td>
+						
+					</td>
+				</tr>
+				
+			</table>
+		</div>
+		<div id="divSelectAlarmType" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+		    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;margin-bottom:3px;border: 0px">
+		        <tr>
+		            <td align="left" width=190>
+		              	报警类型：<input type="text" id="txtAlarmTypeName" class="input" />&nbsp;&nbsp;
+		            </td>
+		            <td>
+						<input value="查找" type="button" class="button" onclick="searchSelectAlarmTypeData();"/>
+		            </td>
+		        </tr>
+		    </table>
+		    <div id="divSelectAlarmTypeList" style="background-repeat: no-repeat; overflow: auto; height: 358px; border: 0px; background: #fff" class="webfx-columnlist">
+		    	数据加载中...
+		    </div>
+		    <div id="divAlarmTypeBottom" class="list-bottom" style="position: relative; height: 30px;">
+		        <div class="list-bottom-right">
+		            <div id="divSelectAlarmTypePage" class="text_style">
+		            </div>
+		        </div>
+	    	</div>
+		</div>
+		<div id="divSelectAlarmRule" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+		    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;margin-bottom:3px;border: 0px">
+		        <tr>
+		            <td align="left" width=190>
+		              	报警规则：<input type="text" id="txtAlarmRuleName" class="input" />&nbsp;&nbsp;
+		            </td>
+		            <td>
+						<input value="查找" type="button" class="button" onclick="searchSelectAlarmRuleData();"/>
+		            </td>
+		        </tr>
+		    </table>
+		    <div id="divSelectAlarmRuleList" style="background-repeat: no-repeat; overflow: auto; height: 358px; border: 0px; background: #fff" class="webfx-columnlist">
+		    	数据加载中...
+		    </div>
+		    <div id="divAlarmRuleBottom" class="list-bottom" style="position: relative; height: 30px;">
+		        <div class="list-bottom-right">
+		            <div id="divSelectAlarmRulePage" class="text_style">
+		            </div>
+		        </div>
+	    	</div>
+		</div>
+		<div id="divSelectAlarmLevel" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+		    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;margin-bottom:3px;border: 0px;display:none">
+		        <tr>
+		            <td align="left" width=210>
+		              	报警等级：
+						<select id="alarmLevelChecked"	style="width: 120px">
+							<option value="">
+								请选择
+							</option>
+							<option value="10">
+								警告报警
+							</option>
+							<option value="20">
+								一般报警
+							</option>
+							<option value="30">
+								重要报警
+							</option>
+							<option value="40">
+								严重报警
+							</option>
+							<option value="50">
+								离线报警
+							</option>
+						</select>&nbsp;&nbsp;
+		            </td>
+		            <td>
+						<input value="查找" type="button" class="button" onclick="searchSelectAlarmLevelData();"/>
+		            </td>
+		        </tr>
+		    </table>
+		    <div id="divSelectAlarmLevelList" style="background-repeat: no-repeat; overflow: auto; height: 393px; border: 0px; background: #fff" class="webfx-columnlist">
+		    	数据加载中...
+		    </div>
+		    <div id="divAlarmLevelBottom" class="list-bottom" style="position: relative; height: 30px;">
+		        <div class="list-bottom-right">
+		            <div id="divSelectAlarmLevelPage" class="text_style">
+		            </div>
+		        </div>
+	    	</div>
+		</div>
+		<div id="divSelectObj" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+		    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;margin-bottom:3px;border: 0px">
+		        <tr>
+		        	<td align="left" width=190>
+		              	对象名称：<input type="text" id="txtObjName" class="input" />&nbsp;&nbsp;
+		        	</td>
+		            <td align="left" width=180>
+						对象组类型：
+						<select id="groupChecked" style="width: 77px">
+							<option value="">
+								请选择
+							</option>
+							<option value="1">
+								系统
+							</option>
+							<option value="3">
+								采集组
+							</option>
+							<option value="4">
+								网段
+							</option>
+							<option value="0">
+								一般组
+							</option>
+						</select>&nbsp;&nbsp;
+		            </td>
+		            <td>
+						<input value="查找" type="button" class="button" onclick="searchSelectObjData();"/>
+		            </td>
+		        </tr>
+		    </table>
+		    <div id="divSelectObjList" style="background-repeat: no-repeat; overflow: auto; height: 358px; border: 0px; background: #fff" class="webfx-columnlist">
+		    	数据加载中...
+		    </div>
+		    <div id="divObjBottom" class="list-bottom" style="position: relative; height: 30px;">
+		        <div class="list-bottom-right">
+		            <div id="divSelectObjPage" class="text_style">
+		            </div>
+		        </div>
+	    	</div>
+		</div>
+		<div id="divSelectAttr" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+		    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;margin-bottom:3px;border: 0px">
+		        <tr>
+		        	<td align="left" width=210>
+		              	对象属性名称：<input type="text" id="txtAttrName" class="input" />&nbsp;&nbsp;
+		        	</td>
+		            <td align="left" width=190>
+		              	对象名称：<input type="text" id="txtObjectName" class="input" />&nbsp;&nbsp;
+		            </td>
+		            <td>
+						<input value="查找" type="button" class="button" onclick="searchSelectAttrData();"/>
+		            </td>
+		        </tr>
+		    </table>
+		    <div id="divSelectAttrList" style="background-repeat: no-repeat; overflow: auto; height: 358px; border: 0px; background: #fff" class="webfx-columnlist">
+		    	数据加载中...
+		    </div>
+		    <div id="divAttrBottom" class="list-bottom" style="position: relative; height: 30px;">
+		        <div class="list-bottom-right">
+		            <div id="divSelectAttrPage" class="text_style">
+		            </div>
+		        </div>
+	    	</div>
+		</div>
+	</body>
+</html>

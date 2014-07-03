@@ -1,0 +1,204 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>性能数据统计</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/performanceanalysis.js"></script>
+		
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom:3px;">
+			<table width="835" cellspacing="0" cellpadding="0" class="table-info" style="padding: 1px">
+				<tr>
+					<td align="left" width=95>
+						<input type="button" value="设置" onclick="setParam()" class="button" />
+					</td>
+					<td align="left" width=460>
+						查询时间：
+						<input type="text" id="txtSDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtSTime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReport)" validatetype="NotEmpty" />
+						-
+						<input type="text" id="txtEDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtETime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReport)" validatetype="NotEmpty" />
+						<input id="hid_REPORT_ID" type="hidden" />
+					</td>
+					<td align="left">
+						<input type="button" value="查找" onclick="searchReport()" class="button" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divReport1List" class="webfx-columnlist"  
+			style="border: 0px" onfocus="this.blur();">
+			<iframe id="report1Info" style="width: 100%; height: 100%; border-width: 0px; position: absolute;"
+				frameborder="0" border="0"></iframe>
+		</div>
+		<div id="divBottom" class="list-bottom">
+			<div class="list-bottom-right">
+				<div id="divReport1Page" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				性能数据统计
+			</div>
+		</div>
+		<div id="divParam" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info" id="baseInfo">
+				<tr>
+					<td class="field-head" style="vertical-align: top;width:100px">
+						对象组：
+					</td>
+					<td style="width:250px">
+						<select id="showGroupOption" multiple style="width: 250px; height: 100px;">
+						</select>
+					</td>
+					<td style="vertical-align: top;">
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head"></td>
+					<td>
+						<input type="button" value=" 添加 " class="button" id="btnGroupAdd" onclick="groupAdd();" />
+                        <input type="button" value=" 删除 " class="button" id="btnGroupDel" onclick="selectOptionsDel($('showGroupOption'));" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="vertical-align: top;">
+						对象：
+					</td>
+					<td>
+						<select id="showObjOption" multiple style="width: 250px; height: 100px;">
+						</select>
+					</td>
+					<td style="vertical-align: top;">
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head"></td>
+					<td>
+						<input type="button" value=" 添加 " class="button" id="btnObjAdd" onclick="objAdd();" />
+                        <input type="button" value=" 删除 " class="button" id="btnObjDel" onclick="selectOptionsDel($('showObjOption'));" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="vertical-align: top;">
+						属性：
+					</td>
+					<td>
+						<select id="showAttrOption" multiple style="width: 250px; height: 100px;">
+						</select>
+					</td>
+					<td style="vertical-align: top;">
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head"></td>
+					<td>
+						<input type="button" value=" 添加 " class="button" id="btnAttrAdd" onclick="attrAdd();" />
+                        <input type="button" value=" 删除 " class="button" id="btnAttrDel" onclick="selectOptionsDel($('showAttrOption'));" />
+					</td>
+				</tr>
+				
+			</table>
+		</div>
+		<div id="divSelectGroup" style="display: none;margin:3px;">
+		    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;padding: 3px;border: 0px;height:30px;">
+		        <tr>
+		        	<td align="left" width=200>
+		              	对象组名称：<input type="text" id="txtGroupName" class="input" />&nbsp;&nbsp;
+		        	</td>
+		            <td align="left" width=180>
+						对象组类型：
+						<select id="groupChecked" style="width: 77px">
+							<option value="">
+								请选择
+							</option>
+							<option value="1">
+								系统
+							</option>
+							<option value="3">
+								采集组
+							</option>
+							<option value="4">
+								网段
+							</option>
+							<option value="0">
+								一般组
+							</option>
+						</select>&nbsp;&nbsp;
+		            </td>
+		            <td align="left">
+						<input value="查找" type="button" class="button" onclick="searchSelectGroupData();"/>
+		            </td>
+		        </tr>
+		    </table>
+		    <div id="divSelectGroupList" style="background-repeat: no-repeat; overflow: auto; height: 358px; border: 0px; background: #fff" class="webfx-columnlist">
+		    	数据加载中...
+		    </div>
+		    <div id="divGroupBottom" class="list-bottom" style="position: relative; height: 30px;">
+		        <div class="list-bottom-right">
+		            <div id="divSelectGroupPage" class="text_style">
+		            </div>
+		        </div>
+	    	</div>
+		</div>
+		<div id="divSelectObj" style="display: none;margin:3px;">
+		    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;border: 0px;height:30px;margin-bottom:3px;">
+		        <tr>
+		            <td align="left" width=190>
+		              	对象名称：<input type="text" id="txtObjName" class="input" />&nbsp;&nbsp;
+		            </td>
+		            <td>
+						<input value="查找" type="button" class="button" onclick="searchSelectObjData();"/>
+		            </td>
+		        </tr>
+		    </table>
+		    <div id="divSelectObjList" style="background-repeat: no-repeat; overflow: auto; height: 358px; border: 0px; background: #fff" class="webfx-columnlist">
+		    	数据加载中...
+		    </div>
+		    <div id="divObjBottom" class="list-bottom" style="position: relative; height: 30px;">
+		        <div class="list-bottom-right">
+		            <div id="divSelectObjPage" class="text_style">
+		            </div>
+		        </div>
+	    	</div>
+		</div>
+		<div id="divSelectAttr" style="display: none;margin:3px;">
+		    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;border: 0px;height:30px;margin-bottom:3px;">
+		        <tr>
+		            <td align="left" width=190>
+		              	属性名称：<input type="text" id="txtAttrName" class="input" />&nbsp;&nbsp;
+		            </td>
+		            <td>
+						<input value="查找" type="button" class="button" onclick="searchSelectAttrData();"/>
+		            </td>
+		        </tr>
+		    </table>
+		    <div id="divSelectAttrList" style="background-repeat: no-repeat; overflow: auto; height: 358px; border: 0px; background: #fff" class="webfx-columnlist">
+		    	数据加载中...
+		    </div>
+		    <div id="divAttrBottom" class="list-bottom" style="position: relative; height: 30px;">
+		        <div class="list-bottom-right">
+		            <div id="divSelectAttrPage" class="text_style">
+		            </div>
+		        </div>
+	    	</div>
+		</div>
+	</body>
+</html>

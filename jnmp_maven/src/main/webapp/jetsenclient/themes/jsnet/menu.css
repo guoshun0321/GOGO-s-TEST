@@ -1,0 +1,53 @@
+
+.jetsen-menu
+{	
+	float: left;	
+	line-height: 26px;
+	margin-left: 1px;
+	background: #fff url(images/menu/menu_bg.gif) repeat-y;
+	border-right: 1px solid threedshadow;
+	border-top: 1px solid threedhighlight;
+	border-left: 1px solid threedhighlight;
+	border-bottom: 1px solid threedshadow;
+}
+
+.jetsen-menuitem
+{
+	white-space: nowrap;
+	text-align: left;	
+}
+.jetsen-menuitemhover
+{
+	white-space: nowrap;
+	text-align: left;	
+	background-color:#D2DFE8;
+}
+
+.jetsen-menuitem a:hover
+{
+	 color:#fff; 
+	 background-color:#D2DFE8;
+	 text-decoration: none;
+	 border:none;padding-left:25px;}
+.jetsen-menuitem a { color:#303032; text-decoration: none;  height:26px; line-height:26px; padding-left:25px;border:none }  
+.jetsen-menuitemhover a:hover{ color:#fff; 
+	background-color:#D2DFE8;
+	text-decoration: none; border:none;padding-left:25px;}
+.jetsen-menuitemhover a { color:#303032; text-decoration: none;  height:26px; line-height:26px; padding-left:25px;border:none ;display:block;}  
+
+.jetsen-menusplit
+{
+	height: 5px;
+	overflow: hidden;
+}
+.jetsen-menusplit div
+{
+	margin-left: 25px;
+	border: 0px;
+	line-height: 5px;
+	height: 5px;
+	overflow: hidden;
+	background-image: url(images/menu/split.gif);
+	background-repeat: repeat-x;
+	background-position: center 0%;
+}

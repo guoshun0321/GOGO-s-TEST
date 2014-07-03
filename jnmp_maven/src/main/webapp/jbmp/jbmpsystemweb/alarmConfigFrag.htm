@@ -1,0 +1,181 @@
+    <div id="divGAlarmConfig" style="display: none;">
+    	<div id="divGAlarmRuleDetail">
+    		<table id="tabGAlarmRuleDetail" border="0" cellspacing="0" cellpadding="0" style="table-layout: fixed;">
+    			<colgroup>
+    				<col width="70px;"/>
+    				<col width="170px;"/>
+    				<col width="70px;"/>
+    				<col width="170px;"/>
+    				<col width="70px;"/>
+    				<col width="170px;"/>
+    			</colgroup>
+    			<tr>
+    				<td>规则名称：</td>
+    				<td><input id="txtGAlarmName" validatetype="NotEmpty" type="text"/><span id="spanGAlarmName" style="color: Red">*</span></td>
+    				<td>是否生效：</td>
+    				<td colspan="3"><input id="cbGAlarmValid" type="checkbox"/></td>
+    			</tr>
+    			<tr>
+    				<td>类型：</td>
+    				<td>
+    					<select id="selGAlarmType" onchange="generalAlarmConfig.changeRuleType();">
+    						<option value="0" selected="selected">一般规则</option>
+    						<option value="1">Trap规则</option>
+    					</select>
+    				</td>
+    				<td id="labelGAlarmDesc">报警描述：</td>
+    				<td colspan="3" rowspan="3" id="tdGAlarmDesc">
+    					<textarea id="areaGAlarmDesc" rows="4" cols="40" onkeyup="showRemindWordCount(this.value,$('areaGAlarmDescRemindWord'),30);"></textarea>
+    					<span>还可以输入 <span id="areaGAlarmDescRemindWord" style="font-weight:bold;">30</span> 字</span>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td>检查次数：</td>
+    				<td>
+    					<input id="txtGCheckNum" validatetype="NotEmpty,uinteger" type="text"/><span style="color: Red">*</span>
+    				</td>
+    				<td colspan="4"></td>
+    			</tr>
+    			<tr>
+    				<td>越限次数：</td>
+    				<td>
+    					<input id="txtGOverNum" validatetype="NotEmpty,uinteger" type="text"/><span style="color: Red">*</span>
+    				</td>
+    				<td colspan="4"></td>
+    			</tr>
+    		</table>
+    	</div>
+    	<div id="divGAlarmLevelDetail">
+    		<div id="divGAlarmLevelTitle">
+    			<div id="divGAlarmLevelTitleLeft">报警级别列表</div>
+    			<div id="divGAlarmLevelTitleRight">
+    				<a href="#" onclick="generalAlarmConfig.newLevel()" style="font-weight: bold;">[新建]</a>
+    			</div>
+    		</div>
+    		<div id="divGAlarmLevelLst"></div>
+    	</div>
+    	<div id="divGAlarmBottom" class="jetsen-window-bottom">
+    		<input type="button" value="确定" onclick="generalAlarmConfig.submit()" class="jetsen-window-button">
+    		<input type="button" value="取消" onclick="generalAlarmConfig.close()" class="jetsen-window-button">&nbsp;
+    	</div>
+    	<div id="divGAlarmLevelEdit" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+        	<input id="hid_GALARM_ID" type="hidden" />
+            <tr>
+                <td class="field-head" width="30%">
+                    级别名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_LEVEL_NAME" validatetype="NotEmpty" maxlength="35"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr id="tr_VAR_NAME" style="display:none">
+                <td class="field-head" width="30%">
+                    OID：
+                </td>
+                <td>
+                    <input type="text" id="txt_VAR_NAME" validatetype="NotEmpty" maxlength="100"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    报警等级：
+                </td>
+                <td>
+                    <select id="cbo_ALARM_LEVEL">
+                        <option value="10">警告报警</option>
+                        <option value="20">一般报警</option>
+                        <option value="30">重要报警</option>
+                        <option value="40">严重报警</option>
+                    </select>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    报警条件：
+                </td>
+                <td>
+                    <select id="cbo_gCONDITION">
+                        <option value="LT">小于</option>
+                        <option value="LE">小于等于</option>
+                        <option value="EQ">等于</option>
+                        <option value="NOTEQ">不等于</option>
+                        <option value="GT">大于</option>
+                        <option value="GE">大于等于</option>
+                        <option value="IN">区间内</option>
+                        <option value="NOTIN">区间外</option>
+                        <option value="LK">Like</option>
+                        <option value="UNLK">Unlike</option>
+                        <option value="EX">存在</option>
+                    </select>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    阈值：
+                </td>
+                <td>
+                    <input type="text" id="txt_THRESHOLD" validatetype="NotEmpty" default="0" maxlength="50" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+             <tr id="trWeek">
+                <td class="field-head">
+        			<span>星期：</span>
+                </td>
+                <td>
+                    <input name="chkWeek" type="checkbox" value="1" default="1" />周一
+                    <input name="chkWeek" type="checkbox" value="2" default="2" />周二&nbsp;
+                    <input name="chkWeek" type="checkbox" value="3" default="3" />周三&nbsp;
+                    <input name="chkWeek" type="checkbox" value="4" default="4" />周四&nbsp;
+                    <input name="chkWeek" type="checkbox" value="5" default="5" />周五&nbsp;
+                    <input name="chkWeek" type="checkbox" value="6" default="6" />周六&nbsp;
+                    <input name="chkWeek" type="checkbox" value="7" default="7" />周日
+                </td>
+            </tr>
+            <tr id="trHour" >
+                <td class="field-head">
+                    起止时间：
+                </td>
+                <td>
+                    <input id="txtSHour" type="text" style="width: 20px;" default="0" />点-
+                    <input id="txtEHour" type="text" style="width: 20px;" default="23" />点
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    报警动作：
+                </td>
+                <td>
+                    <select id="cbo_ACTION" style="width: 200px" size="4" multiple>
+                    </select>
+                    <div>
+                        <input type="button" value="添加" class="button" onclick="generalAlarmConfig.searchAction();" />
+                        <input type="button" value="删除" class="button" onclick="generalAlarmConfig.removeSelectedActions();" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    级别描述：
+                </td>
+                <td>
+                    <textarea id="txt_LEVEL_DESC" cols="30" rows="5" onkeyup="showRemindWordCount(this.value,$('alarmLevelRemindWord'),30);"></textarea><br />
+                    <div style="float: right;padding-right: 214px;">
+                 			 还可以输入 <span id="alarmLevelRemindWord" style="font-weight:bold;">30</span> 字
+         		    </div>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+    <div id="divGActionContent" style="display:none; overflow: auto;margin-left:0px;margin-top:-1px;margin-right:0px">
+		<div id="divActionList" class="webfx-columnlist" style="background: #fff; border: 0px"
+            onfocus="this.blur();">
+            数据加载中...</div>
+	</div>
+    </div>

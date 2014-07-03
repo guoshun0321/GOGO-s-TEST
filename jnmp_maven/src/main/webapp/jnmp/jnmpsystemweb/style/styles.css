@@ -1,0 +1,57 @@
+
+.viewItem
+{
+	float: left;		
+	text-align: left;
+	border-right: #919191 1px solid;
+	border-top: #919191 1px solid;	
+	margin-top:1px;
+	margin-left:1px;
+	margin-right:1px;
+	border-left: #919191 1px solid;
+	border-bottom: #919191 1px solid;
+}
+.itemHead
+{
+	background-image: url(../images/titlebg.gif);
+	margin: 1px;
+	color: #fff;
+	height: 25px;
+	text-align: left;
+}
+.itemHead H1
+{
+	font-weight: bold;
+	font-size: 14px;
+	float: left;
+	margin: 3px 0px 0px 10px;
+}
+.itemHead SPAN
+{
+	margin-top: 11px;
+	float: right;
+	margin-right: 10px;
+}
+.itemHead .recommend
+{
+	margin-top: 0px;
+	margin-right: 0px;
+}
+.itemList
+{
+	padding-right: 0px;
+	padding-left: 0px;
+	padding-bottom: 1px;
+	padding-top: 1px;
+	float: left;
+	margin-left: 1px;
+	text-align: left;
+	overflow:hidden;
+	
+}
+.itemList div
+{
+	float:left;
+	clear:both;
+	text-align:left;
+}

@@ -1,0 +1,14 @@
+
+.HtmlBoxImgButton { margin:1px; vertical-align:middle;}
+.HtmlBoxImgButtonActive { margin:0px; vertical-align:middle; border:#0a246a 1px solid!important; background-color:#d4d5d8;}
+.HtmlBoxImgButtonOver { margin:0px;vertical-align:middle;border:#0a246a 1px solid!important; background-color:#b6bdd2;}
+.HtmlBoxImgButtonDown { border-right: buttonhighlight 1px solid!important; border-TOP: buttonshadow 1px solid!important; border-left: buttonshadow 1px solid!important; border-bottom: buttonhighlight 1px solid!important; margin:0px;vertical-align:middle; }
+.HtmlBoxButton
+{
+	border-right: 1px solid;width:60px;height:35%;
+	border-top: 1px solid;
+	border-left: 1px solid;
+	color: #ffffff;
+	border-bottom: 1px solid;
+	background-color: #6699ff;
+}

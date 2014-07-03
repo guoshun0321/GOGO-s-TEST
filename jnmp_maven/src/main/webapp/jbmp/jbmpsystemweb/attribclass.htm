@@ -1,0 +1,753 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	    <title>资源类型</title>
+	    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+	    <link rel="stylesheet" type="text/css" href="css/alarmConfig.css">
+	    <script type="text/javascript" src="javascript/base.js"></script>
+	    <script type="text/javascript" src="javascript/select.js"></script>
+	    <script type="text/javascript" src="javascript/alarmconfig_rule.js"></script>
+	    <script type="text/javascript" src="javascript/attribclass.js"></script>
+	    <script type="text/javascript" src="javascript/attribclass_attribute.js"></script>
+	    <script type="text/javascript" src="javascript/attribclass_attribalarmbond.js" charset="UTF-8"></script>
+	    <script type="text/javascript" src="javascript/attribclass_trap.js"></script>
+</head>
+<body onload="pageInit()" scroll="no">
+    <div class="list-title" id="divRightTitle" >
+        <div class="list-title-left">
+            分类列表
+        </div>
+        <div class="list-title-right">
+         <strong><a href="javascript:importResouceXml()" title="导入">[导入]</a></strong>
+               <strong><a href="javascript:newClass()" title="新建">[新建]</a></strong>
+        </div>
+    </div>
+    <div id='divContainer' style="border: 0px; background: #fff;">
+    </div>
+    <div id="divClass" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head">
+                    名称：
+                </td>
+                <td colspan="2" >
+                    <input type="text" id="txt_CLASS_NAME" validatetype="NotEmpty" style="width: 130px;" maxlength="65"/>
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    别名：
+                </td>
+                <td colspan="2" >
+                    <input type="text" id="txt_CLASS_TYPE" validatetype="NotEmpty" style="width: 130px;" maxlength="65" />
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                   厂商：
+                </td>
+                <td colspan="2" >
+                    <select id="cbo_MAN_ID" style="height:21px">
+                    </select>
+                </td>
+            </tr>
+			<tr>
+                <td class="field-head">
+                   类型：
+                </td>
+                <td colspan="2" >
+                    <select id="cbo_CLASS_LEVEL" style="height:21px" onchange="checkLevel(this.value)" >
+                        <option value="0">分类</option>
+                        <option value="1">对象</option>
+                        <option value="2">子对象</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                  子对象类型：
+                </td>
+                <td colspan="2" >
+                    <select id="selSubType" style="width: 70%; height: 100px" multiple>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                </td>
+                <td colspan="2" >
+                    <input type="button" value="添加" class="button" id="btnAdd" onclick="selectSubType();" />
+                    <input type="button" value="删除" class="button" id="btnDel" onclick="selectOptionsDel($('selSubType'));" />
+                </td>
+            </tr>
+			<tr>
+                <td class="field-head">
+                   监控类别：
+                </td>
+                <td colspan="2" >
+                    <select id="cbo_CLASS_GROUP" style="height:21px" >
+                        <option value="1">设备</option>
+                        <option value="10">信号</option>
+                        <option value="20">节目</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+       MIB类型：
+                </td>
+                <td colspan="2" >
+                    <select id="cbo_MIB_ID" style="width: 155px;" >
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                   图标：
+                </td>
+                <td colspan="2" >
+                    <input type="text" id="txt_ICON_SRC" style="width: 130px;" maxlength="20"/>
+                </td>
+            </tr>
+            <tr>
+               <td class="field-head" style="vertical-align: top;">
+                                             拓扑图标：
+                </td>
+                <td style="width: 132px;">
+                   <input type="text" id="txt_picture_name" style="width: 130px;" maxlength="35" />            
+                </td>  
+               	<td align = "left">
+                     <input type="button" value="拓扑图标管理" class="buttonlongnn" id="btnManage" onclick="pictureManage();" />
+                </td>	   
+            </tr>          
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                   排序号：
+                </td>
+                <td colspan="2" >
+                    <input type="text" id="txt_VIEW_POS" style="width: 130px;" validatetype="uinteger" default="1000" maxlength="6"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                   描述：
+                </td>
+                <td colspan="2" >
+                    <textarea id="txt_CLASS_DESC" style="width: 200px; height: 60px;" onkeyup="showRemindWordCount(this.value,$('remindWord'),30);"></textarea><br />
+                         <div style="float: right;padding-right: 144px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">30</span> 字
+      				 </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divClassIdentify" style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+        <div id="divClassIdentifyTop" style="overflow: hidden;">
+            <table width="100%" cellspacing="0" cellpadding="0" class="table-info">
+                <tr>
+                    <td align="left">
+            			<span id="spanClassConfig" style="font-weight: bold"></span>的标识列表：
+                        <input id="hid_CLASS_ID" type="hidden" />
+                    </td>
+                    <td align="right">
+                        <strong><a href="javascript:newClassIdentify()" title="新建">[新建]</a></strong>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="divClassIdentifyContent" style="height: 83%; overflow: auto;">
+            <div id="divClassIdentifyList" class="webfx-columnlist" style="background: #fff; border: 0px;"
+                onfocus="this.blur();">
+                数据加载中...</div>
+        </div>
+    </div>
+    <div id="divClassIdentifyEdit" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head">
+       标识名：
+                </td>
+                <td>
+                    <input type="text" id="txt_SNMP_SYSOID" style="width: 250px" validatetype="NotEmpty"  maxlength = "200"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+       标识值：
+                </td>
+                <td>
+                    <input type="text" id="txt_SNMP_VALUE" style="width: 250px" maxlength = "200" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+        识别方式：
+                </td>
+                <td>
+                    <select id="cbo_CONDITION">
+                        <option value="EX">存在</option>
+                        <option value="EQ">等于</option>
+                        <option value="LK">Like</option>
+                        <option value="IN">In</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divClassSet" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+        <div id="divClassSetTop" style="overflow: hidden;">
+            <table width="100%" cellspacing="0" cellpadding="0" class="table-info">
+                <tr>
+                    <td align="left">
+            			<span id="spanClassSet" style="font-weight: bold"></span>的属性集列表：
+                        <input id="hid_CLASS_ID_ClassSet" type="hidden" />
+                        <input id="hid_MIB_ID_ClassSet" type="hidden" />
+                    </td>
+                    <td align="right">
+                        <strong><a href="javascript:newClassSet()" title="新建">[新建]</a></strong>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="divClassSetList" class="webfx-columnlist" style="background-repeat: no-repeat; overflow: auto; height: 305px; border: 0px; background: #fff "
+                onfocus="this.blur();">
+                数据加载中...</div>
+    </div>
+    <div id="divClassSetEdit" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">
+                    名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_CLASS_NAME_ClassSet" validatetype="NotEmpty" style="width: 130px;" maxlength="65" />
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    别名：
+                </td>
+                <td>
+                    <input type="text" id="txt_CLASS_TYPE_ClassSet" validatetype="NotEmpty" style="width: 130px;" maxlength="65" />
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+			<tr>
+                <td class="field-head">
+                  类型：
+                </td>
+                <td>
+                    <select id="cbo_CLASS_LEVEL_ClassSet1" style="height:21px" disabled="true">
+                        <option value="100">自定义属性</option>
+                        <option value="101">配置属性</option>
+                        <option value="102">监测指标</option>
+                        <option value="103">性能指标</option>
+                        <option value="104">Trap属性</option>
+                        <option value="105">信号属性</option>
+                        <option value="106">配置属性</option>
+                        <option value="107">Syslog属性</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+            	<td class="field-head">是否自动实例化：</td>
+            	<td>
+            		<select id="cbo_IS_AUTO_INS">
+            			<option value="0" selected="selected">是</option>
+            			<option value="1">否</option>
+            		</select>
+            	</td>
+            </tr>
+			<tr>
+                <td class="field-head">
+                  数据类型：
+                </td>
+                <td>
+                    <select id="cbo_CLASS_LEVEL_ClassSet2" style="height:21px">
+                        <option value="100"></option>
+                        <option value="101">标量数据</option>
+                        <option value="102"></option>
+                        <option value="103"></option>
+                        <option value="104"></option>
+                        <option value="105"></option>
+                        <option value="106">表格数据</option>
+                        <option value="107"></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                   描述：
+                </td>
+                <td>
+                    <textarea id="txt_CLASS_DESC_ClassSet" style="width: 200px; height: 60px;" onkeyup="showRemindWordCount(this.value,$('remindWord2'),30);"></textarea><br />
+                         <div style="float: right;padding-right: 71px;">
+                 			 还可以输入 <span id="remindWord2" style="font-weight:bold;">30</span> 字
+      				 </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divSelectSubType" style="display: none; overflow: hidden;margin-left:0px;margin-top:-1px;margin-right:0px">
+        <div id="divSelectSubTypeList" style="height: 300px">
+        </div>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <!-- 属性配置 -->
+    <div id="divAttr" style="display:none;">
+	    <div id="divAttrConfig" style="overflow: hidden;width:998px;height:465px;">
+	    	<div id="divAttrListPos1"  style="position: relative;">
+	    		<div id="divAttrListPos"  style="position: relative;">
+	    		</div>
+	    	</div>
+	    </div> 
+	    <div id="divAttrTab">
+			<div class="panel-head2">
+				<table cellspacing="0" cellpadding="0" border="0" width="600px"  id="tabAttr" style="margin-left: 0px;">
+	                <tr>
+	                    <td align="center" pagename="100">自定义属性</td>
+	                    <td align="center" pagename="101,106">配置属性</td>
+	                    <td align="center" pagename="102">监测指标</td>
+	                    <td align="center" pagename="103">性能指标</td>
+	                    <td align="center" pagename="104,105,107">其他</td>
+	                </tr>
+	            </table>
+	      		</div>
+		</div>
+	    <div id="divAttrPages" style="display:none;">
+	   		<div id="divPage1"></div>
+	   		<div id="divPage2"></div>
+	   		<div id="divPage3"></div>
+	   		<div id="divPage4"></div>
+	   		<div id="divPage5"></div>
+	   	</div>
+	   	<div id="divAttrSearch" style="margin-left: 0px; overflow: hidden;">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px; height: 30px; border: 0px;">
+				<tr>
+					<td align="left">
+						<span>属性集：</span>
+						<select id='selSubAC' onchange="comboxChange();" style="width: 155px; height: 22px">
+							<option value='-1'>请选择</option>
+						</select>
+					</td>
+					<td align="right">
+						<span id="aTrapImport" style="display: none;"><a href="#" onclick="importTrap();" style="font-weight: bold;"> [Trap导入]</a></span>
+						<span id="aUnbondAlarm" style="display: none;"><a href="#" onclick="showBatchAlarmConfig();" style="font-weight: bold;"> [报警设置]</a></span>
+						<span id="aUnbondAlarm" style="display: none;"><a href="#" onclick="unbond();" style="font-weight: bold;"> </a></span>
+						<span id="aBondAlarm" style="display: none;"><a href="#" onclick="bond();" style="font-weight: bold;"></a></span>
+						<span id="aNewAttr" style="display: none;"><a href="#" onclick="newMonitorAttribute();" style="font-weight: bold;"> [新建]</a></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divAttrList" class="webfx-columnlist" style="border: 0px; margin-left: 0px;" onfocus="this.blur();">
+			数据加载中...
+		</div>
+		<div id="divAttrBottom" class="list-bottom" style="margin-left: 0px;">
+			<div class="list-bottom-right">
+				<div id="divAttributePage" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div id="divMonitorAttribute" style="display: none">
+	        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+	            <tr>
+	                <td class="field-head" width="30%">属性名称：</td>
+	                <td>
+	                    <input type="text" id="txt_ATTRIB_NAME" validatetype="NotEmpty" maxlength="100" />
+	                    <span style="color: Red">*</span>
+	                </td>
+	            </tr>
+	            <tr id="trAttribValue">
+	                <td class="field-head"><span id="txtAttribValue">属性值：</span></td>
+	                <td>
+	                    <input type="text" id="txt_ATTRIB_VALUE" maxlength="100" />
+	                    <input type="button" id="btnTrap" value="管理" onclick="mibTrap();">
+	                </td>
+	            </tr>
+	            <tr id="trAttribParam">
+	                <td class="field-head" style="vertical-align: top;"><span id="txtAttribParam">参数：</span></td>
+	                <td>
+	                    <input type="text" id="txt_ATTRIB_PARAM" maxlength="100"/>
+	                    <input type="button" id= "txt_ATTRIB_PARAM_valide" value="验证" onclick="validateFormula();">
+	                    <input type="button" id= "txt_ATTRIB_PARAM_MIB" value="MIB树" onclick="mibDetails();">
+	                </td>
+	            </tr>
+	            <tr id="trValueType">
+	                <td class="field-head"><span id="txtValueType">参考值：</span></td>
+	                <td>
+	                    <input type="text" id="txt_VALUE_TYPE" readonly="readonly" disabled/>
+	                    <!--<input type="button" value="选择" onclick="showValueTypeDig();">-->
+	                </td>
+	            </tr>
+	            <tr>
+	                <td class="field-head" style="vertical-align: top;">数据编码：</td>
+	                <td>
+	                    <input type="text" id="txt_DATA_ENCODING" value="ASCII" maxlength="20"/>
+	                </td>
+	            </tr>
+	            <tr id="trDataType">
+	                <td class="field-head">数据类型：</td>
+	                <td>
+	                    <select id="cbo_DATA_TYPE" style="width:152px;">
+	                    	<option value="1">整型</option>
+	                        <option value="0">未知类型</option>
+	                        <option value="2">字符型</option>
+	                        <option value="3">日期型</option>
+	                        <option value="4">浮点型</option>
+	                    </select>
+	                </td>
+	            </tr>
+	            <tr id="trDataUnit">
+	                <td class="field-head">数据单位：</td>
+	                <td>
+	                    <input type="text" id="txt_DATA_UNIT"  maxlength="20"/>
+	                </td>
+	            </tr>
+	            <tr id="trViewType">
+	                <td class="field-head">显示类型：</td>
+	                <td>
+	                    <select id="sel_VIEW_TYPE" style="width:152px;">
+	                    	<option value="LABEL" selected>标签</option>
+	                        <option value="PIE">饼图</option>
+	                        <option value="LINE">线图</option>
+	                        <option value="COLUMN">柱状图</option>
+	                        <option value="LIST">列表</option>
+	                    </select>
+	                </td>
+	            </tr>
+	            <tr id="trCollSpan">
+	                <td class="field-head">采集间隔：</td>
+	                <td>
+	                    <select id="sel_COLL_TIMESPAN" style="width:152px;">
+	                        <option value="300">5分钟</option>
+	                        <option value="10">10 秒</option>
+	                        <option value="20">20 秒</option>
+	                        <option value="30">30 秒</option>
+	                        <option value="60">1分钟</option>
+	                        <option value="120">2分钟</option>
+	                        <option value="180">3分钟</option>
+	                        <option value="600">10分钟</option>
+	                    </select>
+	                </td>
+	            </tr>
+	            <tr id="trIsVisible">
+	                <td class="field-head">是否可见：</td>
+	                <td>
+	                    <select id="sel_IS_VISIBLE" style="width:152px;">
+	                    	<option value="1">可见</option>
+	                        <option value="0">不可见</option>
+	                    </select>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td class="field-head" style="vertical-align: top;">描述：</td>
+	                <td>
+	                    <textarea id="txt_ATTRIB_DESC" cols="30" rows="5" onkeyup="showRemindWordCount(this.value,$('remindWorddesc'),600);"></textarea><br />
+                    <div style="float: right;padding-right: 106px;">
+                 			 还可以输入 <span id="remindWorddesc" style="font-weight:bold;">600</span> 字
+      				 </div>
+	                </td>
+	            </tr>
+	            
+	        </table>
+	    </div>
+   	</div>
+   	<!-- 监测信息、性能信息关联告警 -->
+	<div id="divObjAttrib2Alarm" style="display:none; position: relative;margin-top:-2px;margin-bottom:-5px">
+	    <div id="divObjAttrib2Alarm1">
+	        <div id="divAlarmListContent">
+				<div id="divAlarmList" class="webfx-columnlist" style="border: 1px; ">
+					数据加载中...
+				</div>
+			</div>			
+					
+			<div id="divAlarmDetail">
+			    <table width="100%" border="0" cellpadding="0" cellspacing="1" style="overflow: right;">
+					<tr style="height: 30px">
+						<td width="77">
+							<strong>报警设置</strong>
+						</td>
+					</tr>
+					<tr style="height: 20px">
+						<td colspan="2" align="left">
+							报警描述：
+							<label id="lblAlarmDesc"></label>
+						</td>
+					</tr>
+					<tr style="height: 20px">
+						<td align="left" width="180">
+							检查次数：
+							<label id="lblCheckNum"></label>
+						</td>
+						<td align="left">
+							越限次数：
+							<label id="lblOverNum"></label>
+						</td>
+						<!--  
+						<td width="123" align="left">
+							报警间隔(秒)：
+							<label id="lblCheckSpan">
+							</label>
+						</td>
+						-->
+						
+					</tr>
+					<tr style="height: 30px">
+						<td width="73">
+							<strong>阀值设置</strong>
+						</td>
+					</tr>
+				</table>
+				<div style="border: 0px; background-repeat: no-repeat; overflow: auto; height: 140px;">
+					<div id="divAlarmLevel" class="webfx-columnlist"
+						style="border: 1px; ">
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+	<div id="divSnmp" style="display : none; overflow: auto;width:780px;height:375px;">
+    	<div id="divSnmpContent1" style="position: relative;">
+       		<div id="divSnmpContent" style="display:none; position: relative;">
+	       		<div id="divSnmpTree"></div>
+	       		<div id="divSnmpNode">
+	       			<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+			            <tr>
+			                <td class="field-head" width="60px">名称：</td>
+			                <td>
+			                    <input type="text" id="txt_NODE_NAME" readonly="readonly" disabled/>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td class="field-head" width="60px">OID：</td>
+			                <td>
+			                    <input type="text" id="txt_NODE_OID" readonly="readonly" disabled/>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td class="field-head" width="60px">文件：</td>
+			                <td>
+			                    <input type="text" id="txt_MIB_FILE" readonly="readonly" disabled/>
+			                </td>
+			            </tr>
+			            <!-- <tr>
+			                <td class="field-head" width="60px">枚举：</td>
+			                <td>
+			                    <input type="button" value="编辑" id="btn_NODE_OID" class="button" disable/>
+			                </td>
+			            </tr> -->
+			            <tr>
+			                <td class="field-head" width="60px" style="vertical-align: top;">英文描述：</td>
+			                <td>
+			                    <textarea id="txt_NODE_DESC" cols="22" rows="5" readonly="readonly" disabled></textarea>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td class="field-head" width="60px" style="vertical-align: top;">中文描述：</td>
+			                <td>
+			                    <textarea id="txt_NODE_EXPLAIN" cols="22" rows="5" readonly="readonly" disabled></textarea>
+			                </td>
+			            </tr>
+			        </table>
+	       		</div>
+			</div>
+		</div>
+	</div>
+	<!-- Trap编辑 -->
+	<div id="divTrap" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+		<table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;border: 0px;height:30px;margin-bottom:3px;">
+			<tr style="height: 20px">
+				<td align="left">
+					<span id="spanMibName" style="font-weight: bold"></span>Trap列表：
+				</td>
+				<td align="right">
+					<strong><a href="#" onclick="newTrap();"style="font-weight: bold;"> [新建]</a></strong>
+				</td>
+			</tr>
+		</table>
+		<div id="divTrapList" style="background-repeat: no-repeat; overflow: auto; height: 361px; border: 0px; background: #fff" class="webfx-columnlist">
+			数据加载中...
+		</div>
+		<div id="divTrapBottom" class="list-bottom" style="position: relative; height: 30px;">
+	        <div class="list-bottom-right">
+	            <div id="divTrapPage" class="text_style">
+	            </div>
+	        </div>
+    	</div>
+	</div>
+	<div id="divTrapNew" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <colgroup span="2" style="height: 24px;">
+                <col style="width: 30%;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tr>
+                <td class="field-head">
+                    	英文名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_TRAP_NAME" validatetype="NotEmpty"  maxlength="65"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+					OID：
+                </td>
+                <td>
+                    <input type="text" id="txt_TRAP_OID" validatetype="NotEmpty" maxlength="65"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    	中文名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_NAME_CN" maxlength="65"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    英文描述：
+                </td>
+                <td>
+                    <textarea type="textarea" id="txt_TRAP_DESC" rows="5" cols="22" lengthrange="600"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    中文描述：
+                </td>
+                <td>
+                    <textarea id="txt_DESC_CN" rows="5" cols="22" lengthrange="600"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divSubTrap" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px">
+			<tr style="height: 20px">
+				<td align="left">
+					<span id="spanSubTrap" style="font-weight: bold"></span>的子节点列表：
+				</td>
+				<td align="right">
+					<a href="#" onclick="newTrapSub();return false;" title="新建"
+						style="font-weight: bold;"> [新建]</a>
+				</td>
+			</tr>
+		</table>
+		<div id="divSubTrapList" class="webfx-columnlist"
+			style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 300px;">
+			数据加载中...
+		</div>
+	</div>
+	<div id="divHiddenValue" style="display: none">
+    	<input type="text" id="curMibType"/>
+    	<input type="text" id="curNodeId"/>
+    </div>
+       
+    <div id="divImportResouXml" style="display: none">
+    	<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="70">
+       				MIB类型：
+                </td>
+                <td >
+                    <select id="cbo_MIB_ID2" style="width: 154px;" >
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" width="70">
+                    选择文件：
+                </td>
+                <td>
+                <!-- target="frameUpload" -->
+                	<form id="formImportResouXml" method="post" enctype="multipart/form-data" target="frameImportResouXml" >
+						<input type="file" id="fileResouAttachment" name="ResouAttachment" />
+                    	<input type="hidden" id="hidResouClassId"/>
+                    </form>
+                </td>
+            </tr>
+              <tr>
+            	<td class="field-head" width="70">
+                    &nbsp;
+                </td>
+            	<td>
+            		<span style="color: #FF0000; vertical-align: middle;">*</span>（导入的xml文件大小不能超过10M）
+            	</td>
+            </tr>
+        </table>
+    </div>
+    <div id="divImportResou" style="display: none; text-align: center;">
+    	资源类型文件正在导入中……
+    </div>
+      <iframe id="frameImportResouXml" name="frameImportResouXml" src="" style="display: none;"></iframe>
+      
+            <div id="divViewPictureList" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+		 <!--   <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;padding: 3px;border: 0px;height:30px;"> -->
+		  <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding: 3px;border: 0px;height:30px;margin-bottom:3px;">
+	           <tr>
+	              <td align="left" style = "width:188px">图片名称：
+	                  <input id="PICTURE_NAME_SEARCH" type="text" onkeydown="JetsenWeb.keyEvent(searchPicture)" class="input" maxlength="12"/> &nbsp;&nbsp;
+	              </td>           
+	              <td align="left" style = "width:79px">
+	                  <input type="button" value="查找" onclick="searchPicture();" class="button" />
+	              </td>
+	             <td align="left">
+				     <input type="button" id="uploadPicture" class="button" value="上传图片" onclick="uploadFile();"/>
+                </td>
+	           </tr>  	
+	      </table>
+		 <div id="divViewPicture" style="background-repeat: no-repeat; overflow: auto; height: 445px; border: 0px; background: #fff" class="webfx-columnlist">
+	      	   数据加载中...
+	    </div>
+	    <div id="divPictureBottom" class="list-bottom" style="position: relative; height: 30px;">
+	        <div class="list-bottom-right">
+	            <div id="divSelectPicturePage" class="text_style">
+	            </div>
+	        </div>
+    	</div>
+    </div>
+    
+    <div id="divAttachment" style="display: none">
+    	<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="70">
+                    上传图片：
+                </td>
+                <td>
+                	<form id="formUpload" method="post" enctype="multipart/form-data" target="frameUpload">
+						<input type="file" id="fileAttachment" name="attachment" />
+                    	<input type="hidden" id="hidClassId"/>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+            	<td class="field-head" width="70">
+                    &nbsp;
+                </td>
+            	<td>
+            		<span style="color: #FF0000; vertical-align: middle;">*</span>（上传的图片大小不能超过10M）
+            	</td>
+            </tr>
+        </table>
+    </div>
+    <div id="divUploadTip" style="display: none; text-align: center;">
+    	文件上传中……
+    </div>
+     <div style="display: none;"><input id="hide_picture_id" type="text" /> </div> 
+    <iframe id="frameUpload" name="frameUpload" src="../../servlet/BMPFilesUploadServlet" style="display: none;"></iframe>
+
+    <form id="formDeleteFile" method="post" target="frameDeleteFile" style="display: none;"></form>
+    <iframe id="frameDeleteFile" name="frameDeleteFile" src="../../servlet/BMPOperateFileSystemServlet" style="display: none;"></iframe>
+</body>
+</html>

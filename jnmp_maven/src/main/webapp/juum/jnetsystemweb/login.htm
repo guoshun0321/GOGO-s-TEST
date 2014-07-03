@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>JetsenNet网络监控系统</title>
+    <!-- <title>广西电视台播出信号监测监录系统</title> -->
+
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+
+    <script type="text/javascript" src="javascript/login.js"></script>
+
+    <style type="text/css">    
+    .tip {
+	font-size: 14px;
+	color: #7ABBFB;
+    }
+    .serviceLoading
+    {
+	    PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-WEIGHT: bold; FONT-SIZE: 9pt; Z-INDEX: 10000000; RIGHT: 2px; POSITION: absolute; TOP: 2px
+    }   
+    body {
+	    margin-left: 0px;
+	    margin-top: 0px;
+	    background-color: #384F85;
+    }
+    .p12 {	font-family: "宋体";
+	    line-height: 180%;
+	    color: #FFFFFF;
+	    text-decoration: none;
+	    font-size: 12px;
+    }
+    </style>
+
+    <script type="text/javascript">
+        var gDefaultPage = JetsenWeb["MAINPAGE_URL"] ? JetsenWeb["MAINPAGE_URL"] : "default.htm";
+        JetsenWeb.importCss("login");
+    </script>
+
+</head>
+<body onload="pageInit();" scroll="no">
+    <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td style="background: url(images/zgyclogin_01.jpg) center 0; height: 124px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background: url(images/zgyclogin_02.jpg) center 0; height: 108px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background: url(images/zgyclogin_03.jpg) center 0; height: 94px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" style="background: url(images/zgyclogin_04.jpg) center 0; height: 165px">
+                            <table width="414" height="142" border="0" align="center" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td height="37" colspan="2" valign="middle">
+                                        &nbsp;</td>
+                                    <td width="243" valign="middle">
+                                        <input id="txtUserName" type="text" value="" size="25" style="background-color: transparent;
+                                            border: 0px" /></td>
+                                </tr>
+                                <tr>
+                                    <td height="59" colspan="2" valign="bottom">
+                                        &nbsp;</td>
+                                    <td valign="middle">
+                                        <input id="txtPassword" type="password" value="" size="25" style="background-color: transparent;
+                                            border: 0px" /></td>
+                                </tr>
+                                <tr>
+                                    <td width="157" height="7">
+                                    </td>
+                                    <td colspan="2">
+                                        <a href="javascript:void(0)">
+                                            <img src="images/zgyclogin_08.jpg" width="181" height="41" border="0" onclick="login()"
+                                                style="cursor: pointer" /></a></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="108" background="images/zgyclogin_05.jpg">
+                            <table width="800" border="0" align="center" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="272">
+                                        &nbsp;</td>
+                                    <td width="528" class="p12">
+                                       <script type="text/javascript">                document.write("&copy;" + new Date().getFullYear() + " Jetsen")</script>
+
+            北京捷成世纪科技股份有限公司</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background: url(images/zgyclogin_06.jpg) center 0; height: 91px">
+                            &nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td style="background: url(images/zgyclogin_07.jpg) center 0; height: 74px">
+                            &nbsp;</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

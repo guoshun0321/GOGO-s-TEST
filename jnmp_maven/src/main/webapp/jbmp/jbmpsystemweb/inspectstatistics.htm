@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>巡检报告</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/checkbox.js"></script>
+		<script type="text/javascript" src="javascript/function.js"></script>
+		<script type="text/javascript" src="javascript/reportpub.js"></script>
+		<script type="text/javascript" src="javascript/report_comm.js"></script>
+		<script type="text/javascript" src="javascript/inspectstatistics.js"></script>
+		
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom:3px;">
+			<table width="835" cellspacing="0" cellpadding="0"
+				class="table-info" style="padding: 3px">
+				<tr>
+					<td align="left" width="500">
+						所属系统：
+						<select id="cbo_ObjGroup" style="width: 105px"
+							onkeydown="JetsenWeb.keyEvent(exportData)" onchange="objectInit();">
+						</select>&nbsp;&nbsp;
+						对象名称：
+						<select id="cbo_Object" style="width: 150px;" onkeydown="JetsenWeb.keyEvent(exportData)">
+						</select>
+					</td>
+					<td align="left" width="360">
+					</td>
+				</tr>
+				<tr>
+					<td align="left" width="500">
+						查询时间：
+						<input type="text" id="txtSDate"
+							onclick= JetsenWeb.UI.DatePicker.popCalendar(this);;;; class="selectdate" readonly />
+						<input type="text" id="txtSTime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							validatetype="NotEmpty" />
+						-
+						<input type="text" id="txtEDate"
+							onclick=JetsenWeb.UI.DatePicker.popCalendar(this);;;; class="selectdate" readonly />
+						<input type="text" id="txtETime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							validatetype="NotEmpty" />
+						<input type="checkbox" id="chkDate" checked />
+					</td>
+					<td align="left">
+						<input type="button" value="查找" onclick="exportData()" class="button" />
+						<input type="button" value="定制" onclick="customReportTime()" class="button" />
+						<!-- <input type="button" value="查找" onclick="searchAlarmEvent();" class="button" />-->
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divInspectReportList" class="webfx-columnlist" style="border: 0px"
+			onfocus="this.blur();">
+			<iframe id="frmTableInfo"
+				style="width: 100%; height: 100%; border-width: 0px; position: absolute;"
+				frameborder="0" border="0"></iframe>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				巡检报告
+			</div>
+		</div>
+		<div id="divFieldList" style="display: none;">
+		</div>
+		<div id="divReportTime" style="display: none; overflow: hidden;">	
+			<div id="divReportTimeTop" style="overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px; height:100%">
+				<table width="100%" cellspacing="0" cellpadding="0"
+					style="padding: 3px;" class="tablepanel">
+					<tr>
+						<td align="left">
+							任务名称：
+							<input id="txt_ReportTime_Key"
+								onkeydown="JetsenWeb.keyEvent(searchReportTime)" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="button" value="查找" onclick="searchReportTime();"
+								class="button" />
+							<input id="hid_REPORT_ID" type="hidden" />
+						</td>
+						<td align="right">
+							<strong><a href="javascript:newReportTime()" title="新建">[新建]</a>
+							</strong>
+						</td>
+					</tr>
+				</table>
+				<div id="divReportTimeContent" style="overflow: auto;">
+					<div id="divReportTimeList" class="webfx-columnlist"
+						style="height: 320px; border: 0px; background: #fff" onfocus="this.blur();">
+						数据加载中...
+					</div>
+					<div id="divReportTimePage" class="list-bottom" style="height: 25px;" align="right">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="divReportTimeEdit" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head" style="width: 100px;">
+						任务名称：
+					</td>
+					<td>
+						<input type="text" id="txt_TASK_NAME" validatetype="NotEmpty" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						任务类型：
+					</td>
+					<td>
+						<select id="cbo_TASK_TYPE" validatetype="NotEmpty,Integer"
+							onchange="changeTaskType(this.value)">
+							<option value="1">
+								周期任务
+							</option>
+							<option value="2">
+								单次任务
+							</option>
+						</select>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr id="trWeek" style="display: none;">
+					<td class="field-head">
+						<input id="chkMon" name="chkWeek" type="checkbox" value="64"
+							default="64" />
+						<label id="lchkMon" for="chkMon">
+							周一
+						</label>
+					</td>
+					<td>
+						<input id="chkTue" name="chkWeek" type="checkbox" value="32"
+							default="32" />
+						<label id="lchkTue" for="chkTue">
+							周二
+						</label>
+						&nbsp;
+						<input id="chkWed" name="chkWeek" type="checkbox" value="16"
+							default="16" />
+						<label id="lchkWed" for="chkWed">
+							周三
+						</label>
+						&nbsp;
+						<input id="chkThu" name="chkWeek" type="checkbox" value="8"
+							default="8" />
+						<label id="lchkThu" for="chkThu">
+							周四
+						</label>
+						&nbsp;
+						<input id="chkFri" name="chkWeek" type="checkbox" value="4"
+							default="4" />
+						<label id="lchkFri" for="chkFri">
+							周五
+						</label>
+						&nbsp;
+						<input id="chkSat" name="chkWeek" type="checkbox" value="2"
+							default="2" />
+						<label id="lchkSat" for="chkSat">
+							周六
+						</label>
+						&nbsp;
+						<input id="chkSun" name="chkWeek" type="checkbox" value="1"
+							default="1" />
+						<label id="lchkSun" for="chkSun">
+							周日
+						</label>
+					</td>
+				</tr>
+				<tr id="trHour" style="display: none;">
+					<td class="field-head">
+						起止时间：
+					</td>
+					<td>
+						<input id="txtSHour" name="txtSHour" type="text"
+							style="width: 20px;" default="0" />
+						点-
+						<input id="txtEHour" name="txtEHour" type="text"
+							style="width: 20px;" default="23" />
+						点
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						开始日期：
+					</td>
+					<td>
+						<input type="text" id="txt_START_DATE"
+							validatetype="NotEmpty,DateTime"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							style="width: 80px" />&nbsp;<span style="color: Red">*</span>
+						<input type="text" id="txt_START_TIME" style="width: 80px;display: none;"
+							default="00:00:00" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+						
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						结束日期：
+					</td>
+					<td>
+						<input type="text" id="txt_END_DATE"
+							validatetype="NotEmpty,DateTime"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							style="width: 80px" />&nbsp;<span style="color: Red">*</span>
+						<input type="text" id="txt_END_TIME" style="width: 80px;display: none;" 
+							default="23:59:59" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+						
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						生成周期：
+					</td>
+					<td>
+						<input type="text" id="txt_COLL_TIMESPAN_DAY"
+							validatetype="NotEmpty,Integer" style="width: 20px" default="0" /> 天 
+						<input type="text" id="txt_COLL_TIMESPAN_HOUR"
+							validatetype="NotEmpty,Integer" style="width: 20px" default="0" /> 时 
+						<input type="text" id="txt_COLL_TIMESPAN_MINUTE"
+							validatetype="NotEmpty,Integer" style="width: 20px" default="0" /> 分 
+						<input type="text" id="txt_COLL_TIMESPAN_SECOND"
+							validatetype="NotEmpty,Integer" style="width: 20px" default="0" /> 秒 
+						<span style="color: Red">*</span>
+						<input type="hidden" id="txt_COLL_TIMESPAN"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						报表格式：
+					</td>
+					<td>
+						<select id="cbo_FILE_FORMAT" validatetype="NotEmpty">
+							<option value="0">
+								excel
+							</option>
+							<option value="1">
+								word
+							</option>
+							<option value="2">
+								pdf
+							</option>
+						</select>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						是否邮件：
+					</td>
+					<td>
+						<select id="cbo_IS_MAIL" validatetype="NotEmpty,Integer">
+							<option value="0">
+								否
+							</option>
+							<option value="1">
+								是
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="vertical-align:top; ">
+						报表参数：
+					</td>
+					<td>
+						<textarea id="txt_customReportParam" readonly="readonly" rows="5"
+							cols="50"></textarea>
+						<br />
+						<input id="chk_paramOrign" name="paramOrign" type="checkbox"
+							value="0" onclick="setCustomReportParam()" />
+						使用当前搜索条件作为报表参数
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divViewReportParam" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head" style="vertical-align: top;">
+						报表参数：
+					</td>
+					<td>
+						<textarea id="txt_view_reportParam" style="width: 350px; height: 80px;" />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

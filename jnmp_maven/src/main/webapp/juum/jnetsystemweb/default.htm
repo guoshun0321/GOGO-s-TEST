@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>JetsenNet网络监控系统</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/menu.js"></script>
+	<script type="text/javascript" src="javascript/indexalarm.js"></script>
+    <script type="text/javascript">   
+    JetsenWeb.valideLogin();
+    var gSystemTitle = "JetsenNet网络监控系统";
+
+    JetsenWeb.require(["js_window","js_pageframe","js_menu"]);
+    JetsenWeb.importCss("framestyle"); 
+    var gFrame;
+    var gAccordion;
+    var gWindowSizeChangedInterVal;
+    var gCreateMenuInterVal;
+ 	// 首页弹出窗口
+    var alarmWin = null;
+    var isAdmin = false;
+    function pageInit()
+    {   
+        document.getElementById("divLoginName").innerHTML = JetsenWeb.Application.userInfo.UserName;
+        
+        if(JetsenWeb.queryString("column")!="")
+        {
+            $('divColumnName').innerHTML = "栏目：<span style='font-weight: bold;'>"+JetsenWeb.queryString("column")+"</span>&nbsp;&nbsp;";
+        }
+        
+       //-------------------------------------frameTop--------------------------------------++
+       //--frameLeft-------- +----------------frameContentTitle------------------------------+
+       //--frameLeftTop      +                                                              f+
+       //--                  +                                                              r+
+       //--                  +                                                              a+
+       //--                  +                                                              m+
+       //--                  +                                                              e+
+       //--frameMenu         +----------------frameMain-------------------------------------r+
+       //--                  +                                                              i+
+       //--                  +                                                              h+
+       //--                  +                                                              g+
+       //--leftBottom        +                                                              t+
+       //-------------------------------------frameBottom------------------------------------+
+    
+        gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"),{splitType:1,fixControlIndex:0,showSplit:false});  
+                  
+//        var frameLeft = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameLeft"),{size:{width:210,height:200},minSize:{width:210,height:200},splitType:1,showSplit:false,fixControlIndex:0,enableHide:true});       
+//        frameLeft.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeftTop"),{size:{width:0,height:70}}));
+//        var leftContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divLeftConent"),{splitType:1,showSplit:false,fixControlIndex:1});
+//        leftContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divMenu"),{onresize:function(){ if(gAccordion) gAccordion.refresh();}})); 
+//        leftContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeftBottom"),{size:{height:13,width:0}})); 
+//        frameLeft.addControl(leftContent); 
+          
+        var frameContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameContent"),{splitType:1,showSplit:false,fixControlIndex:0});   
+        frameContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divContentTitle"),{size:{width:0,height:29}}));
+        
+        gContentItem = new JetsenWeb.UI.PageItem("JetsenMain");
+        frameContent.addControl(gContentItem);        
+        
+        var frameRight = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameRight"),{splitType:0,showSplit:false,fixControlIndex:1});  
+        frameRight.addControl(frameContent);
+        frameRight.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divRight"),{size:{width:7,height:0}}));
+        
+        var frameMiddle = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameMiddle"),{splitType:0,showSplit:false,fixControlIndex:0});   
+        frameMiddle.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeft"),{size:{width:7,height:0}}));//frameLeft);
+        frameMiddle.addControl(frameRight); 
+        
+        var frameMain = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameMain"),{fixControlIndex:1,splitType:1,showSplit:false}); 
+        frameMain.addControl(frameMiddle);
+        frameMain.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divPageBottom"),{size:{width:0,height:28}}));   
+        
+        gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divTop"),{size:{width:0,height:53}}));
+        gFrame.addControl(frameMain);    
+        
+        window.onresize = function(){
+            if(gWindowSizeChangedInterVal!=null)
+                window.clearTimeout(gWindowSizeChangedInterVal);
+            gWindowSizeChangedInterVal = window.setTimeout(windowResized,500);
+        };
+        windowResized()
+    
+        setFrameUrl();
+        getPortalFunction();
+
+        alarmWin = new jnmp_js.index.alarmWin("divAlarmEvent", "divShowAlarmState", "alarmWin", JetsenWeb.Application.userInfo.UserId);
+        alarmWin.start();
+    }
+
+    function windowResized()
+    {
+        var size = JetsenWeb.Util.getWindowViewSize();
+        gFrame.size = {width:size.width-0,height:size.height-0};
+        gFrame.resize();    
+    }
+       
+    JetsenWeb.Service.prototype.onvalideerror = function(errorStr)
+    {   
+        if(JetsenWeb.alertAndCall)
+        {
+            JetsenWeb.alertAndCall(errorStr,"JetsenWeb.gotoLogin();")
+        }
+        else
+        {
+            jetsennet.alert(errorStr);   
+            JetsenWeb.gotoLogin();
+        } 
+        return true;
+    }    
+    </script>
+
+    <base target="JetsenMain"/>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="frame-top">
+        <div class="frame-top-left"></div>
+        <div class="frame-top-right">
+            <div align="right" class="add">
+                您好：
+                <span class="frame-login-name" id="divLoginName"> <strong>管理员</strong>
+                </span>
+                &nbsp;
+                <span id="divColumnName" style=""></span>
+                <span>
+                    今天是：
+                    <script type="text/javascript">document.write(new Date().toDateString(true))</script>
+                </span>
+            </div>
+            <div align="right" style="padding-top:3px">
+                <a onclick="showModifyInfo()"
+                    class="frame-info-link">个人资料</a>
+                <!--<img src="images/jetsentop02.gif" class="frame-info-icon" />
+                <a
+                        href="#" class="frame-info-link">帮 助</a>
+                -->
+                <a onclick="JetsenWeb.logout();" class="frame-logout-link">退出系统</a>
+            </div>
+        </div>
+    </div>
+    <div id="divFrameLeft" class="frame-left"></div>
+    <div id="divContentTitle" class="frame-title">
+        <div class="frame-title-left"></div>
+        <div class="frame-title-icon"></div>
+        <div class="frame-title-center" id="divMenu">JetsenNet网络系统</div>
+        <div class="frame-title-right"></div>
+        <div id="spanWindowName" style="display: none;">JetsenNet网络系统</div>
+    </div>
+    <iframe frameborder="0" id="JetsenMain" name="JetsenMain" scrolling="auto" src="main.htm"
+        style="z-index: 0; border-right: 0px; border-left: 0px; border-top: 1px solid threedshadow;
+        position: absolute; left: 180px; top: 50px; border-bottom: 0px; display: none"></iframe>
+    <div id="divBottom"></div>
+    <div id="divRight" class="frame-right"></div>
+    <div id="divSubMenu" style="display:none"></div>
+    <div id="divPageBottom" class="frame-bottom">
+        <div class="frame-bottom-left">
+
+            <script type="text/javascript">document.write("&copy;"+new Date().getFullYear()+" Jetsen")</script>
+            北京捷成世纪科技股份有限公司
+        </div>
+        <div id="divShowAlarmState" class="frame-bottom-right" style="padding: 0px; width: 27px;">
+        	<a href="#" onclick="alarmWin.manualShow();return false;"><img src="images/jetsenbn03.gif" style="border: 0px;"/></a>
+        </div>
+    </div>
+    <div style="display: none" id="divUserInfo" align="left">
+        <table width="100%" border="0" cellpadding="2" cellspacing="1">
+            <tr>
+                <td  align="right" width="100px">用户姓名：</td>
+                <td colspan="3">
+                    <input type='text' id="txtUserName" validatetype="NotEmpty" style="width: 120px" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr id="trModifyPw">
+                <td align="right">修改密码：</td>
+                <td colspan="3">
+                    <input type="checkbox" id="chkModifyPw" onclick="if(this.checked){$('trPassword').style.display='';$('txtPassword').value='';$('txtPassword2').value='';}else{$('trPassword').style.display='none';$('txtPassword').value='123';$('txtPassword2').value='123';}" />
+                </td>
+            </tr>
+            <tr id="trPassword">
+                <td align="right">用户密码：</td>
+                <td>
+                    <input type='password' id="txtPassword" validatetype="NotEmpty" style="width: 120px" />
+                    <span style="color: Red">*</span>
+                </td>
+                <td align="right">确认密码：</td>
+                <td>
+                    <input type='password' id="txtPassword2" validatetype="NotEmpty" style="width: 120px" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">页面样式：</td>
+                <td>
+                    <select id="ddl_PageTheme">
+                        <option value=""></option>
+                        <option value="jsnet">蓝色经典</option>
+                    </select>
+                </td>
+                <td align="right">页面布局：</td>
+                <td>
+                    <select id="ddl_PageStyle">
+                        <option value=""></option>
+                        <option value="default.htm">上下分隔</option>
+                        <option value="index.htm">左右分隔</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">描述信息：</td>
+                <td colspan="3">
+                    <textarea id="txtDesc" style="width: 350px; height: 40px"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divAlarmEvent" style="display: none; width:600px; height: 167px; overflow: auto;">
+        <div id="divAlarmEventLst" style="height: 137px;"></div>
+        <div id="divAlarmEventOp" style="height: 30px; background-color: #BCCEF7;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="height: 30px;">
+                <tr style="height: 30px;">
+                    <td width="500px" height="30px" style="height: 30px;"></td>
+                    <td width="100px" height="30px" style="height: 30px;">
+                        <input id="chkAlarmEventAuto" type="checkbox" checked="checked" style="vertical-align:middle;" onchange="alarmWin.changeAuto();"/>
+                        <label style="vertical-align:middle;">自动弹出</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="divAlarmEventHandle" style="display: none; width: 400px; height : 120px; overflow: hidden;">
+        <div style="height: 30px; line-height: 30px;">
+            <input id="radioEventHandle0" onchange="changeHandleType(0)" type="radio" checked="checked" name="handleType" value="报警确认"/>
+            报警确认
+            <input id="radioEventHandle1" onchange="changeHandleType(1)" type="radio" name="handleType" value="报警清除"/>
+            报警清除
+            <input id="radioEventHandle2" onchange="changeHandleType(2)" type="radio" name="handleType" value="报警处理"/>
+            报警处理
+        </div>
+        <div>
+            <textarea rows="5" cols="45" id="areaEventHandle"></textarea>
+        </div>
+    </div>
+</body>
+</html>

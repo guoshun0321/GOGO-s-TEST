@@ -1,0 +1,255 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>资源KPI指标报表</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/function.js"></script>
+		<script type="text/javascript" src="javascript/kpiReport.js"></script>
+
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom: 3px;">
+			<table width="100%" cellspacing="0" cellpadding="0"
+				class="table-info" style="padding: 3px">
+				<tr>
+					<td align="left" colspan="2">
+						报表类型：
+						<select id="reportType" onchange="onShowTypeChange();">
+							<option value="1">
+								明细报表
+							</option>
+							<option value="2">
+								日报
+							</option>
+							<option value="3">
+								周报
+							</option>
+							<option value="4">
+								月报
+							</option>
+							<option value="5">
+								年报
+							</option>
+						</select>
+						&nbsp;&nbsp;&nbsp; 查询时间：
+						<input type="text" id="detailReportSDate" style="display: inline;"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							class="selectdate" readonly />
+						<input type="text" id="detailReportSTime"
+							style="width: 70px; display: inline"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)"
+							validatetype="NotEmpty" />
+						<span id="detailReportSpan" style="display: inline;">-</span>
+						<input type="text" id="detailReportEDate" style="display: inline;"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							class="selectdate" readonly />
+						<input type="text" id="detailReportETime"
+							style="width: 70px; display: inline;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)"
+							validatetype="NotEmpty" />
+
+						<input type="text" id="dailyReportSDate" style="display: none"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							class="selectdate" readonly />
+
+						<input type="text" id="weekReportSDate" style="display: none;"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" onchange="showChange();"
+							class="selectdate" readonly />
+
+						<span id="weekReportSpan" style="display: none"><span
+							id="year"></span>年第<span id="week"></span>周（<span
+							id="weekStartDate"></span>---<span id="weekEndDate"></span>）</span>
+						<span id="monthReportSpan" style="display: none"> <input
+								type="text" id="inputYear" style="width: 35px" />&nbsp;&nbsp;年&nbsp;
+							<select id="inputMonth">
+								<option value="0">
+									1
+								</option>
+								<option value="1">
+									2
+								</option>
+								<option value="2">
+									3
+								</option>
+								<option value="3">
+									4
+								</option>
+								<option value="4">
+									5
+								</option>
+								<option value="5">
+									6
+								</option>
+								<option value="6">
+									7
+								</option>
+								<option value="7">
+									8
+								</option>
+								<option value="8">
+									9
+								</option>
+								<option value="9">
+									10
+								</option>
+								<option value="10">
+									11
+								</option>
+								<option value="11">
+									12
+								</option>
+							</select>&nbsp;&nbsp;月 </span>
+						<span id="yearReportSpan" style="display: none"> <input
+								type="text" id="inputYearReport" style="width: 35px" />&nbsp;&nbsp;年&nbsp;
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td align="left" colspan="2">
+						展现方式：
+						<input id="rdo1" type="radio" name="showType" value="1"
+							checked="checked" />
+						图表方式&nbsp;&nbsp;&nbsp;
+						<input id="rdo2" type="radio" name="showType" value="2" />
+						列表方式
+					</td>
+				</tr>
+				<tr>
+					<td align="left" style="width: 550px;">
+						统计指标：
+						<select id="seletedObjAttb" multiple
+							style="width: 470px; height: 70px; vertical-align: top;">
+						</select>
+					</td>
+					<td style="vertical-align: bottom;">
+						<input type="button" value="选择指标" onclick="onSelectAttrib();" />
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="button" value="查找" onclick="searchReport();" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divReportFileList" class="webfx-columnlist"
+			style="border: 0px" onfocus="this.blur();">
+			<iframe id="report1Info"
+				style="width: 100%; height: 100%; border-width: 0px; position: absolute;"
+				frameborder="0" border="0"></iframe>
+		</div>
+		<div id="divBottom" class="list-bottom">
+			<div class="list-bottom-right">
+				<div id="divReportFilePage" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				指标数据统计
+			</div>
+		</div>
+		<div id="divAttribSelect" style="display: none">
+			<div style="width: 865px; height: 305px;">
+				<div style="width: 235px; height: 320px; float: left">
+					<div id="divObjGroup"
+						style="background: #fff; border: 1px; height: 305px; overflow: auto;">
+
+					</div>
+				</div>
+				<div style="width: 295px; height: 320px; float: left;">
+					<div id="divObjList"
+						style="background: #fff; border: 1px; height: 305px; overflow: auto; width: 295px">
+
+					</div>
+				</div>
+				<div style="width: 335px; height: 320px; float: left;">
+					<div id="divAttrList"
+						style="background: #fff; border: 1px; height: 305px; overflow: auto;">
+
+					</div>
+				</div>
+			</div>
+			<div style="width: 865px; height: 125px;">
+				<table width="100%" cellspacing="0" cellpadding="0"
+					class="tablepanel">
+					<tr>
+						<td align="left">
+							已经选择的指标
+						</td>
+						<td align="right">
+							<strong><a href="#" style="font-weight: bold;"
+								onclick="showInTheSame();"> [合并图表]</a>
+							</strong>&nbsp;&nbsp;
+							<strong><a href="#" style="font-weight: bold;"
+								onclick="showInTheDifferent();"> [拆分图表]</a>
+							</strong>&nbsp;&nbsp;
+							<strong><a href="#" style="font-weight: bold;"
+								onclick="saveTemplate();"> [保存]</a>
+							</strong>&nbsp;&nbsp;
+							<strong><a href="#" style="font-weight: bold;"
+								onclick="importTemplate();"> [导入]</a>
+							</strong>
+						</td>
+					</tr>
+				</table>
+				<div id="divSeletedAttr" class="webfx-columnlist"
+					style="background: #fff; border: 0px; height: 105px; overflow: auto; margin-left: 0px;">
+					数据加载中...
+				</div>
+				<div id="divObjAttrBottom" class="list-bottom" style="position: relative; height: 30px;">
+				    <div class='list-bottom-left'>		
+						<input type="button" id="deleteObjectAttributeMany" class="button" value="删除" onclick="batchDelete();"/>
+		            </div>
+		            <div class='list-bottom-right'>		
+						<input type="button" id="deleteObjectAttributeMany" class="button" value="确定" onclick="onOK();"/>
+						<input type="button" id="deleteObjectAttributeMany" class="button" value="取消" onclick="onCancle();"/>
+		            </div>
+	    	   </div>
+			</div>
+		</div>
+		<div id="saveTemplateDiv" style="margin: 10px;">
+			模板名称：
+			<input type="text" id="templateName" onkeyup="showRemindWordCount(this.value,$('remindWord'),20);"/>&nbsp;&nbsp;&nbsp;还可以输入 <span id="remindWord" style="font-weight:bold;">20</span> 字
+		</div>
+		<div id="" style="display: none">
+			<div style="width: 400px; height: 500px">
+				<div
+					style="width: 100px; height: 480px; background-color: gray; float: left;">
+
+				</div>
+				<div
+					style="width: 180px; height: 480px; background-color: blue; float: right;">
+
+				</div>
+			</div>
+		</div>
+
+		<div id="showTemplateDiv"
+			style="display: none; position: relative; margin-top: -2px">
+			<div id="divObjAttrib2Alarm1">
+				<div id="divAlarmListContent">
+					<div id="divAlarmList" class="webfx-columnlist"
+						style="border: 1px;">
+						数据加载中...
+					</div>
+				</div>
+				<div id="divAlarmDetail">
+					<div
+						style="border: 0px; background-repeat: no-repeat; overflow: hidden; height: 280px;">
+						<div id="divAlarmLevel" class="webfx-columnlist"
+							style="border: 1px; overflow: hidden; height: 280px;">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>

@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>报警动作</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/alarmaction.js"></script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom:3px">
+        <table width="290px" cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+            <tr>
+                <td align="left">
+                                             动作名称：
+                 <input id="txt_Key" onkeydown="JetsenWeb.keyEvent(searchAlarmAction)" class="input"/>
+              	</td>
+              	<td>
+                 <input type="button" value="查找" onclick="searchAlarmAction();" class="button" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divAlarmActionList" class="webfx-columnlist" style="background: #fff; border: 0px"
+            onfocus="this.blur();">
+            数据加载中...
+    </div>
+    <div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divAlarmActionPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divAlarmAction" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">
+                    动作名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_ACTION_NAME" validatetype="NotEmpty" maxlength="20"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    动作类型：
+                </td>
+                <!-- 
+                <td>
+                    <select id="cbo_ACTION_TYPE">
+                        <option value="1">邮件通知</option>
+                        <option value="10">短信通知</option>
+                        <option value="20">生成工单</option>
+                    </select>
+                    <span style="color: Red">*</span>
+                </td>
+                -->
+                <td style="height: 24px">
+                	<input id="cbo_ACTION_TYPE" class="select3" readonly type="text" handing="邮件通知~1|短信通知~10|生成工单~20"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" default="邮件通知" selectedvalue="1" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    动作参数：
+                </td>
+                <td>
+                    <input type="text" id="txt_ACTION_PARAM" maxlength="35" />
+                   <!--  <span style="color: Red">*</span> --> 
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    动作描述：
+                </td>
+                <td>
+                    <textarea id="txt_ACTION_DESC" cols="30" rows="5" onkeyup="showRemindWordCount(this.value,$('remindWord'),30);"></textarea><br/>
+                    <div style="float: right;padding-right: 175px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">30</span> 字
+      				 </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    指派类型：
+                </td>
+                <td>
+                    <select id="cbo_ASSIGN_TYPE" onchange="assignTypeChange(this.value)">
+                        <option value="2">用户组</option>
+                        <option value="3">角色</option>
+                    </select>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    指派对象：
+                </td>
+                <td>
+                    <select id="cbo_ASSIGN_OBJID">
+                    </select>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    指派参数：
+                </td>
+                <td>
+                    <textarea id="txt_ASSIGN_PARAM" cols="30" rows="5" onkeyup="showRemindWordCount(this.value,$('remindWord2'),60);"></textarea><br/>
+                    <div style="float: right;padding-right: 175px;">
+                 			 还可以输入 <span id="remindWord2" style="font-weight:bold;">60</span> 字
+      				 </div>
+                </td>
+            </tr>
+            <tr>
+            	<td class="field-head">
+                    动作周期：
+                </td>
+					<td>
+					<input name="chkWeek" type="checkbox" value="64" default="64" />周一
+                    <input name="chkWeek" type="checkbox" value="32" default="32" />周二
+                    <input name="chkWeek" type="checkbox" value="16" default="16" />周三
+                    <input name="chkWeek" type="checkbox" value="8" default="8" />周四
+                    <input name="chkWeek" type="checkbox" value="4" default="4" />周五
+                    <input name="chkWeek" type="checkbox" value="2" default="2" />周六
+                    <input name="chkWeek" type="checkbox" value="1" default="1" />周日
+					</td>
+				</tr>
+				<tr>
+            	<td class="field-head">
+                    动作时间：
+                </td>
+					<td>
+					<input id="txtSHour" name="txtSHour" type="text"
+							style="width: 20px;" />
+						点-
+						<input id="txtEHour" name="txtEHour" type="text"
+							style="width: 20px;" />
+						点&nbsp;|&nbsp;
+						<input id="txtSHour1" name="txtSHour1" type="text"
+							style="width: 20px;" />
+						点-
+						<input id="txtEHour1" name="txtEHour1" type="text"
+							style="width: 20px;" />
+						点
+					</td>
+				</tr>
+        </table>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+            动作列表
+        </div>
+        <div class="list-title-right">
+            <strong>[<a href="javascript:newAlarmAction()" title="新建" class="link">新建</a>]
+        </div>
+    </div>
+</body>
+</html>

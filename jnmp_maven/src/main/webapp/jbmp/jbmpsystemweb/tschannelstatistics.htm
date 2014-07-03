@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>频道统计</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js">
+</script>
+		<script type="text/javascript" src="javascript/base.js">
+</script>
+		<script type="text/javascript" src="javascript/select.js">
+</script>
+		<script type="text/javascript" src="javascript/checkbox.js">
+</script>
+		<script type="text/javascript" src="javascript/function.js">
+</script>
+<script type="text/javascript" src="javascript/reportpub.js"></script>
+		<script type="text/javascript" src="javascript/report.js">
+</script>
+
+		<script language="javascript">
+JetsenWeb.require( [ "js_gridlist", "js_pagebar", "js_sql", "js_window",
+		"js_validate", "js_pageframe", "js_timeeditor", "js_datepicker" ]);
+var gFrame;
+var gWindowSizeChangedInterVal;
+var gFunctions = {
+	check : false
+}; // 权限：报警处理
+
+var paramFormat; //报表参数
+var reportType = "tsstreamstatistics"; //报表类型
+
+//加载=====================================================================================
+function loadTsChannel() {
+	
+}
+function searchTsChannel() {
+	
+}
+
+//初始化===================================================================================
+function pageInit() {
+	initFunction();
+	exportData();
+
+
+	gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"), {
+		splitType : 1,
+		fixControlIndex : 0,
+		enableResize : false,
+		splitTitle : "divListTitle",
+		splitSize : 27
+	});
+
+	var frameContent = JetsenWeb.extend(
+			new JetsenWeb.UI.PageFrame("divContent"), {
+				splitType : 1,
+				fixControlIndex : 1,
+				showSplit : false
+			});
+
+	frameContent.addControl(new JetsenWeb.UI.PageItem("divTsChannelList"));
+	frameContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem(
+			"divBottom"), {
+		size : {
+			width : 0,
+			height : 0
+		}
+	}));
+
+	gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divTop"), {
+		size : {
+			width : 0,
+			height : 0
+		}
+	}));
+	gFrame.addControl(frameContent);
+
+	window.onresize = function() {
+		if (gWindowSizeChangedInterVal != null)
+			window.clearTimeout(gWindowSizeChangedInterVal);
+		gWindowSizeChangedInterVal = window.setTimeout(windowResized, 500);
+	};
+	windowResized();
+
+	gFunctions.check = true;
+
+	pageInitByFunction();
+
+}
+
+function windowResized() {
+	var size = JetsenWeb.Util.getWindowViewSize();
+	gFrame.size = {
+		width : size.width,
+		height : size.height
+	};
+	gFrame.resize();
+}
+
+// 导出数据
+function exportData() { //fieldsString
+	url = getReportWebPath()+"/tschannelstatistics.jsp?flag=1";
+	
+	$("frmTableInfo").src = url;
+}
+
+// 弹出选择导出列
+function chooseField() {
+	var dialog = new JetsenWeb.UI.Window("choose-object-win");
+	JetsenWeb.extend(dialog, {
+		cancelBox : true,
+		submitBox : true,
+		windowStyle : 1,
+		maximizeBox : false,
+		minimizeBox : false,
+		size : {
+			width : 300,
+			height : 280
+		},
+		title : "选择导出列"
+	});
+	dialog.controls = [ "divFieldList" ];
+	dialog.onsubmit = function() {
+		exportData(JetsenWeb.Form.getCheckedValues("chkField"));
+		JetsenWeb.UI.Windows.close("choose-object-win");
+	};
+	dialog.showDialog();
+	$("divFieldList").innerHTML = JetsenWeb.Xml.transformXML(
+			"xslt/choosefield.xslt", getFieldsString());
+	var fieldList = new JetsenWeb.UI.GridList();
+	fieldList.rowSelection = false;
+	fieldList.bind($("divFieldList"), $("tabField"));
+}
+
+// 获取显示列的XML
+function getFieldsString() {
+	var fieldsString = "<RecordSet>";
+	for ( var i = 0; i < fields.length; i++) {
+		fieldsString += JetsenWeb.Xml.serializer(fields[i], "Record");
+	}
+	fieldsString += "</RecordSet>";
+	return fieldsString;
+}
+
+// 根据权限初始化界面
+function pageInitByFunction() {
+	//$("btnCheck").disabled = !gFunctions.check;
+}
+
+//初始化报表参数
+function initParamFormat() {
+
+}
+
+</script>
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTsChannelList" class="webfx-columnlist"
+			style="border: 0px" onfocus="this.blur();">
+			<iframe id="frmTableInfo"
+				style="width: 100%; height: 100%; border-width: 0px; position: absolute;"
+				frameborder="0" border="0"></iframe>
+		</div>
+		<div id="divTsChannel" style="display: none">
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				频道统计
+			</div>
+		</div>
+		<div id="divFieldList" style="display: none;">
+		</div>
+		<div id="divReportTime" style="display: none; overflow: hidden;">			
+			<div id="divReportTimeTop" style="overflow: hidden;">
+				<table width="100%" cellspacing="0" cellpadding="0"
+					style="margin-top: 3px;" class="table-info title">
+					<tr>
+						<td align="left">
+							任务名称：
+							<input id="txt_ReportTime_Key"
+								onkeydown="JetsenWeb.keyEvent(searchReportTime)" />
+							<input type="button" value="查找" onclick="searchReportTime();"
+								class="button" />
+							<input id="hid_REPORT_ID" type="hidden" />
+						</td>
+						<td align="right">
+							<strong><a href="javascript:newReportTime()" title="新建">[新建]</a>
+							</strong>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="divReportTimeContent" style="height: 83%; overflow: auto;">
+				<div id="divReportTimeList" class="webfx-columnlist"
+					style="background: #fff; border: 0px" onfocus="this.blur();">
+					数据加载中...
+				</div>
+				<div id="divReportTimePage" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div id="divReportTimeEdit" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head" style="width: 100px;">
+						定制任务名称
+					</td>
+					<td>
+						<input type="text" id="txt_TASK_NAME" validatetype="NotEmpty" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						任务类型
+					</td>
+					<td>
+						<select id="cbo_TASK_TYPE" validatetype="NotEmpty,Integer"
+							onchange="changeTaskType(this.value)">
+							<option value="1">
+								周期任务
+							</option>
+							<option value="2">
+								单次任务
+							</option>
+						</select>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr id="trWeek" style="display: none;">
+					<td class="field-head">
+						<input id="chkMon" name="chkWeek" type="checkbox" value="64"
+							default="64" />
+						<label id="lchkMon" for="chkMon">
+							周一
+						</label>
+					</td>
+					<td>
+						<input id="chkTue" name="chkWeek" type="checkbox" value="32"
+							default="32" />
+						<label id="lchkTue" for="chkTue">
+							周二
+						</label>
+						&nbsp;
+						<input id="chkWed" name="chkWeek" type="checkbox" value="16"
+							default="16" />
+						<label id="lchkWed" for="chkWed">
+							周三
+						</label>
+						&nbsp;
+						<input id="chkThu" name="chkWeek" type="checkbox" value="8"
+							default="8" />
+						<label id="lchkThu" for="chkThu">
+							周四
+						</label>
+						&nbsp;
+						<input id="chkFri" name="chkWeek" type="checkbox" value="4"
+							default="4" />
+						<label id="lchkFri" for="chkFri">
+							周五
+						</label>
+						&nbsp;
+						<input id="chkSat" name="chkWeek" type="checkbox" value="2"
+							default="2" />
+						<label id="lchkSat" for="chkSat">
+							周六
+						</label>
+						&nbsp;
+						<input id="chkSun" name="chkWeek" type="checkbox" value="1"
+							default="1" />
+						<label id="lchkSun" for="chkSun">
+							周日
+						</label>
+					</td>
+				</tr>
+				<tr id="trHour" style="display: none;">
+					<td class="field-head">
+						起止时间
+					</td>
+					<td>
+						<input id="txtSHour" name="txtSHour" type="text"
+							style="width: 20px;" default="0" />
+						点-
+						<input id="txtEHour" name="txtEHour" type="text"
+							style="width: 20px;" default="23" />
+						点
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						开始时间
+					</td>
+					<td>
+						<input type="text" id="txt_START_DATE"
+							validatetype="NotEmpty,DateTime"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							style="width: 80px" />
+						<input type="text" id="txt_START_TIME" style="width: 80px"
+							default="00:00:00" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						结束时间
+					</td>
+					<td>
+						<input type="text" id="txt_END_DATE"
+							validatetype="NotEmpty,DateTime"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							style="width: 80px" />
+						<input type="text" id="txt_END_TIME" style="width: 80px"
+							default="00:00:00" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						时间间隔
+					</td>
+					<td>
+						<input type="text" id="txt_COLL_TIMESPAN"
+							validatetype="NotEmpty,Integer" style="width: 80px" default="0" />
+						(秒)
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						生成报表格式
+					</td>
+					<td>
+						<select id="cbo_FILE_FORMAT" validatetype="NotEmpty">
+							<option value="0">
+								excel
+							</option>
+							<option value="1">
+								word
+							</option>
+							<option value="2">
+								pdf
+							</option>
+						</select>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						是否发邮件
+					</td>
+					<td>
+						<select id="cbo_IS_MAIL" validatetype="NotEmpty,Integer">
+							<option value="0">
+								否
+							</option>
+							<option value="1">
+								是
+							</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	<!--
+		Document : autodiscover.xml Created on : 2012年2月22日, 上午9:50 Author :
+		郭祥 Description: 自动发现配置。 type 对应数据库NMP_AUTODISTASK表的TASK_TYPE字段
+		disClass 指定相应的类 discription 描述
+	-->
+
+<autos>
+	<autoConfigs>
+		<autoConfig>
+			<type>0</type>
+			<disClass>jetsennet.jbmp.autodiscovery.SnmpAutoDiscover
+			</disClass>
+			<discription>SNMP自动发现</discription>
+			<display>0</display>
+		</autoConfig>
+		<autoConfig>
+			<type>2</type>
+			<disClass>jetsennet.jnmp.autodiscovery.HttpAutoDiscover
+			</disClass>
+			<discription>HTTP自动发现</discription>
+			<display>1</display>
+		</autoConfig>
+		<autoConfig>
+			<type>3</type>
+			<disClass>jetsennet.jnmp.autodiscovery.FtpAutoDiscover
+			</disClass>
+			<discription>FTP自动发现</discription>
+			<display>1</display>
+		</autoConfig>
+	</autoConfigs>
+</autos>

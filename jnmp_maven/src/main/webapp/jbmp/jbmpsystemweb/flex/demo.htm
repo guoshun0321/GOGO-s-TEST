@@ -1,0 +1,40 @@
+﻿<HTML>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>视频监控</title>
+	<script type="text/javascript" src="../../../jetsenclient/javascript/js_base.js" apppath="../"></script>
+	<script type="text/javascript" src="../javascript/base.js"></script>
+	<script language="javascript" type="text/javascript">
+		JetsenWeb.require(["js_gridlist","js_pagebar","js_menu","js_sql","js_window","js_validate","js_pageframe","js_xtree"]);
+		window.onbeforeunload = timedMsg
+	    function timedMsg()
+	　　	{
+	　　		document.getElementById("IPC_OCX").CloseAndClear();
+	　　	}
+		window.onload = timecall
+		function timecall()
+		{
+			var name = JetsenWeb.queryString("name");
+			var ip = JetsenWeb.queryString("ip");
+			var port = JetsenWeb.queryString("port");
+			var a = "<group Name='网络视频'> <device Name='" + name + "' IP='" + ip + "' Port='" + port + "' User='admin' Pass='admin123' /> </group>";
+			document.getElementById("IPC_OCX").InitDevice(a);
+		}
+	</script>
+
+</head>
+<BODY>
+<script language="javascript" type="text/javascript">
+self.moveTo(0,0);
+self.resizeTo(screen.availWidth,screen.availHeight);
+   
+</script>
+<OBJECT ID="IPC_OCX" WIDTH=1024 HEIGHT=768
+ CLASSID="CLSID:3B4D07AD-189A-4CAA-BE05-EFC0EA1048A5">
+    <PARAM NAME="_Version" VALUE="65536">
+    <PARAM NAME="_ExtentX" VALUE="3138">
+    <PARAM NAME="_ExtentY" VALUE="1762">
+    <PARAM NAME="_StockProps" VALUE="0">
+</OBJECT>
+</BODY>
+</HTML>

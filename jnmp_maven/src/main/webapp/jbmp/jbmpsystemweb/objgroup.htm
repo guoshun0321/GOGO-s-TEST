@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	    <title>资源组管理</title>
+	    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+	    <script type="text/javascript" src="javascript/base.js"></script>
+	    <script type="text/javascript" src="javascript/select.js"></script>
+	    <script type="text/javascript" src="javascript/js_ip.js"></script>
+		<script type="text/javascript" src="javascript/validate.js"></script>
+	    <script type="text/javascript" src="javascript/objgroup.js"></script>
+</head>
+<body onload="pageInit()" scroll="no">
+	<div class="list-title" style="border: none;margin-right:3px" id="divLeftTitle">
+        <div class="list-title-left">
+            分组树
+        </div>
+        <div class="list-title-right">
+        </div>
+    </div>
+    <div id="divTree" style="margin-right:3px">
+    </div>
+    <div class="list-title" id="divRightTitle" style="margin-left:3px">
+       <div class="list-title-left">
+          分组列表
+       </div>
+	       <div class="list-title-right">
+	          <strong><a href="javascript:newObjGroup()" title="新建">[新建]</a></strong>
+       </div>
+     <div id='divContainer' style="border: 0px; background: #fff; margin-left:3px"></div>
+	 </div>
+    <div id="divObjGroup" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head">
+                    名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_GROUP_NAME" validatetype="NotEmpty" style="width: 130px;" maxlength="70"/>
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+             <tr>
+                <td class="field-head">
+                    类型：
+                </td>
+                <td>
+                    <select id="cbo_GROUP_TYPE" style="height:21px" disabled="true">
+                        <option value="1">系统</option>
+                        <option value="3">采集组</option>
+                        <option value="4">网段</option>
+                        <option value="0">一般组</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="trCollectorId"  style="display: none;">
+                <td class="field-head" style="vertical-align: top;">
+                    采集器：
+                </td>
+                <td>
+                    <select id="cbo_COLLECTOR_ID" style="height:21px" size="1">
+                    </select>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    父资源组：
+                </td>
+                
+                <td>
+                    <input type="text" id="txtParentGroup"  class="selecttree2" readonly onclick="JetsenWeb.UI.PopupBehavior.popControl($('divParentGroupTree'),this)" />
+                    <input type="hidden" id="hidParentId" />
+                </td>
+            </tr>
+            <tr id="trBeginIp"  style="display: none;">
+                <td class="field-head" style="vertical-align: top;">
+                    开始IP：
+                </td>
+                <td>
+                	<span style="border:none; width:150px; font-size:12px;">
+   						<div id="txt_IP_START"></div>
+					</span>
+					<span style="color: Red; padding-left: 3px;">*</span>
+                </td>
+            </tr>
+            <tr id="trEndIp"  style="display: none;">
+                <td class="field-head" style="vertical-align: top;">
+                    结束IP：
+                </td>
+                <td>
+                	<span style="border:none; width:150px; font-size:12px;">
+   						<div id="txt_IP_END"></div>
+					</span>
+					<span style="color: Red;padding-left: 3px;">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    编码：
+                </td>
+                <td>
+                    <input type="text" id="txt_GROUP_CODE" style="width: 130px;" maxlength="35" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    描述：
+                </td>
+ 				<td >
+                    <textarea id="txt_GROUP_DESC" style="width: 196px; height: 60px;"  onkeyup="showRemindWordCount(this.value,$('remindWord'),120);"></textarea><br/>
+                     <div style="float: right;padding-right: 100px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">120</span> 字
+         		     </div>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+    <div id="divParentGroupTree" style="display: none" class="jetsen-tree-divc"></div>
+    <div class="page-frame" id="divPageFrame" />
+</body>
+</html>

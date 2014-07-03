@@ -1,0 +1,369 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<title>监控属性</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+	<script type="text/javascript" src="javascript/select.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="javascript/attribalarmbond.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="javascript/valuetype.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="javascript/attribute.js" charset="UTF-8"></script>
+    <style type="text/css">
+    	#divAcTree a {
+    		font-size : 12px;
+    	}
+    </style>
+	</head>
+	<body scroll="no">
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" style="border: none;margin-right:3px" id="divLeftTitle">
+	        <div class="list-title-left">
+	            <span>分类树</span>
+	        </div>
+	        <div class="list-title-right">
+	        </div>
+    	</div>
+    	<div id="divLeft">
+	    	<div id="divAcTree" style="margin-right:3px; width:500px;">
+			</div>
+    	</div>
+		
+		<div id="divAcTab">
+			<div class="panel-head2">
+				<table cellspacing="0" cellpadding="0" border="0" width="600px"  id="tabAc" style="margin-left: 0px;">
+	                <tr>
+	                    <td align="center" pagename="100">自定义属性</td>
+	                    <td align="center" pagename="101,106">配置属性</td>
+	                    <td align="center" pagename="102">监测指标</td>
+	                    <td align="center" pagename="103">性能指标</td>
+	                    <td align="center" pagename="104,105,107">其他</td>
+	                </tr>
+	            </table>
+       		</div>
+		</div>
+       	<div id="divPages" style="display:none;">
+       		<div id="divPage1"></div>
+       		<div id="divPage2"></div>
+       		<div id="divPage3"></div>
+       		<div id="divPage4"></div>
+       		<div id="divPage5"></div>
+       	</div>
+		<div id="divAcSearch" style="margin-left: 3px; overflow: hidden;">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px; height: 30px; border: 0px;">
+				<tr>
+					<td align="left">
+						<span>属性集：</span>
+						<select id='selSubAC' onchange="comboxChange();">
+							<option value='-1'>请选择</option>
+						</select>
+					</td>
+					<td align="right">
+						<span id="aTrapImport" style="display: none;"><a href="#" onclick="mibTrap();" style="font-weight: bold;"> [Trap导入]</a></span>
+						<span id="aUnbondAlarm" style="display: none;"><a href="#" onclick="unbond();" style="font-weight: bold;"> [解除关联]</a></span>
+						<span id="aBondAlarm" style="display: none;"><a href="#" onclick="bond();" style="font-weight: bold;"> [报警关联]</a></span>
+						<a href="#" onclick="newMonitorAttribute();" style="font-weight: bold;"> [新建]</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divAcList" class="webfx-columnlist" style="border: 0px; margin-left: 3px;" onfocus="this.blur();">
+			数据加载中...
+		</div>
+		<div id="divBottom" class="list-bottom" style="margin-left: 3px;">
+			<div class="list-bottom-right">
+				<div id="divMonitorAttributePage" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div id="divMonitorAttribute" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">属性名称：</td>
+                <td>
+                    <input type="text" id="txt_ATTRIB_NAME" validatetype="NotEmpty" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">属性值：</td>
+                <td>
+                    <input type="text" id="txt_ATTRIB_VALUE" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">参数：</td>
+                <td>
+                    <input type="text" id="txt_ATTRIB_PARAM"/>
+                    <input type="button" value="验证" onclick="validateFormula();">
+                    <input type="button" value="MIB树" onclick="mibDetails();">
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">参考值：</td>
+                <td>
+                    <input type="text" id="txt_VALUE_TYPE" readonly="readonly" disabled/>
+                    <!--<input type="button" value="选择" onclick="showValueTypeDig();">-->
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">数据编码：</td>
+                <td>
+                    <input type="text" id="txt_DATA_ENCODING" value="ASCII"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">数据类型：</td>
+                <td>
+                    <select id="cbo_DATA_TYPE" style="width:152px;">
+                    	<option value="1">整型</option>
+                        <option value="0">未知类型</option>
+                        <option value="2">字符型</option>
+                        <option value="3">日期型</option>
+                        <option value="4">浮点型</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">数据单位：</td>
+                <td>
+                    <input type="text" id="txt_DATA_UNIT" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">显示类型：</td>
+                <td>
+                    <select id="sel_VIEW_TYPE" style="width:152px;">
+                    	<option value="LABEL" selected>标签</option>
+                        <option value="PIE">饼图</option>
+                        <option value="LINE">线图</option>
+                        <option value="COLUMN">柱状图</option>
+                        <option value="LIST">列表</option>
+                    </select>
+                </td>
+            </tr>
+            <!--<tr>
+                <td class="field-head">
+                    数据表
+                </td>
+                <td>
+                    <input type="text" id="txt_DATA_TABLE" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    字段名称
+                </td>
+                <td>
+                    <input type="text" id="txt_DATA_FIELD" />
+                </td>
+            </tr>-->
+            
+            <tr>
+                <td class="field-head">采集间隔：</td>
+                <td>
+                    <select id="sel_COLL_TIMESPAN" style="width:152px;">
+                        <option value="300">5分钟</option>
+                        <option value="10">10 秒</option>
+                        <option value="20">20 秒</option>
+                        <option value="30">30 秒</option>
+                        <option value="60">1分钟</option>
+                        <option value="120">2分钟</option>
+                        <option value="180">3分钟</option>
+                        <option value="600">10分钟</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">是否可见：</td>
+                <td>
+                    <select id="sel_IS_VISIBLE" style="width:152px;">
+                    	<option value="1">可见</option>
+                        <option value="0">不可见</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">描述：</td>
+                <td>
+                    <textarea id="txt_ATTRIB_DESC" cols="30" rows="5"></textarea>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    <!-- 监测信息、性能信息关联告警 -->
+		<div id="divObjAttrib2Alarm" style="display:none; position: relative;margin-top:-2px;margin-bottom:-5px">
+		    <div id="divObjAttrib2Alarm1">
+		        <div id="divAlarmListContent">
+					<div id="divAlarmList" class="webfx-columnlist" style="border: 1px; ">
+						数据加载中...
+					</div>
+				</div>			
+						
+				<div id="divAlarmDetail">
+				    <table width="100%" border="0" cellpadding="0" cellspacing="1" style="overflow: right;">
+						<tr style="height: 30px">
+							<td width="77">
+								<strong>报警设置</strong>
+							</td>
+						</tr>
+						<tr style="height: 20px">
+							<td colspan="3" align="left">
+								报警描述：
+								<label id="lblAlarmDesc"></label>
+							</td>
+						</tr>
+						<tr style="height: 20px">
+							<td align="left" width="180">
+								检查次数：
+								<label id="lblCheckNum"></label>
+							</td>
+							<td align="left">
+								越限次数：
+								<label id="lblOverNum"></label>
+							</td>
+							<td width="123" align="left">
+								报警间隔(秒)：
+								<label id="lblCheckSpan">
+								</label>
+							</td>
+						</tr>
+						<tr style="height: 30px">
+							<td width="73">
+								<strong>阀值设置</strong>
+							</td>
+						</tr>
+					</table>
+					<div style="border: 0px; background-repeat: no-repeat; overflow: auto; height: 140px;">
+						<div id="divAlarmLevel" class="webfx-columnlist"
+							style="border: 1px; ">
+						</div>
+					</div>
+				</div>
+		    </div>
+		</div>
+		<!-- 参考值选择、编辑 -->
+		<div id="divValueType" style="display:none; position: relative;margin-top:-2px;">
+			<div id="divValueType1">
+				<div id="divValueTypeList">
+					<div id="divValueTypeContent" class="webfx-columnlist" style="border: 1px;">
+						数据加载中...
+					</div>
+				</div>				
+				<div id="divValueTypeDetail" style="overflow: hiddent;">
+					<div style="border: 0px; background-repeat: no-repeat; overflow: auto; height: 280px;">
+						<div id="divValueTypeDetails" class="webfx-columnlist" style="border: 1px; width: 100%;">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 参考值编辑 -->
+		<div id="divValutTablePop" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <colgroup span="2" style="height: 24px;">
+                <col style="width: 30%;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tr>
+                <td class="field-head">
+                    编号：
+                </td>
+                <td>
+                    <input type="text" id="txt_VALUE_ID1" validatetype="NotEmpty" readonly="readonly" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    属性值：
+                </td>
+                <td>
+                    <input type="text" id="txt_ATTRIB_VALUE1" readonly="readonly" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    英文描述：
+                </td>
+                <td>
+                    <input type="text" id="txt_VALUE_NAME1" validatetype="NotEmpty" readonly="readonly" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    中文描述：
+                </td>
+                <td>
+                    <input type="text" id="txt_VALUE_DESC1" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divSnmp" style="display : none; overflow: auto;width:780px;height:375px;">
+    	<div id="divSnmpContent1" style="position: relative;">
+       		<div id="divSnmpContent" style="display:none; position: relative;">
+	       		<div id="divSnmpTree"></div>
+	       		<div id="divSnmpNode">
+	       			<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+			            <tr>
+			                <td class="field-head" width="60px">名称：</td>
+			                <td>
+			                    <input type="text" id="txt_NODE_NAME" readonly="readonly" disabled/>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td class="field-head" width="60px">OID：</td>
+			                <td>
+			                    <input type="text" id="txt_NODE_OID" readonly="readonly" disabled/>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td class="field-head" width="60px">文件：</td>
+			                <td>
+			                    <input type="text" id="txt_MIB_FILE" readonly="readonly" disabled/>
+			                </td>
+			            </tr>
+			            <!-- <tr>
+			                <td class="field-head" width="60px">枚举：</td>
+			                <td>
+			                    <input type="button" value="编辑" id="btn_NODE_OID" class="button" disable/>
+			                </td>
+			            </tr> -->
+			            <tr>
+			                <td class="field-head" width="60px" style="vertical-align: top;">英文描述：</td>
+			                <td>
+			                    <textarea id="txt_NODE_DESC" cols="22" rows="5" readonly="readonly" disabled></textarea>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td class="field-head" width="60px" style="vertical-align: top;">中文描述：</td>
+			                <td>
+			                    <textarea id="txt_NODE_EXPLAIN" cols="22" rows="5" readonly="readonly" disabled></textarea>
+			                </td>
+			            </tr>
+			        </table>
+	       		</div>
+			</div>
+		</div>
+	</div>
+	<div id="divTrap" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+			<tr style="height: 20px">
+				<td align="left">
+					<span>Trap列表：</span>
+				</td>
+			</tr>
+		</table>
+		<div id="divTrapList" class="webfx-columnlist"
+			style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 400px;">
+			数据加载中...
+		</div>
+	</div>
+    <div id="divHiddenValue" style="display: none">
+    	<input type="text" id="txt_CURATTR"/>
+    	<input type="text" id="curMibType"/>
+    	<input type="text" id="curNodeId"/>
+    </div>
+	</body>
+</html>

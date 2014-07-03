@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>采集任务</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/collecttask.js"></script>
+    
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom:3px">
+    	<table cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+    	<td>
+	  	        采集组：
+	        <input id="txtGrpName" type="text" onkeydown="JetsenWeb.keyEvent(searchCollectTask)" class="input"/>
+	    </td>
+	    <td>
+		   &nbsp;&nbsp;&nbsp;&nbsp;
+		        采集器：
+	        <select id="cboCollector" style="width: 105px"></select>
+	    </td>
+	    <td>
+	        &nbsp;&nbsp;&nbsp;&nbsp;
+			任务类型：
+	        <select id="cboCollType" onkeydown="JetsenWeb.keyEvent(searchCollectTask)" style="width: 105px">
+	                <option value="">请选择</option>
+	                <option value="1">周期任务</option>
+	                <option value="2">单次任务</option>
+	        </select>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+	     </td>
+	     <td>
+			<input type="button" value="查找" onclick="searchCollectTask();" class="button" />
+	     </td>
+	   </table>
+    </div>
+    <div id="divCollectTaskList" class="webfx-columnlist" style="background: #fff; border: 0px;
+        background-repeat: no-repeat" onfocus="this.blur();">
+        数据加载中...</div>
+    <div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divCollectTaskPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divCollectTask" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr id="trSys">
+                <td class="field-head" width="20%">
+                    采集组：
+                </td>
+                <td>
+                    <select id="cbo_GROUP_ID" onchange="changeGroup(this.value)" style="width: 116px;">
+					</select>
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    采集器：
+                </td>
+                <td>
+                    <select id="cbo_COLL_ID" style="width: 116px;">
+                    </select>
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    任务类型：
+                </td>
+                <td>
+                    <select id="cbo_TASK_TYPE" onchange="changeTaskType(this.value)" style="width: 116px;">
+                        <option value="1">周期任务</option>
+                        <option value="2">单次任务</option>
+                    </select>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr id="trWeek" style="display: none;">
+                <td class="field-head">
+        &nbsp;
+                </td>
+                <td>
+                    <input name="chkWeek" type="checkbox" value="1" default="1" />周一
+                    <input name="chkWeek" type="checkbox" value="2" default="2" />周二&nbsp;
+                    <input name="chkWeek" type="checkbox" value="3" default="3" />周三&nbsp;
+                    <input name="chkWeek" type="checkbox" value="4" default="4" />周四&nbsp;
+                    <input name="chkWeek" type="checkbox" value="5" default="5" />周五&nbsp;
+                    <input name="chkWeek" type="checkbox" value="6" default="6" />周六&nbsp;
+                    <input name="chkWeek" type="checkbox" value="7" default="7" />周日
+                </td>
+            </tr>
+            <tr id="trHour" style="display: none;">
+                <td class="field-head">
+                    起止时间：
+                </td>
+                <td>
+                    <input id="txtSHour" type="text" style="width: 20px;" default="0" />点&nbsp;-&nbsp;
+                    <input id="txtEHour" type="text" style="width: 20px;" default="23" />点
+                </td>
+            </tr>
+            <tr id="trStartTime" style="display: none;">
+                <td class="field-head">
+                    开始时间：
+                </td>
+                <td>
+                    <input type="text" id="txt_START_DATE" onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+                        style="width: 80px" />
+                    <input type="text" id="txt_START_TIME" style="width: 80px" default="00:00:00" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr id="trEndTime" style="display: none;">
+                <td class="field-head">
+                    结束时间：
+                </td>
+                <td>
+                    <input type="text" id="txt_END_DATE" onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+                        style="width: 80px" />
+                    <input type="text" id="txt_END_TIME" style="width: 80px" default="00:00:00" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+            任务列表
+        </div>
+        <div class="list-title-right">
+            <strong>[<a href="javascript:newCollectTask()" title="新建" class="link">新建</a>]
+        </div>
+    </div>
+    <div id="divCollectTaskInfo" style="display: none; overflow: hidden;margin-left:3px;margin-top:1px;margin-right:3px">
+        <input id="hid_TASK_ID" type="hidden" />
+        <div id="divCollectTaskInfoContent" style="height: 83%; overflow: auto;">
+            <div id="divCollectTaskInfoList" class="webfx-columnlist" style="height: 330px; background: #fff; border: 0px"
+                onfocus="this.blur();">
+                数据加载中...</div>
+        </div>
+    </div>
+</body>
+</html>

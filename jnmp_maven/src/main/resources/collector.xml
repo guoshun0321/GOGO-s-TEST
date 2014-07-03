@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<perf>
+	<collector>
+		<cfg name="id">2</cfg>
+		<cfg name="coreThreadPoolSize">3</cfg>
+		<cfg name="threadPoolMaxSize">100</cfg>
+		<cfg name="keepAliveTime">120</cfg>
+		<cfg name="uploadTime">00:00:00</cfg>
+		<cfg name="default">jetsennet.jbmp.datacollect.collector.SNMPCollector
+		</cfg>
+		<cfg name="defaultSub">jetsennet.jbmp.datacollect.collector.SNMPCollector
+		</cfg>
+		<cfg name="APP_TOMCAT">jetsennet.jnmp.datacollect.collector.TomcatCollector
+		</cfg>
+		<cfg name="APP_WEBSPHERE">jetsennet.jnmp.datacollect.collector.WebSphereCollector
+		</cfg>
+		<cfg name="APP_WEBLOGIC">jetsennet.jnmp.datacollect.collector.WeblogicCollector
+		</cfg>
+		<cfg name="WEB_APACHE">jetsennet.jnmp.datacollect.collector.ApacheCollector
+		</cfg>
+		<cfg name="WEB_SERVER">jetsennet.jnmp.datacollect.collector.HttpCollector
+		</cfg>
+		<cfg name="FTP_SERVER">jetsennet.jnmp.datacollect.collector.FtpCollector
+		</cfg>
+		<cfg name="DB_SQLSERVER">jetsennet.jnmp.datacollect.collector.SqlServerCollector
+		</cfg>
+		<cfg name="DB_ORACLE">jetsennet.jnmp.datacollect.collector.OracleCollector
+		</cfg>
+		<cfg name="DB_DB2">jetsennet.jnmp.datacollect.collector.DB2Collector
+		</cfg>
+		<cfg name="DB_MYSQL">jetsennet.jnmp.datacollect.collector.MySqlCollector
+		</cfg>
+		<cfg name="SNMP_SUB_NETWORK_PROCESS">jetsennet.jbmp.datacollect.collector.SNMPCollectorProc
+		</cfg>
+		<cfg name="INSPUR_ROOM">jetsennet.jbmp.datacollect.collector.InspurHttpCollector
+		</cfg>
+		<cfg name="INSPUR_ROOM_B">jetsennet.jbmp.datacollect.collector.InspurSecHttpCollector
+		</cfg>
+		<cfg name="SOBEY_WIN2008">jetsennet.jbmp.datacollect.collector.SobeyCollector
+		</cfg>
+		<cfg name="SOBEY_WIN2003">jetsennet.jbmp.datacollect.collector.SobeyCollector
+		</cfg>
+		<cfg name="SOBEY_S2A9550">jetsennet.jbmp.datacollect.collector.SobeyCollector
+		</cfg>
+		<cfg name="SOBEY_MCDATA FC SWITCH">jetsennet.jbmp.datacollect.collector.SobeyCollector
+		</cfg>
+		<cfg name="SOBEY_WIN7">jetsennet.jbmp.datacollect.collector.SobeyCollector
+		</cfg>
+		<cfg name="SOBEY_ETHERNETSWITCH">jetsennet.jbmp.datacollect.collector.SobeyCollector
+		</cfg>
+		<cfg name="SOBEY_IBM_3584_LIBRARY">jetsennet.jbmp.datacollect.collector.SobeyCollector
+		</cfg>
+		<cfg name="SOBEY_LINUX">jetsennet.jbmp.datacollect.collector.SobeyCollector
+		</cfg>
+		<cfg name="DAYANG_PC">jetsennet.jbmp.datacollect.collector.DayangCollector
+		</cfg>
+		<cfg name="NXP8851">jetsennet.jbmp.datacollect.collector.NXP8851Collector
+		</cfg>
+	</collector>
+	<rrd>
+		<cfg name="root">E:/rrdfile/</cfg>
+	</rrd>
+</perf>

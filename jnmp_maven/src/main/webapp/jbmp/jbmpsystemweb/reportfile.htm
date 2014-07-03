@@ -1,0 +1,113 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>报表文件管理</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/function.js"></script>
+		<script type="text/javascript" src="javascript/reportfile.js"></script>
+		
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom:3px;">
+			<table width="835" cellspacing="0" cellpadding="0" class="table-info" style="padding: 3px">
+				<tr>
+					<td align="left" style="width:100%">
+						文件名称：
+						<input type="text" id="txt_Key"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)" class="input" />&nbsp;&nbsp;&nbsp;
+						开始时间：
+						<input type="text" id="txtSDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtSTime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)" validatetype="NotEmpty" />
+						<input type="checkbox" id="chkSDate"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)" checked />&nbsp;&nbsp;&nbsp;
+						报表类型：
+						<select id="cbo_ReportType" style="width: 100px;"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align="left" colspan="3">
+						任务名称：
+						<input type="text" id="txt_TaskKey"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)" class="input" />&nbsp;&nbsp;&nbsp;
+						结束时间：
+						<input type="text" id="txtEDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtETime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)" validatetype="NotEmpty" />
+						<input type="checkbox" id="chkEDate"
+							onkeydown="JetsenWeb.keyEvent(searchReportFile)" checked />&nbsp;&nbsp;&nbsp;
+						<input type="button" value="查找" onclick="searchReportFile()" class="button" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divReportFileList" class="webfx-columnlist"  
+			style="border: 0px" onfocus="this.blur();">
+			数据加载中...
+		</div>
+		<div id="divBottom" class="list-bottom">
+			<div class='list-bottom-left'>
+                <input id="btnDelete" type="button" class="button" value="批量删除" onclick="deleteFiles()"/>
+            </div>
+			<div class="list-bottom-right">
+				<div id="divReportFilePage" class="text_style">
+				</div>
+			</div>
+		</div>
+		
+		<div id="divReportFile" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head">
+						开始时间
+					</td>
+					<td>
+						<input type="text" id="txt_START_RECTIME"
+							validatetype="NotEmpty,DateTime"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" style="width: 80px" />
+						<input type="text" id="txt_START_TIME" style="width: 80px"
+							default="00:00:00" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						结束时间
+					</td>
+					<td>
+						<input type="text" id="txt_END_RECTIME"
+							validatetype="NotEmpty,DateTime"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" style="width: 80px" />
+						<input type="text" id="txt_END_TIME" style="width: 80px"
+							default="00:00:00" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						下载路径
+					</td>
+					<td>
+						<input type="text" id="txt_DOWN_PATH" validatetype="NotEmpty" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				报表文件列表
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>CCTV新闻包装系统</title>   
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/default.js"></script>
+    <script type="text/javascript" src="javascript/pagepanel.js"></script>
+  
+    <script type="text/javascript">
+        JetsenWeb.valideLogin();
+
+        JetsenWeb.require(["js_accordion", "js_jetsentree", "js_menu", "js_window", "js_pageframe"]);
+        JetsenWeb.importCss("framestyle");
+        var gFrame;
+        var gContentItem;
+        var gActiveIndex = null;
+        var gAccordion;
+        var gMenuData;
+        var gwindowSizeChangedInterVal;
+        var gCreateMenuInterVal;
+        var gContentList = new JetsenWeb.Util.ArrayList();
+
+        //页面初始化
+        function pageInit() {
+            //-------------------------------------frameTop--------------------------------------++
+            //--frameLeft-------- +----------------frameContentTitle------------------------------+
+            //--frameLeftTop      +                                                              f+
+            //--                  +                                                              r+
+            //--                  +                                                              a+
+            //--                  +                                                              m+
+            //--                  +                                                              e+
+            //--frameMenu         +----------------frameMain-------------------------------------r+
+            //--                  +                                                              i+
+            //--                  +                                                              h+
+            //--                  +                                                              g+
+            //--                  +                                                              t+
+            //-------------------------------------frameBottom------------------------------------+
+            gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"), { splitType: 1, fixControlIndex: 0, showSplit: false });
+
+            var frameLeft = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameLeft"), { size: { width: 210, height: 0 }, minSize: { width: 210, height: 0 }, splitType: 1, showSplit: false, fixControlIndex: 0, enableHide: true });
+            frameLeft.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeftTop"), { size: { width: 0, height: 70} }));
+            var leftContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divLeftConent"), { splitType: 1, showSplit: false, fixControlIndex: 1 });
+            leftContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divMenu"), { onresize: function () { if (gAccordion) gAccordion.refresh(); } }));
+            leftContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeftBottom"), { size: { height: 13, width: 0} }));
+            frameLeft.addControl(leftContent);
+
+            var frameContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameContent"), { splitType: 1, showSplit: false, fixControlIndex: 0 });
+            frameContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divContentTitle"), { size: { width: 0, height: 32} }));
+
+            gContentItem = new JetsenWeb.UI.PageItem("JetsenMain");
+            frameContent.addControl(gContentItem);
+
+            var frameRight = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameRight"), { splitType: 0, showSplit: false, fixControlIndex: 1 });
+            frameRight.addControl(frameContent);
+            frameRight.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divRight"), { size: { width: 7, height: 0} }));
+
+            var frameMiddle = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameMiddle"), { splitType: 0, splitSize: 7, splitBorder: 0, enableResize: false, fixControlIndex: 0, hideSize: 15 });
+            frameMiddle.addControl(frameLeft);
+            frameMiddle.addControl(frameRight);
+
+            var frameMain = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divFrameMain"), { fixControlIndex: 1, splitType: 1, showSplit: false });
+            frameMain.addControl(frameMiddle);
+            frameMain.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divPageBottom"), { size: { width: 0, height: 28} }));
+
+            gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divTop"), { size: { width: 0, height: 53} }));
+            gFrame.addControl(frameMain);
+
+            window.onresize = function () {
+                if (gwindowSizeChangedInterVal != null)
+                    window.clearTimeout(gwindowSizeChangedInterVal);
+                gwindowSizeChangedInterVal = window.setTimeout(windowResized, 500);
+            };
+            windowResized();
+
+            getPortalFunction();
+        }
+
+        function windowResized() {
+            var size = JetsenWeb.Util.getWindowViewSize();
+            gFrame.size = { width: size.width - 0, height: size.height - 0 };
+            gFrame.resize();
+        }        
+    </script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="frame-top">
+        <div class="frame-top-left">
+        </div>
+        <div class="frame-top-right">
+            <div align="right" class="add">
+                您好：<span class="frame-login-name" id="divLoginName"><strong>管理员</strong></span>&nbsp;<span
+                    id="divColumnName" style=""></span><span>今天是：<script language="javascript">                                                                     document.write(new Date().toDateString(true))</script></span></div>
+            <div align="right">
+                <a onclick="showModifyInfo()"
+                    class="frame-info-link">个人资料</a><!--<img src="images/jetsentop02.gif" class="frame-info-icon" /><a
+                        href="#" class="frame-info-link">帮 助</a>--><a onclick="JetsenWeb.logout();" class="frame-logout-link">退出系统</a>
+            </div>
+        </div>
+    </div>
+    <div id="divFrameLeft" class="frame-left">
+    </div>
+    <div id="divLeftTop" class="frame-left-top">
+    </div>
+    <div id="divMenu" class="frame-accordion">
+    </div>
+    <div id="divLeftBottom" class="frame-left-bottom">
+    </div>
+    <div id="divContentTitle" class="frame-title">
+        <div class="frame-title-left">
+        </div>
+        <div class="frame-title-icon" style="cursor:pointer;" onclick="showPanelMenu(this)">
+        </div>
+        <div class="frame-title-center" >
+           <ul id="ulHead" class="headitem"></ul>
+        </div>
+        <div class="frame-title-right" style="cursor:pointer">
+        </div>
+    </div>
+    <iframe frameborder="0" id="JetsenMain" name="JetsenMain" scrolling="auto" src="main.htm"
+        style="z-index: 0; border-right: 0px; border-left: 0px; border-top: 0px solid threedshadow;
+        position: absolute; left: 180px; top: 50px; border-bottom: 0px; display: none"></iframe>
+    <div id="divBottom">
+    </div>
+    <div id="divRight" class="frame-right">
+    </div>
+    <div id="divPageBottom" class="frame-bottom">
+        <div class="frame-bottom-left">
+
+            <script type="text/javascript" >                document.write("&copy;" + new Date().getFullYear() + " Jetsen")</script>
+
+            北京捷成世纪科技股份有限公司</div>
+        <div class="frame-bottom-right">
+        </div>
+    </div>
+    <div style="display: none" id="divUserInfo" align="left">
+        <table width="100%" border="0" cellpadding="2" cellspacing="1">
+            <tr>
+                <td  align="right" width="100px">
+                    用户姓名：</td>
+                <td colspan="3">
+                    <input type='text' id="txtUserName" validatetype="NotEmpty" style="width: 120px" /><span
+                        style="color: Red">*</span></td>
+            </tr>
+            <tr id="trModifyPw">
+                <td align="right">
+                    修改密码：</td>
+                <td colspan="3">
+                    <input type="checkbox" id="chkModifyPw" onclick="if(this.checked){$('trPassword').style.display='';$('txtPassword').value='';$('txtPassword2').value='';}else{$('trPassword').style.display='none';$('txtPassword').value='123';$('txtPassword2').value='123';}" /></td>
+            </tr>
+            <tr id="trPassword">
+                <td align="right">
+                    用户密码：</td>
+                <td>
+                    <input type='password' id="txtPassword" validatetype="NotEmpty" style="width: 120px" /><span
+                        style="color: Red">*</span></td>
+                <td align="right">
+                    确认密码：</td>
+                <td>
+                    <input type='password' id="txtPassword2" validatetype="NotEmpty" style="width: 120px" /><span
+                        style="color: Red">*</span></td>
+            </tr>
+            <!--<tr>
+                <td align="right">
+                    用户目录：</td>
+                <td colspan="3">
+                    <input type='text' id="txtHomePath" style="width: 400px" readonly /></td>
+            </tr>
+            <tr>
+                <td align="right">
+                    用户配额：</td>
+                <td>
+                    <input type='text' id="txtPathSize" 
+                        style="width: 60px" readonly />(单位：G)</td>
+            </tr>
+            <tr>
+                <td align="right">
+                    已用配额：</td>
+                <td>
+                    <input type='text' id="txtUsedSize" 
+                        style="width: 60px" readonly />(单位：G)</td>
+            </tr>-->
+            <tr>
+                <td align="right">
+                    描述信息：</td>
+                <td colspan="3">
+                    <textarea id="txtDesc" style="width: 350px; height: 40px"></textarea></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

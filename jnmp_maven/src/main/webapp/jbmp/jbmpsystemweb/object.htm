@@ -1,0 +1,1173 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>资源管理</title>
+		<link rel="stylesheet" type="text/css" href="css/alarmConfig.css">
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/jbmp.js"></script>
+		<script type="text/javascript" src="javascript/listobject.js"></script>
+		<script type="text/javascript" src="javascript/listobject2.js"></script>
+		<script type="text/javascript" src="javascript/js_ip.js"></script>
+		<script type="text/javascript" src="javascript/alarmconfig_rule.js"></script>
+		<script type="text/javascript" src="javascript/object.js"></script>
+		<script type="text/javascript" src="javascript/object_permision.js"></script>
+	    <style>
+	    	#divAc a {
+	    		font-size : 12px;
+	    	}
+	    	.groupClass {
+	    		position: absolute;
+	    	 	width: 199px;
+	    	 	height: 284px;
+	    	 	border-right : 1px solid #ffffff;
+	    	}
+	    	.groupClassLast {
+	    		border-right : 0px solid #ffffff;
+	    	}
+	    	.groupTitle {
+	    		height : 30px;
+	    		line-height : 30px;
+	    		padding-left : 5px;
+	    	}
+	    	.groupCont {
+	    		height : 250px;
+	    	} 
+	    </style>
+	     <script type="text/javascript">
+	    //跳转到面板页
+	    function toMonitor(keyId,objName,classId) 
+	    {
+	    	navigateToUrl("../../jbmp/jbmpsystemweb/flex/perfdatamonitor.htm?OBJ_ID="+keyId+"&OBJ_NAME="+objName+"&CLASS_ID="+classId,"");
+		}
+		/**
+		 * 根据选择的对象属性调到面板
+		 * @param objId 对象ID
+		 * @param objAttrbId对象属性ID字符串(格式：1,2,3,4,5)
+		 * @param classId 类型ID
+		 * @return
+		 */
+		function toPanelMonitor(objId, objAttrbId, classId)
+		{
+			navigateToUrl("../../jbmp/jbmpsystemweb/flex/ReadTimePerfPanel.html?OBJ_ID="+objId+"&ATTRIB_ID="+objAttrbId+"&CLASS_ID="+classId,"");
+		}
+
+	    function navigateToUrl(url,funId)
+	    {
+	    	var queryString = JetsenWeb.getValideQueryString(getSubUrl(url));
+	        if (url.indexOf('?') >= 0) {
+	            url += "&" + queryString;
+	        }
+	        else {
+	            url += "?" + queryString;
+	        }
+	        url += "&sysid=" + funId;
+	        
+	       // parent.document.getElementById("JetsenMain").src=url;
+	        window.open(url,"","toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, status=no,fullscreen = yes");
+	        
+	    }
+
+	    //获取部分路径地址
+	    function getSubUrl(url) {
+	        var tempArr = url.split("\?");
+	        tempArr = tempArr[0].split("/");
+	        return tempArr[tempArr.length - 2] + "/" + tempArr[tempArr.length - 1];
+	    };
+	    </script>
+	</head>
+	<body>
+		<div id="divAc" style="margin-right:3px">
+			<div class="panel-head2">
+	            <table cellspacing="0" cellpadding="0" border="0" width="208px" id="tabPane">
+	                <tr>
+	                    <td align="center" pagename="class" id="divAttribClassView">分类浏览</td>
+	                    <td align="center" pagename="group" id="divAttrNetObjView">分组浏览</td>
+	                </tr>
+	            </table>
+        	</div>
+	        <div id="tabPage">
+	        	<div id="divAttribClass" style="overflow: auto;width:700px;"></div>
+	        	<div id="divAttrNetObj" style="overflow: auto; width:700px;"></div>
+	        </div>
+		</div>
+		<div id="divTop" class="list-search" style="margin-left: 3px;">
+			<div style="padding: 3px">
+				<div style="float: left;">
+					<div id="findObject">
+						对象名称：
+						<input id="txt_Key" class="input" onkeydown="JetsenWeb.keyEvent(searchButton)"/>
+						<input id="txt_Key2" style="display: none" class="input" onkeydown="JetsenWeb.keyEvent(searchButton2)"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						IP地址：
+						<input id="txt_IPAddress" class="input" onkeydown="JetsenWeb.keyEvent(searchButton)"/>
+						<input id="txt_IPAddress2" class="input" style="display: none" onkeydown="JetsenWeb.keyEvent(searchButton2)"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="button" id="buttonSearch1" value="查找" onclick="searchButton();"
+							class="button" style="padding: 3px"/>
+						<input type="button" id="buttonSearch2" value="查找" onclick="searchButton2();"
+							class="button" style="display: none;padding: 3px"/>
+					</div>
+					<div id="findObjectChild">
+						对象名称：
+						<input id="txt_Key3" class="input" onkeydown="JetsenWeb.keyEvent(searchChildObj)"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;												
+						<input type="button" id="buttonSearch3" value="查找" onclick="searchChildObj();"
+							class="button" style="padding: 3px"/>
+					</div>
+					<div id="ObjectAttriListLw">
+						对象属性列表
+					</div>
+					<div id="findInstance">
+						<table cellspacing="0" cellpadding="0" class="table-info" style="padding: 3px">
+							<tr>
+								<td align="left" width="180px">
+									 <span>IP地址：</span>
+									 <input id="txt_instance_findByIP" class="input" onkeydown="JetsenWeb.keyEvent(loadEquimentBySearch)"/>
+								</td>
+
+								<td align="left" colspan ="2">		
+									 <span>&nbsp;&nbsp;&nbsp;采集器：</span>
+									 <select id="txt_instance_findByColl" onkeydown="JetsenWeb.keyEvent(loadEquimentBySearch)" style="width: 109px">
+									 	<option value="">请选择</option>
+									 </select>
+								</td>
+							</tr>
+							<tr>
+								<td align="left" width="180px">	
+									 <span>&nbsp;&nbsp;&nbsp;类别：</span>
+									 <select id="txt_instance_findByClass" onkeydown="JetsenWeb.keyEvent(loadEquimentBySearch)" style="width: 102px;">
+									 	<option value="">请选择</option>
+									 </select>
+								</td>
+								<td align="left" width="180px">	 
+									 <span>对象状态：</span>
+									 <select id="txt_instance_findByStatus" onkeydown="JetsenWeb.keyEvent(loadEquimentBySearch)" style="width: 109px">
+										<option value="">请选择</option>
+										<option value="1">可用</option>
+										<option value="2">上一次新增</option>
+										<option value="3">上一次删除</option>
+										<option value="4">上一次更改</option>
+										<option value="5">不可用</option>
+									</select>
+								</td>
+								<td align="left" width="180px">	 	
+									&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="查找" onclick="loadEquimentBySearch()" class="button" style="padding: 3px"/>
+								</td>
+							</tr>	
+						</table>
+					</div>
+				</div>
+				<div style="float: right;" id="oldCreate">
+					<strong><a href="#" onclick="newObjElement();return false;" id="newObjElement"  title="新建" class="link"> [新建]</a></strong>
+					<strong><a href="#" onclick="addObjectChild();return false;" id="addSubObject"  title="添加" class="link" > [添加]</a></strong>
+					<strong><a href="#" onclick="newElementInGroup();return false;" id="addObjectInGroup"  title="新建" class="link" > [新建]</a></strong>
+<!--  
+					<a href="#" onclick="newObjElement();return false;" id="newObjElement"  title="新建"
+							style="font-weight: bold;"> [新建]</a>
+							-->
+				</div>
+			</div>
+		</div>
+		<div id="divElementList" class="webfx-columnlist"
+			style="border: 0px; background-repeat: no-repeat; overflow: auto;margin-left: 3px;">
+		</div>
+		<div id="divBottom" class="list-bottom" style="margin-left: 3px">
+			<div class='list-bottom-left'>		
+				<input type="button" id="deleteObjectMany" class="button" value="删除" onclick="delElementIds()"/>
+				<input type="button" id="toMonitorObjAttr" class="button" value="面板查看" onclick="toManyObjAttri()"/>
+				<input type="button" id="addObjectTo" class="button" value="添加到" onclick="addObjectToGroup()"/>
+                <input type="button" id="groupDelete" class="button" value="移除" onclick="deleteObjFromGroup();"/>
+                <input type="button" id="instanceEquiment" class="button" value="新建" onclick="objectInstance();" style="display: none"/>
+                <input type="button" id="btnGroupSet1" class="button" value="组设置" onclick="batchSet();"/>
+            </div>
+			<div class="list-bottom-right">
+				<div id="divListPagination" class="text_style">
+				</div>
+				<div id="myDivListPagination" class="text_style"></div>
+			</div>
+		</div>
+		<div id="divPopWindow" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info" id="baseInfo">
+				<tr>
+					<td class="field-head" width="30%">
+						对象名称：
+					</td>
+					<td>
+						<input type="text" id="txt_OBJ_NAME" validatetype="NotEmpty" maxlength="35"/>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr id="parentId">
+					<td class="field-head" style="height: 24px">
+						父对象ID：
+					</td>
+					<td style="height: 24px">
+						<input type="text" id="txt_PARENT_ID" readonly="readonly" disabled="disabled"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						IP地址：
+					</td>
+					<td id="td_IPADDRESS">
+						<div style="border:none; width:160px; font-size:12px; float: left;">
+   							<div id="txt_IP_ADDRESS"></div>
+						</div>
+						<span style="color: Red;float: left;">*</span>
+					</td>
+					<td id="td_IPADDRESS2">
+						<input type="text" id="txt_IP_ADDRESS2"/>
+						<span style="color: Red;">*</span>
+					</td>
+				</tr>
+				<tr id="td_PORT">
+					<td  class="field-head">
+						端口号：
+					</td>
+					<td>
+						<input type="text" id="txt_IP_PORT" maxlength="6" validatetype="Integer"/>
+					</td>
+				</tr>
+				<tr id="urlAddress">
+					<td class="field-head">
+						采集网址：
+					</td>
+					<td>
+						<input type="text" id="txt_urlAddress"  maxlength="50"/>
+					</td>
+				</tr>
+				<tr id="username">
+					<td class="field-head">
+						用户名：
+					</td>
+					<td>
+						<input type="text" id="txt_USERNAME"  maxlength="20"/>
+					</td>
+				</tr>
+				<tr id="community">
+					<td class="field-head">
+						共同体：
+					</td>
+					<td>
+						<input type="text" id="txt_USERNAME2" maxlength="20"/>
+					</td>
+				</tr>
+				<tr id="password">
+					<td class="field-head">
+						密码：
+					</td>
+					<td>
+						<input type="password" id="txt_PASSWORD" maxlength="20"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						类别：
+					</td>
+					<td style="height: 24px" id="tdClassObject">
+						<input type="text" id="txt_CLASS_TYPE" readonly="readonly" disabled="disabled"/>
+					</td>
+					<td style="height: 24px; display: none" id="tdClassGroup">
+						<select id="txt_CLASS_TYPE2" style="width: 155px; height: 22px" onchange="showDateStage()">
+						</select>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						对象状态：
+					</td>
+					<!-- 
+					<td style="height: 24px">
+						<select id="sel_OBJ_STATE" style="width: 155px; height: 22px">
+							<option value="0">
+								管理
+							</option>
+							<option value="1">
+								维护
+							</option>
+						</select>
+					</td>
+					 -->
+					 <td style="height: 24px">
+					 	<input id="sel_OBJ_STATE" class="select3" readonly type="text" handing="管理~0|维护~1"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" default="管理" selectedvalue="0" />
+					 </td>
+				</tr>
+				<tr id="selectVersion">
+					<td class="field-head" style="height: 24px">
+						版本：
+					</td>
+					<!-- 
+					<td style="height: 24px">
+						<select id="sel_VERSION" style="width: 155px; height: 22px">
+							<option value="snmpv1">
+								SNMP V1
+							</option>
+							<option value="snmpv2c" selected="selected">
+								SNMP V2C
+							</option>
+						</select>
+					</td>
+					 -->
+					<td style="height: 24px">
+						<input id="sel_VERSION" class="select3" readonly type="text" handing="SNMP V1~snmpv1|SNMP V2C~snmpv2c"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" default="SNMP V1" selectedvalue="snmpv1" />
+					</td>
+				</tr>
+				<tr id="editVersion">
+					<td class="field-head" style="height: 24px">
+						版本：
+					</td>
+					<td style="height: 24px">
+						<input type="text" id="sel_VERSION2" maxlength="15"/>
+					</td>
+				</tr>
+				<tr id="objectParam">
+					<td class="field-head" style="height: 24px">
+						对象参数：
+					</td>
+					<td style="height: 24px">
+						<input type="text" id="txt_OBJ_PARAM" />
+					</td>
+				</tr>
+				<tr id="colloctorLabel">
+					<td class="field-head" style="height: 24px" id="collectorSelectLabel">
+						采集器：
+					</td>
+					<td style="height: 24px" id="collectorSelectId">
+						<select id="colloctSelector" style="width: 155px; height: 22px" disabled="disabled">
+						</select>
+					</td>
+					<td id="collectorInputId" style="display: none">
+						<input type="text" readonly="readonly"/ id="collectorInputText">
+					</td>
+				</tr>
+				<tr id="db1">
+					<td class="field-head">
+						数据库名称：
+					</td>
+					<td>
+						<input type="text" id="txt_DB_NAME1" maxlength="35"/>
+					</td>
+				</tr>
+				<tr id="tr2">
+					<td class="field-head">
+						厂商：
+					</td>
+					<td style="height: 24px">
+						<select style="width: 155px; height: 22px" id="manufacturer" >
+						</select>
+					</td>
+				</tr>
+				<tr id="trcheckuserful">
+					<td class="field-head">
+						通断性检查间隔：
+					</td>
+					<!-- 
+					<td>
+						<select style="width: 155px; height: 22px" id="checkUseful">
+							<option value="60">1分钟</option>
+							<option value="10">10秒</option>
+							<option value="30">30秒</option>
+							<option value="180">3分钟</option>
+							<option value="300">5分钟</option>
+							<option value="600">10分钟</option>
+							<option value="1800">30分钟</option>
+							<option value="3600">1小时</option>
+						</select>
+					</td>
+					 -->
+					<td style="height: 24px">
+						<input id="checkUseful" class="select3" readonly type="text" handing="1分钟~60|10秒~10|30秒~30|3分钟~180|5分钟~300|10分钟~600|30分钟~1800|1小时~3600"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" default="1分钟" selectedvalue="60" />
+					</td>
+				</tr>
+				<tr id="objectgroupcontent">
+					<td class="field-head" style="vertical-align: top;">
+						所属组：
+					</td>
+					<td>
+						<select id="showGroupOption" multiple style="width: 155px; height: 60px;">
+						</select>
+					</td>
+				</tr>
+				<tr id="objectgroupcontrol">
+					<td class="field-head"></td>
+					<td>
+						<input type="button" value=" 添加 " class="button" id="btnSelGroup1" onclick="showGroupList();" />
+						<input type="button" value=" 添加 " class="button" id="btnSelGroup2" onclick="showGroupListAdd();" />
+                        <input type="button" value=" 删除 " class="button" id="btnDel" onclick="selectOptionsDel($('showGroupOption'));" />
+                        <input type="button" value=" 设置" class="button" id="btnGroupSet" onclick="showGroupSet();" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px; vertical-align: top;" rowspan="3">
+						对象描述：
+					</td>
+					<td style="height: 24px" rowspan="3">
+						<textarea id="txt_OBJ_DESC" rows="4" cols="40" onkeyup="showRemindWordCount(this.value,$('remindWord'),30);"></textarea><br/>
+                         <div style="float: right;padding-right: 48px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">30</span> 字
+         				 </div>
+						
+					</td>
+				</tr>
+				
+			</table>
+		</div>
+		<div id="divInstanceWindow" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info" id="instanceInfo">
+				<tr>
+					<td class="field-head">名称：</td>
+					<td>
+						<input type="text" id="txt_instance_name" validatetype="NotEmpty" maxlength="35"/>
+						<span style="color: Red">*</span>
+					</td>
+					
+					<td class="field-head">IP地址：</td>
+					<td>
+						<input type="text" id="txt_instance_ip" validatetype="NotEmpty"/>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">类型：</td>
+					<td>
+						<select id="txt_instance_type">
+						</select>
+					</td>
+					
+					<td class="field-head">采集器：</td>
+					<td>
+						<select id="txt_instance_coll">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">状态：</td>
+					<td>
+						<select id="txt_instance_status">
+							<option value="0">可用</option>
+							<option value="1">上一次新增</option>
+							<option value="3">上一次更改</option>
+						</select>
+					</td>
+					
+					<td class="field-head">是否已创建对象：</td>
+					<td>
+						<select id="txt_instance_iscreate">
+							<option value="0">未创建</option>
+							<option value="1">已创建</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">用户名：</td>
+					<td><input type="text" id="txt_instance_username" maxlength="20" /></td>
+					
+					<td class="field-head">密码：</td>
+					<td><input type="text" id="txt_instance_password" maxlength="20" /></td>
+				</tr>
+				<tr>
+					<td class="field-head">版本：</td>
+					<td><input type="text" id="txt_instance_version" maxlength="15" /></td>
+					
+					<td class="field-head">端口号：</td>
+					<td><input type="text" id="txt_instance_port" maxlength="6" validatetype="Integer"/></td>
+				</tr>
+			</table>
+		</div>
+		<div id="divGroupWindow" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info" id="groupInfo">
+				<tr>
+					<td class="field-head">组名称：</td>
+					<td><input type="text" id="txt_group_name" validatetype="NotEmpty"/></td>
+				</tr>
+				<tr>	
+					<td class="field-head">父组：</td>
+					<td><input type="text" id="txt_parent_id" readonly="readonly"/></td>
+				</tr>
+				<tr>
+					<td class="field-head">组类型：</td>
+					<td>
+						<select id="select_group_type" style="width: 152px;" readonly="readonly">
+							<option value="0">一般组</option>
+							<option value="1">系统</option>
+							<option value="2">设备</option>
+							<option value="3">采集</option>
+							<option value="4">网段</option>
+							<option value="5">拓扑</option>
+							<option value="6">自动创建</option>
+						</select>
+					</td>
+				</tr>
+				<tr>	
+					<td class="field-head" style="height: 24px;vertical-align: top;" rowspan="3">组描述</td>
+					<td style="height: 24px" rowspan="3">
+						<textarea id="txt_group_desc" rows="5" cols="22"></textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 对象属性 -->
+		 <div id="insObjDivContent" style="display: none;">
+			<div class="panel-head2">
+	            <table cellspacing="0" cellpadding="0" border="0" width="600px" id="attribPanel">
+	                <tr>
+	                    <td align="left" pagename="1">自定义属性</td>
+	                    <td align="center" pagename="2">配置属性</td>
+	                    <td align="center" pagename="3">监测指标</td>
+	                    <td align="center" pagename="4">性能指标</td>
+	                    <td align="center" pagename="5">其他</td>
+	                    <!--<td align="center" pagename="5">Trap信息</td>
+	                    <td align="center" pagename="6">信号属性</td>
+	                    <td align="center" pagename="7">Syslog信息</td>
+	                    <td align="center">表格数据</td> -->
+	                </tr>
+	            </table>
+        	</div>	        
+	        <div id="attribPage" style="margin-left: 2px;margin-right:3px">
+	        	<div id="divAttrib" style="overflow: auto;">
+	        		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+						<tr>
+							<td align="right">
+								<strong><a href="#" onclick="showAttribList('100');"
+									style="font-weight: bold;"> [添加]</a></strong>
+							</td>
+						</tr>
+					</table>
+					<div id="insObjDiv11" class="webfx-columnlist"
+						style="background: #fff; border: 0px; height: 370px; overflow: auto; margin-left: 0px;" >
+						数据加载中...
+					</div>
+	        	</div>
+	        	<div id="divConfig" style="overflow: auto;">
+	        		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+						<tr style="height: 20px;" >
+							<td align="left" style="vertical-align: top;">
+                                                                         选择分组：
+                                <select id="cbo_CLASS" style="width: 134px; height:21px" onchange="onAttribClassChanged()">
+			                    </select>
+                            </td>
+							<td align="right" style="height: 20px">
+								<strong><a href="#" onclick="showDeviceInfo();"
+									style="font-weight: bold;"> [设备基本信息]</a></strong>
+								<strong><a href="#" onclick="showAttribList('101,106');"
+									style="font-weight: bold;"> [添加]</a></strong>
+							</td>
+						</tr>
+					</table>
+	        		<div id="insConfigDiv" class="webfx-columnlist"
+						style="background: #fff; border: 0px; height: 370px; overflow: auto; margin-left: 0px;" >
+						数据加载中...
+					</div>
+	        	</div>
+	        	<div id="divInspect" style="overflow: auto;">
+	        		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+						<tr>
+							<td align="right">
+								<strong><a href="#" onclick="showBatchAlarmConfig('102');" style="font-weight: bold;"> [报警设置]</a></strong>
+								<strong><a href="#" onclick="showAttribList('102');"
+									style="font-weight: bold;"> [添加]</a><strong>
+							</td>
+						</tr>
+					</table>
+	        		<div id="insInspectDiv" class="webfx-columnlist"
+						style="background: #fff; border: 0px; height: 370px; overflow: auto;margin-top: 0px; margin-left: 0px;">
+						数据加载中...
+					</div>
+	        	</div>
+	        	<div id="divPerform" style="overflow: auto;">
+	        		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+						<tr style="height: 20px">
+							<td align="right" style="height: 20px">
+								<strong><a href="#" onclick="showBatchAlarmConfig('103');" style="font-weight: bold;"> [报警设置]</a></strong>
+								<strong><a href="#" onclick="showAttribList('103');"
+									style="font-weight: bold;"> [添加]</a></strong>
+							</td>
+						</tr>
+					</table>
+	        		<div id="insPerformDiv" class="webfx-columnlist"
+						style="background: #fff; border: 0px; height: 370px; overflow: auto;margin-top: 0px; margin-left: 0px;">
+						数据加载中...
+					</div>
+	        	</div>
+	        	<div id="divTrap" style="overflow: auto; display: none;">
+	        		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+						<tr style="height: 20px">
+							<td align="left" style="height: 20px">
+							选择分类：
+								<select id="cbo_TYPE" style="width: 134px; height:21px" onchange="onAttribTypeChange()">
+									<option value="">请选择</option>
+									<option value="104">Trap属性</option>
+									<option value="105">信号属性</option>
+									<option value="107">Syslog属性</option>
+			                    </select>
+							</td>
+							<td align="right" style="height: 20px">
+								<strong><a href="#" onclick="showBatchAlarmConfig('104,105,107');" style="font-weight: bold;"> [报警设置]</a></strong>
+								<strong><a href="#" onclick="showOtherAttribList();"
+									style="font-weight: bold;"> [添加]</a></strong>
+							</td>
+						</tr>
+					</table>
+	        		<div id="insTrapDiv" class="webfx-columnlist"
+						style="background: #fff; border: 0px; height: 370px; overflow: auto;margin-top: 0px; margin-left: 0px;">
+						数据加载中...
+					</div>
+	        	</div>
+		       <div id="divObjAttrBottom" class="list-bottom" style="position: relative; height: 33px;">
+			       <div class='list-bottom-left'>		
+						<input type="button" id="deleteObjectAttributeMany" class="button" value="删除" onclick="deleteObjattrs()"/>
+	            	</div>
+	    	   </div>
+	        </div>	
+		</div>
+		<!-- 显示属性列表 -->
+		<div id="divShowListAttribByType" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:-1px;margin-right:3px">
+			<table id="addTableType" width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="display: none">
+				<tr style="height: 20px">
+					<td align="left">
+						添加方式：
+						<select id="addAttributeType">
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div id="listAttribByType" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 300px;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="oaConfigPopWindow" style="display: none;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head" style="height: 22px; width: 70px;">
+						属性名称：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_OBJATTR_NAME" style="width: 280px;"
+							validatetype="NotEmpty" maxlength="35"/>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 22px">
+						属性参数：
+					</td>
+					<td style="height: 22px">
+						<input type="text" style="width: 280px;" id="txt_ATTRIB_PARAM" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 22px">
+						数据编码：
+					</td>
+					<td style="height: 22px">
+						<input type="text" style="width: 280px;" id="txt_DATA_ENCODING" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 22px">
+						采集类型：
+					</td>
+					<td style="height: 22px">
+						<select id="sel_IS_COLLECT">
+							<option value="0">
+								不采集
+							</option>
+							<option value="1">
+								采集
+							</option>
+							<option value="2">
+								单次采集
+							</option>
+							<option value="10">
+								单次采集完成
+							</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divPopAttribClass" style="display: none; overflow: auto;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head" width="40%" style="height: 22px">
+						父属性集：
+					</td>
+					<td style="height: 22px">
+						<select id="sel_AC_PARENT" style="width: 150px;">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						分类名称：
+					</td>
+					<td style="height: 24px">
+						<input type="text" id="txt_AC_CLASSNAME" validatetype="NotEmpty" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						分类级别：
+					</td>
+					<td style="height: 24px">
+						<select id="sel_AC_CLASSLEVEL" style="width: 152px;">
+							<option value="0">
+								一般组
+							</option>
+							<option value="1">
+								监控对象类型
+							</option>
+							<option value="2">
+								监控对象子类型
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						分类类型：
+					</td>
+					<td style="height: 24px">
+						<input type="text" id="txt_AC_CLASSTYPE" validatetype="NotEmpty" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px;vertical-align: top;">
+						分类描述：
+					</td>
+					<td style="height: 24px">
+						<textarea id="txt_AC_CLASSDESC" type="text"
+							style="width: 148px; height: 50px"></textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="procListContentDiv" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+			<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px">
+				<tr>
+					<td align="left">
+						<span id="hostNameSpan" style="font-weight: bold"></span>的进程列表：
+					</td>
+				</tr>
+			</table>
+			<div id="procListDiv" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 385px;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="cardListContentDiv" class="webfx-columnlist"
+			style="display: none; overflow: hidden;">
+			<table width="100%" cellspacing="0" cellpadding="0"
+				style="margin-top: 3px;padding: 3px" class="tablepanel">
+				<tr>
+					<td align="left" style="height: 25px">
+						<select id="sel_CARV_CARD_TYPE" style="width: 152px;">
+							<option value="0">
+								板卡分类列表
+							</option>
+							<option value="1">
+								板卡列表
+							</option>
+						</select>
+						<input type="button" onclick="chooseCardTable();" value="选择" />
+					</td>
+				</tr>
+			</table>
+			<div id="cardListDiv" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 385px;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="divProcList" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+			<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+				<tr style="height: 20px">
+					<td align="left">
+						<span id="spanProcListTitle" style="font-weight: bold"></span>的子对象列表：
+					</td>
+					<td align="right">
+						类别：
+						<select id="selectSubClass" onchange="showSubObject();">
+						</select>&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="#" onclick="addSubObject();" title="添加"
+							style="font-weight: bold;"> [添加]</a>
+					</td>
+				</tr>
+			</table>
+			<div id="divProcListTable" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 350px;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="divAttribute" class="webfx-columnlist"
+			style="display: none; border: 0px; background-repeat: no-repeat; height: 95%">
+			<div id="divLastAttribTable" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="divInsedAttribute" class="webfx-columnlist"
+			style="display: none; border: 0px; background-repeat: no-repeat; height: 95%">
+			<div id="divInsedAttribTable" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="divGroupListPanel" class="webfx-columnlist"
+			style="display: none; overflow: hidden;">
+			<div id="divGroupListTable" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto;margin-top: -1px;height: 330px;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="divGroupSelectPanel" class="webfx-columnlist"
+			style="display: none; overflow: hidden;">
+			<table width="100%" cellspacing="0" cellpadding="0"
+				style="margin-top: 3px;padding: 3px" class="tablepanel">
+				<tr>
+					<td align="left" style="height: 25px">
+						对象组列表：
+					</td>
+				</tr>
+			</table>
+			<div id="divGroupSelectTable" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="instanceResult" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-top:-2px">
+			<table width="100%" cellspacing="0" cellpadding="0"
+				style="margin-top: 3px;padding: 3px" class="tablepanel">
+				<tr>
+					<td align="left" style="height: 25px">
+						对象实例化结果：
+					</td>
+					<td align="right" style="height: 25px">
+						<input type="checkbox" id="isRepeat"/>
+						不添加重复的对象属性
+					</td>
+				</tr>
+			</table>
+			<div id="divInstanceResultTable" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto;height: 298px;">
+				数据加载中...
+			</div>
+		</div>
+		<!-- 自定义的对象属性编辑框 -->
+		<div id="divEditSelfDefObjattr" class="webfx-columnlist"
+			style="display: none; overflow: hidden;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px">
+						名称：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_OBJATTR_NAME2" validatetype="NotEmpty" maxlength="35" />
+						<span style="color: Red">*</span>
+					</td><input id="hid_OBJATTR_ID2" type="hidden" />
+				</tr>
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px">
+						值：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_STR_VALUE" validatetype="NotEmpty" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						是否可见：
+					</td>
+					<td style="height: 24px">
+						<select id="sel_IS_VISIBLE2" style="width: 152px;">
+							<option value="1">
+								可见
+							</option>
+							<option value="0">
+								不可见
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px">
+						参数：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_OBJATTR_PARM0"  maxlength="600" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 没有轮询间隔的对象属性编辑框，一般有配置信息、表格信息、trap、信号 -->
+		<div id="divEditNoTimeSpanObjattr" class="webfx-columnlist"
+			style="display: none; overflow: hidden;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px">
+						名称：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_OBJATTR_NAME0" validatetype="NotEmpty" maxlength="35" />
+						<span style="color: Red">*</span>
+					</td><input id="hid_OBJATTR_ID0" type="hidden" />
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						数据编码：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="sel_DATA_ENCODING0"  maxlength="20" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						是否可见：
+					</td>
+					<td style="height: 24px">
+						<select id="sel_IS_VISIBLE0" style="width: 152px;">
+							<option value="1">
+								可见
+							</option>
+							<option value="0">
+								不可见
+							</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 有对象值的对象属性编辑框，一般有trap、信号 -->
+		<div id="divEditValueObjattr" class="webfx-columnlist"
+			style="display: none; overflow: hidden;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px">
+						名称：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_OBJATTR_NAME3" validatetype="NotEmpty" maxlength="35"/>
+						<span style="color: Red">*</span>
+					</td><input id="hid_OBJATTR_ID3" type="hidden" />
+				</tr>
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px">
+						值：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_OBJATTR_VALUE3" validatetype="NotEmpty" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 有轮询间隔的对象属性编辑框，一般有监测信息、性能信息 -->
+		<div id="divEditTimeSpanObjattr" class="webfx-columnlist"
+			style="display: none; overflow: hidden;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px">
+						名称：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_OBJATTR_NAME1" validatetype="NotEmpty" maxlength="35" />
+						<span style="color: Red">*</span>
+					</td><input id="hid_OBJATTR_ID1" type="hidden" />
+				</tr>
+				<tr>
+					<td class="field-head" style="height: 24px">
+						数据编码：
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="sel_DATA_ENCODING1"  maxlength="20" />
+					</td>				
+				</tr>
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px">
+						采集间隔：
+					</td>
+					<td style="height: 22px">
+					<select id="txt_COLL_TIMESPAN1">
+						 <option value="300">5分钟</option>
+	                        <option value="10">10 秒</option>
+	                        <option value="20">20 秒</option>
+	                        <option value="30">30 秒</option>
+	                        <option value="60">1分钟</option>
+	                        <option value="120">2分钟</option>
+	                        <option value="180">3分钟</option>
+	                        <option value="600">10分钟</option>
+					</select>
+					<!-- <input type="text" id="txt_COLL_TIMESPAN1" validatetype="NotEmpty" />
+						<span style="color: Red">*</span>
+					 -->
+					</td>
+				</tr>
+				<tr id="trvisvisable">
+					<td class="field-head" style="height: 24px">
+						是否可见：
+					</td>
+					<td style="height: 24px">
+						<select id="sel_IS_VISIBLE1" style="width: 152px;">
+							<option value="1">
+								可见
+							</option>
+							<option value="0">
+								不可见
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" width="30%" style="height: 22px" >
+						<span id ="textParamName" >参数：</span>
+					</td>
+					<td style="height: 22px">
+						<input type="text" id="txt_OBJATTR_PARM1"  maxlength="600" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<!-- 监测信息、性能信息关联告警 -->
+		<div id="divObjAttrib2Alarm" style="display:none; position: relative;margin-top:-2px">
+		    <div id="divObjAttrib2Alarm1">
+		        <div id="divAlarmListContent">
+				<div id="divAlarmList" class="webfx-columnlist" style="border: 1px;">
+					数据加载中...
+				</div>
+			</div>			
+						
+		   <div id="divAlarmDetail">
+			    <table width="100%" border="0" cellpadding="0" cellspacing="1" style="overflow: right;">
+					<tr style="height: 30px">
+
+						<td width="77">
+							<strong>报警设置</strong>
+						</td>
+					</tr>
+					<tr style="height: 20px">
+						<td align="left" width="180">
+							检查次数：
+							<label id="lblCheckNum"></label>
+						</td>
+						<td align="left">
+							越限次数：
+							<label id="lblOverNum"></label>
+						</td>
+						<!--  
+						<td width="123" align="left">
+							报警间隔(秒)：
+							<label id="lblCheckSpan">
+							</label>
+						</td>
+						-->
+					</tr>
+					<tr style="height: 30px">
+						<td width="73">
+							<strong>阀值设置</strong>
+						</td>
+					</tr>
+				</table>
+				<div style="border: 0px; background-repeat: no-repeat; overflow: hidden; height: 160px;">
+					<div id="divAlarmLevel" class="webfx-columnlist"
+						style="border: 1px; overflow: hidden; height: 160px;">
+					</div>
+				</div>
+			</div>
+		    </div>
+		</div>
+		<div id="divGroupSelectPanel2" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+			<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px">
+				<tr>
+					<td align="left">
+					分组类型：
+						<select id="filterGroup" onchange="filterGroup();"  style="height: 20px; width: 120px">
+							<option value="">请选择</option>
+							<option value="1">系统</option>
+							<option value="4">网段</option>
+							<option value="3">采集组</option>
+							<option value="0">一般组</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div id="divGroupSelectTable2" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto;">
+				数据加载中...
+			</div>
+		</div>
+		<div id="divSubObjectList" class="webfx-columnlist"
+			style="border: 0px; background-repeat: no-repeat; overflow: hidden; height: 310px;">
+			<div id="divSubObjectListTable" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto;margin-top: -1px;height: 330px;">
+				
+			</div>
+		</div>
+		<div id="divDeveiceInfo"  style="display: none; width:98%;height:98%;overflow: hidden;background-color: black;"></div>
+		<div class="page-frame" id="divPageFrame" />
+		
+				<!-- classType列表 -->
+		<div id="divShowClassType" class="webfx-columnlist" style="display: none; overflow: hidden;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+					<td align="center">
+						对象类型：
+						<select id="selectClassType" style="width: 200px;">
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<!-- 组相关设置对话框 -->
+		<div id="divGroupShow" style="display: none; height: 280px; width: 799px; overflow: hidden;">
+			<div id="divGroupShowI" style="position: relative; height: 280px; width: 799px; overflow: hidden;">
+				<div id="divGroupShowSys" class="groupClass" style="top: 0px; left: 0px;">
+					<div id="divGroupShowSysTitle" class="list-search groupTitle">
+						<span>系统组&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<input type="checkbox" id="cbG1" checked="true" onclick="enableGroupSet(1)" value="是否生效"/><span id="spanG1">是否生效</span>
+					</div>
+					<div id="divGroupShowCont1" class="groupCont"></div>
+				</div>
+				<div id="divGroupShowNormal" class="groupClass" style="top: 0px; left: 200px;">
+					<div id="divGroupShowNormalTitle" class="list-search groupTitle">
+						<span>一般组&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<input type="checkbox" id="cbG0" checked="true" onclick="enableGroupSet(0)" value="是否生效"/><span id="spanG0">是否生效</span>
+					</div>
+					<div id="divGroupShowCont0" class="groupCont"></div>
+				</div>
+				<div id="divGroupShowNet" class="groupClass" style="top: 0px; left: 400px;">
+					<div id="divGroupShowNetTitle" class="list-search groupTitle">
+						<span>网段组&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<input type="checkbox" id="cbG4" checked="true" onclick="enableGroupSet(4)" value="是否生效"/><span id="spanG4">是否生效</span>
+					</div>
+					<div id="divGroupShowCont4" class="groupCont"></div>
+				</div>
+				<div id="divGroupShowColl" class="groupClass groupClassLast" style="top: 0px; left: 600px;">
+					<div id="divGroupShowCollTitle" class="list-search groupTitle">
+						<span>采集组&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<input type="checkbox" id="cbG3" checked="true" onclick="enableGroupSet(3)" value="是否生效"/><span id="spanG3">是否生效</span>
+					</div>
+					<div id="divGroupShowCont3" class="groupCont"></div>
+				</div> 
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+		<title>报警规则</title>
+		<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/alarmrule.js"></script>
+		<script type="text/javascript" src="javascript/alarmconfig_rule.js"></script>
+		<script type="text/javascript" src="javascript/attributedialog.js"></script>
+		<script type="text/javascript" src="javascript/objattrdialog.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/alarmConfig.css"></link>
+		<style type="text/css">
+			#existAlarmGridList-div-body{height:374px;}
+		</style>
+		
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div class='list-title' id="divListTitle">
+	        <div class='list-title-left' style="margin-left: 3px">
+	        	指标/属性列表<input type="hidden" id="hideTypeInput"/><input type="hidden" id="hidePopDialog"/>
+	        </div>
+	        <div class='list-title-right'>
+	            <strong><a href="javascript:popAttributeDialog();" title="加载属性">[加载属性]</a></strong>
+	            <strong><a href="javascript:popObjAttrDialog();" title="加载指标">[加载指标]</a></strong>
+	        </div>
+	    </div>
+	    
+	    <div id="divMainRecordList" class="webfx-columnlist"style="border: 0px; overflow: hidden; padding-top: 0px;" onfocus="this.blur();">
+			数据加载中...
+		</div>
+		
+		<div id="divMainBottom" class="list-bottom">
+			<div class="list-bottom-left">
+				<input  type="button" value="报警规则" class="button" onclick="setBatchAlarmRule();" title="报警规则"/>
+				<input  type="button" value="开启报警" class="button" onclick="setBatchAlarmSwitch('0');" title="开启报警"/>
+				<input  type="button" value="关闭报警" class="button" onclick="setBatchAlarmSwitch('1');" title="关闭报警"/>
+				<input  type="button" value="采集间隔" class="button" onclick="setMoreCollectInterval();" title="采集间隔"/>
+				<input  type="button" value="关联报警" class="button" onclick="refExistedAlarmBatch();" title="关联已有报警"/>
+				<input  type="button" value="删除" class="button" onclick="delRecord();" title="删除"/>
+			</div>
+		</div>
+
+		<!-- 加载属性的弹框 -->
+		<div id="attributeDiv" style="display:none;position: relative;">
+		<div>
+			<div id="attrTopDiv" style="top:0px;left:0px;">
+				<div class="list-search" id="attrTopSearch">
+					<table border="0px">
+						<tr>
+							<td align="left">&nbsp;&nbsp;属性分类：
+								<select style="width:105px" id="attributeType">
+									<option value="">请选择</option>
+									<option value="102">监测指标</option>
+									<option value="103">性能指标</option>
+									<option value="999">其他</option>
+								</select>
+							</td>
+							<td align="left">&nbsp;&nbsp;属性名称：
+								<input type="text" class="input" id="attributeName"/>
+								<input type="checkbox" id="chkAttrName" title="精确查询" />
+							</td>
+							<td align="left">&nbsp;&nbsp;资源类型：
+								<select style="width:120px" id="sourceTypeInAttrPage">
+									<option value="">请选择</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td align="left">&nbsp;&nbsp;报警状态：
+								<select id="alarmStateInAttr" style="width:105px">
+									<option value="">请选择</option>
+									<option value="0">已生效</option>
+									<option value="1">未生效</option>
+								</select>
+							</td>
+							<td align="left">&nbsp;&nbsp;规则名称：
+								<input type="text" class="input" id="alarmNameInAttr"/>
+								<input type="checkbox" id="chkAlarmNameInAttr" title="精确查询" />
+							</td>
+							<td>
+								&nbsp;&nbsp;
+								<input type="button" class="button" value="查找" onclick="searchAttribute();"/>
+							</td>
+						</tr>
+					</table> 			
+				</div>
+				<div id="attributeRecordList" class="webfx-columnlist" style="border: 0px; overflow: hidden; padding-top: 0px;" onfocus="this.blur();">
+					数据加载中...
+				</div>
+				
+				<div id="divAttributeBottom" class="list-bottom">
+					<div class="list-bottom-left">
+						<input id="attrBottomBtn" type="button" value="添加" class="button" onclick="addMoreAttr();" title="批量添加"/>
+					</div>
+					<div class="list-bottom-right">
+						<div id="divAttrRecordPage" class="text_style"></div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 下半部分，已选择属性div -->
+			<div id="attrDownDiv" style="top:295px;left:0px;">
+				<div class="list-title" id="attrDownTitle" style="margin-bottom: 0px;margin-top: 0px;">
+					 <div class='list-title-left' style="margin-left: 3px">
+		        		已选择属性列表
+			        </div>
+			        <div class='list-title-right'>
+			            <strong><a href="javascript:saveAttrTemplate();" title="保存模板">[保存模板]</a></strong>
+			            <strong><a href="javascript:importAttrTemplate();" title="导入模板">[导入模板]</a></strong>
+			        </div>
+			    </div>
+			    <div id="attrChoosenList" class="webfx-columnlist" style="border: 0px; overflow: hidden; padding-top: 0px;" onfocus="this.blur();">
+					数据加载中...
+				</div>
+				<div id="divAttrChoosenBottom" class="list-bottom" style="margin-bottom: 0px">
+					<div class="list-bottom-left">
+						<input id="delMorBtn" type="button" value="删除" class="button" onclick="delMoreAttr();" title="批量删除"/>
+					</div>
+					<div class="list-bottom-right">
+						<input type="button" value="确定" class="button" onclick="saveAttrToPage();"/>
+						<input type="button" value="取消" class="button" onclick="cancelChosenAttr();"/>
+					</div>
+				</div>
+			</div>
+				
+			<div id="saveAttributeTemplateDiv" style="display:none">
+				<div style="margin-left: 40px;margin-top: 40px">
+					模板名称：<input type="text" id="attributeTemplateName" class="input2" validatetype="NotEmpty"/>
+				</div> 
+			</div>
+			<div id="importAttributeTemplateDiv" style="display:none">
+				<div class="list-search">
+					<table>
+						<tr>
+							<td>模板名称：</td>
+							<td><input type="text" class="input" id="searchAttributeTemplateInput"/></td>
+							<td><input type="button" class="button" onclick="searchAttributeTemplate();" value="查找"/></td>
+						</tr>
+					</table>
+				</div>
+				<div id="divAttributeTemplateList" class="webfx-columnlist" onfocus="this.blur();" style="height:300px; border: 0px;">
+					数据加载中...
+				</div>
+			</div>
+				
+			<div id="divAttrFrame" class="page-frame" style="padding-top: 0px"></div>
+		</div>
+		</div>
+		
+		<!-- 加载指标(对象属性)的弹框 -->
+		<div id="objAttrDiv" style="display: none;position: relative;">
+		<div>
+			<!-- 上半部分，加载指标div -->
+			<div id="objAttrTopDiv" style="top:0px;left:0px;">
+				<div class="list-search" id="objAttrTopSearch" style="margin-bottom: 0px;margin-top: 0px;">
+					<table border="0px">
+						<tr>
+							<td align="left">资源类型：
+								<select style="width:120px" id="sourceTypeInObjAttrPage">
+									<option value="">请选择</option>
+								</select>
+							</td>
+							<td aling="left">&nbsp;&nbsp;指标名称：
+								<input type="text" class="input" id="objAttrName"/>
+								<input type="checkbox" id="chkObjAttrName" title="精确查询" />
+							</td>
+							<td aling="left">&nbsp;&nbsp;对象名称：
+								<input type="text" class="input" id="objName"/>
+								<input type="checkbox" id="chkObjName" title="精确查询" />
+							</td>
+						</tr>
+						<tr>
+							<td align="left">报警状态：
+								<select id="alarmStateInObjAttr" style="width:120px">
+									<option value="">请选择</option>
+									<option value="0">已生效</option>
+									<option value="1">未生效</option>
+								</select>
+							</td>
+							<td align="left">&nbsp;&nbsp;规则名称：
+								<input type="text" class="input" id="alarmNameInObjAttr"/>
+								<input type="checkbox" id="chkAlarmNameInObjAttr" title="精确查询" />
+							</td>
+							<td>
+								&nbsp;&nbsp;
+								<input type="button" class="button" value="查找" onclick="searchObjAttribute();"/>
+							</td>
+						</tr>
+					</table> 			
+				</div>
+				<div id="objAttrRecordList" class="webfx-columnlist" style="border: 0px; overflow: hidden; padding-top: 0px;" onfocus="this.blur();">
+					数据加载中...
+				</div>
+				<div id="divObjAttrBottom" class="list-bottom" style="margin-bottom: 0px">
+					<div class="list-bottom-left">
+						<input id="objAttrBottomBtn" type="button" value="添加" class="button" onclick="addMoreObjAttr();" title="批量添加"/>
+					</div>
+					<div class="list-bottom-right">
+						<div id="divObjAttrRecordPage" class="text_style"></div>
+					</div>
+				</div>
+			</div>
+				
+			<!-- 下半部分，已选择指标div -->
+			<div id="objAttrDownDiv" style="top:295px;left:0px">
+				<div class="list-title" id="objAttrDownTitle"  style="margin-bottom: 0px;margin-top: 0px">
+					 <div class='list-title-left' style="margin-left: 3px">
+		        		已选择指标列表
+			        </div>
+			        <div class='list-title-right'>
+			            <strong><a href="javascript:saveObjAttrTemplate();" title="保存模板">[保存模板]</a></strong>
+			            <strong><a href="javascript:importObjAttrTemplate();" title="导入模板">[导入模板]</a></strong>
+			        </div>
+			    </div>
+			    <div id="objAttrChosenList" class="webfx-columnlist"style="border: 0px; overflow: hidden; padding-top: 0px;" onfocus="this.blur();">
+					数据加载中...
+				</div>
+				<div id="divObjAttrChosenBottom" class="list-bottom" style="margin-bottom: 0px">
+					<div class="list-bottom-left">
+						<input id="delMoreBtn" type="button" value="删除" class="button" onclick="delMoreObjAttr();" title="批量删除"/>
+					</div>
+					<div class="list-bottom-right">
+						<input type="button" value="确定" class="button" onclick="saveObjAttrToPage();"/>
+						<input type="button" value="取消" class="button" onclick="cancelChosenObjAttr();"/>
+					</div>
+				</div>
+			</div>
+			
+			<div id="saveObjAttrTemplateDiv" style="display:none">
+				<div style="margin-left: 40px;margin-top: 40px">
+					模板名称：<input type="text" id="objAttrTemplateName" class="input2" validatetype="NotEmpty"/>
+				</div> 
+			</div>
+			
+			<div id="importObjAttrTemplateDiv" style="display:none">
+				<div class="list-search">
+					<table>
+						<tr>
+							<td>模板名称：</td>
+							<td><input type="text" class="input" id="searchObjAttrTemplateInput"/></td>
+							<td><input type="button" class="button" onclick="searchObjAttrTemplate();" value="查找"/></td>
+						</tr>
+					</table>
+				</div>
+				<div id="divObjAttrTemplateList" class="webfx-columnlist" onfocus="this.blur();" style="height:300px; border: 0px;">
+					数据加载中...
+				</div>
+			</div>
+					
+			<div id="divObjAttrFrame" class="page-frame" style="padding-top: 0px"></div>
+		</div>
+		</div>
+		
+		<!-- 设置采集间隔的弹框 -->
+		<div id="setCollectIntervalDiv" style="display:none;">
+			<div style="margin-left: 40px;margin-top: 40px">
+				采集间隔：<select id="collectIntervalSelect">
+					<option value="10">10秒</option>
+					<option value="20">20秒</option>
+					<option value="30">30秒</option>
+					<option value="60">1分钟</option>
+					<option value="120">2分钟</option>
+					<option value="180">3分钟</option>
+					<option value="300">5分钟</option>
+					<option value="600">10分钟</option>
+					<option value="1800">30分钟</option>
+				</select>
+			</div> 
+		</div>
+		
+		<div id="refExistAlarmDiv" style="display:none; padding:0px; margin:0px; position: relative;">
+			<div style="hidden">
+			<div class="list-search" id="existAlarmBottmSearch" style="margin-bottom: 0px;margin-top: 0px;height:30px;">
+				<table border="0px">
+					<tr>
+						<td align="left">规则名称：
+							<input type="text" class="input" id="existAlarmNameTxt"/>
+							<input type="checkbox" id="chkExistAlarmName" title="精确查询" />
+						</td>
+						<td align="left">指标/属性名称：
+							<input type="text" id="attrOrObjattrName" class="input"/>
+						</td>
+						<td>
+							&nbsp;&nbsp;
+							<input type="button" class="button" value="查找" onclick="searchExistAlarm();"/>
+						</td>
+					</tr>
+				</table> 			
+			</div>
+			<div id="existAlarmList" class="webfx-columnlist" style="border: 0px; overflow:hidden ; height: 400px;" onfocus="this.blur();">
+				数据加载中...
+			</div>
+			<div id="existAlarmBottom" class="list-bottom" style="margin-bottom: 0px;top:436px;height: 30px">
+				<div class="list-bottom-left" style="top:434px">
+					<input type="button" class="button" value="关联" onclick="refSelectedAlarm();"/>
+				</div>
+				<div class="list-bottom-right" style="top:436px;">
+					<div id="divExistAlarmPage" class="text_style"></div>
+				</div>
+			</div>
+			</div>
+		</div> 
+
+		<div class="page-frame" id="divPageFrame" />
+		<div id="hideDiv">
+			<input type="hidden" id="hideShowXml"/>
+			<input type="hidden" id="hideSelectedInfo"/>
+		</div>
+	</body>
+</html>

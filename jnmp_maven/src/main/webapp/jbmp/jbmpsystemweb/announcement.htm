@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<title>公告管理</title>
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/jnmpconstants.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript">
+        JetsenWeb.require(["js_gridlist", "js_pagebar", "js_sql", "js_window", "js_validate", "js_pageframe"]);
+        // 页面控件，表示当前页
+        var gFrame;
+        // 页面大小重置函数句柄
+        var gWindowSizeChangedInterVal;
+        // 属性分类
+        var collTaskArray;
+        //开始IP
+        var startIp;
+        //介绍IP
+        var endIp;
+        // 分页
+        var gPage = new JetsenWeb.UI.PageBar("AnnouncemnetManager");
+        gPage.onpagechange = function () { 
+            search(); 
+        };
+        gPage.orderBy = "ORDER BY a.IS_TOP DESC,a.CREATE_TIME DESC";
+        gPage.onupdate = function () {
+            $('divTaskListPage').innerHTML = this.generatePageControl();
+        };
+        // 表格渲染
+        var gGridList = new JetsenWeb.UI.GridList();
+        gGridList.ondatasort = function (sortfield, desc) {
+        	gPage.setOrderBy(sortfield, desc);
+        };
+        // 查询条件
+        var gCondition = new JetsenWeb.SqlConditionCollection();
+        var gSqlQuery = new JetsenWeb.SqlQuery();
+        var gQueryTable = JetsenWeb.createQueryTable("BMP_ANNOUNCEMENT", "a");
+        JetsenWeb.extend(gSqlQuery, { IsPageResult: 1, KeyId: "a.ANNOUNCEMENT_ID", PageInfo: gPage, QueryTable: gQueryTable, ResultFields: "a.*" });
+		
+        // 页面初始化
+            // 构造页面
+        window.onload = function () {
+            gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"), 
+                    { splitType: 1, fixControlIndex: 0, enableResize: false, splitTitle: "divListTitle", splitSize: 27 });
+
+            var frameContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divContent"), 
+                    { splitType: 1, fixControlIndex: 1, showSplit: false });
+
+            frameContent.addControl(new JetsenWeb.UI.PageItem("divAnnouncementList"));
+            frameContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divBottom"), 
+                    { size: { width: 0, height: 30} }));
+
+            gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divTop"), 
+                    { size: { width: 0, height: 30} }));
+            gFrame.addControl(frameContent);
+
+            //CKEDITOR.replace("ckeditor1", { width:650, height:230});
+            //浏览器退回时 顶层标签显示
+            parent.document.getElementById("spanWindowName").innerHTML = document.title;
+            loadMainTable();
+            JetsenWeb.UI.DropDownList.initOptions('isTop');
+            
+			
+            // 页面大小变化的动作
+            window.onresize = function () {
+                if (gWindowSizeChangedInterVal != null)
+                    window.clearTimeout(gWindowSizeChangedInterVal);
+                gWindowSizeChangedInterVal = window.setTimeout(windowResized, 500);
+            };
+            windowResized();
+        }
+     	// 调节窗口大小
+        function windowResized() {
+            var size = JetsenWeb.Util.getWindowViewSize();
+            gFrame.size = { width: size.width, height: size.height };
+            gFrame.resize();
+        }
+        // 查找
+        function search() {
+            loadMainTable();
+        }
+      	//加载页面
+        function loadMainTable() {
+            // 排序
+            gSqlQuery.OrderString = gPage.orderBy;
+			// 条件
+            gCondition.SqlConditions = [];
+            gSqlQuery.Conditions = gCondition;
+            if($('search_txt').value != "")
+            {
+            	gCondition.SqlConditions.push(
+                    	JetsenWeb.SqlCondition.create("a.ANNOUNCEMENT_TITLE", $('search_txt').value, JetsenWeb.SqlLogicType.And, 
+                            	JetsenWeb.SqlRelationType.ILike, JetsenWeb.SqlParamType.String));
+            }
+
+            var ws = new JetsenWeb.Service(BMP_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.oncallback = function (ret) {
+                $('divAnnouncementList').innerHTML = JetsenWeb.Xml.transformXML("xslt/announcementlist.xslt", ret.resultVal);
+                gGridList.bind($('divAnnouncementList'), $('tabAlarmAction'));
+                gPage.setRowCount($('hid_pageCount').value);
+            };
+            ws.onerror = function (ex) { jetsennet.error(ex); };
+            ws.call("bmpObjQuery", [gSqlQuery.toXml()]);
+        }
+
+      //获取文本值
+        function getParam()
+        {
+			var announcemnetObject = new Object();
+			announcemnetObject.title = $('announcementTitle').value;
+			announcemnetObject.content = "@" + $('ckeditor1').value;
+			return announcemnetObject;
+        }
+
+        //设置文本的值
+        function setParam(object)
+        {
+			$('announcementTitle').value = object.ANNOUNCEMENT_TITLE;
+			$('ckeditor1').value = replaceSpcial(object.ANNOUNCEMENT_CONTENT);
+        }
+
+        //让文章按原样输出
+        function formatContent(content)
+        {
+            if(content)
+            {
+                return content.replaceAll('\n', '<br>').replaceAll(' ', '&nbsp;');
+            }
+        }
+
+        //去除正文中第一个@
+        function replaceSpcial(content)
+        {
+            if(content)
+            {
+                return content.replace('@', '');
+            }
+        }
+        
+        // 新增
+        function newTask() {
+        	var areaElements = JetsenWeb.Form.getElements('divAnnouncement');
+            JetsenWeb.Form.resetValue(areaElements);
+            JetsenWeb.Form.clearValidateState(areaElements);
+            var dialog = new JetsenWeb.UI.Window("new-announcement-win");
+            JetsenWeb.extend(dialog, { submitBox: true, cancelBox: true, windowStyle: 1, 
+                maximizeBox: false, minimizeBox: false, size: { width: 720, height: 455 }, title: "新建公告" });
+            dialog.controls = ["divAnnouncement"];
+            dialog.onsubmit = function () {
+                var o = getParam();
+				if (JetsenWeb.Form.Validate(areaElements, true)) {
+					//var top = getSelectedValue($('isTop'));
+					var top = attributeOf($('isTop'),"selectedValue","");
+                    var ws = new JetsenWeb.Service(BMP_SYSTEM_SERVICE);
+                    ws.soapheader = JetsenWeb.Application.authenticationHeader;
+                    ws.oncallback = function (ret) {
+                        JetsenWeb.UI.Windows.close("new-announcement-win");
+                        loadMainTable();
+                        //CKEDITOR.instances.ckeditor1.setData('');
+                    };
+                    ws.onerror = function (ex) { jetsennet.error(ex); };
+                    ws.call("nmp_addAnnoucement", [o.title, o.content, top, JetsenWeb.Application.userInfo.UserName]);
+                }
+            };
+            dialog.showDialog();
+        }
+
+		//通过公告编号获得整条记录
+		function getAnnouncementById(announcementId)
+		{
+			var sqlQuery = new JetsenWeb.SqlQuery();
+			JetsenWeb.extend(sqlQuery, { IsPageResult: 0, KeyId: "ANNOUNCEMENT_ID", PageInfo: null, QueryTable: JetsenWeb.extend(new JetsenWeb.QueryTable(), { TableName: "BMP_ANNOUNCEMENT" }) });
+			var condition = new JetsenWeb.SqlConditionCollection();
+			condition.SqlConditions.push(JetsenWeb.SqlCondition.create("ANNOUNCEMENT_ID", announcementId, JetsenWeb.SqlLogicType.And, JetsenWeb.SqlRelationType.Equal, JetsenWeb.SqlParamType.Numeric));
+			sqlQuery.Conditions = condition;
+            var ws = new JetsenWeb.Service(BMP_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.async = false;
+            ws.oncallback = function (ret) {
+                try {
+                    var retObj = JetsenWeb.Xml.toObject(ret.resultVal, "Record")[0];
+                    if(retObj == null) {
+                        jetsennet.alert("没有这条记录！");
+                        return;
+                    }
+                    setParam(retObj);
+                    if(retObj.IS_TOP != null && retObj.IS_TOP !="")
+                    {
+                    	//setSelectedValue($('isTop'), retObj.IS_TOP);
+                    	JetsenWeb.UI.DropDownList['isTop'].setValue(retObj.IS_TOP);
+                    }
+                } catch (ex) {
+                    jetsennet.error(ex);
+                }
+            };
+            ws.onerror = function (ex) { jetsennet.error(ex); };
+            ws.call("bmpObjQuery", [sqlQuery.toXml()]);
+		}
+        
+        //编辑公告
+        function editAnnouncement(announcementId)
+        {
+        	var areaElements = JetsenWeb.Form.getElements('divAnnouncement');
+            JetsenWeb.Form.resetValue(areaElements);
+            JetsenWeb.Form.clearValidateState(areaElements);
+            getAnnouncementById(announcementId);
+            var dialog = new JetsenWeb.UI.Window("edit-announcement-win");
+            JetsenWeb.extend(dialog, { submitBox: true, cancelBox: true, windowStyle: 1, maximizeBox: false, minimizeBox: false, size: { width: 720, height: 455 }, title: "编辑公告" });
+            dialog.controls = ["divAnnouncement"];
+            dialog.onsubmit = function () {
+                if (JetsenWeb.Form.Validate(areaElements, true)) {
+                    var object = {
+                    		ANNOUNCEMENT_ID: announcementId,
+                    		ANNOUNCEMENT_TITLE: ($('announcementTitle').value),
+                    		ANNOUNCEMENT_CONTENT: ('@' + $('ckeditor1').value),
+                    		IS_TOP:attributeOf($('isTop'),"selectedValue","")
+                    }
+                    var ws = new JetsenWeb.Service(BMP_SYSTEM_SERVICE);
+                    ws.soapheader = JetsenWeb.Application.authenticationHeader;
+                    ws.oncallback = function (ret) {
+                    	JetsenWeb.UI.Windows.close("edit-announcement-win");
+                       	loadMainTable();
+                    };
+                    ws.onerror = function (ex) { jetsennet.error(ex); };
+                    ws.call("bmpObjUpdate", ['BMP_ANNOUNCEMENT', JetsenWeb.Xml.serializer(object, 'BMP_ANNOUNCEMENT')]);
+                }
+            };
+            dialog.showDialog();
+        }
+
+        // 删除
+        function deleteAnnouncement(keyId) {
+        jetsennet.confirm("确定删除？", function () {
+       		var ws = new JetsenWeb.Service(BMP_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.oncallback = function (ret) {
+               	loadMainTable();
+            };
+            ws.onerror = function (ex) { jetsennet.error(ex); };
+            ws.call("bmpObjDelete", ["BMP_ANNOUNCEMENT", keyId]);
+            return true;
+            });
+        }
+
+        //预览公告
+        function priviewAnnouncement(announcementId)
+        {
+            //通过ID获得这条公告
+        	getAnnouncementById(announcementId);
+        	//获得公告标题
+        	var title = $('announcementTitle').value;
+        	//获得公告正文
+        	var content = $('ckeditor1').value;
+        	$('previewTitle').innerHTML = formatContent(title);
+        	$('previewContent').innerHTML = formatContent(content);
+        	var dialog = new JetsenWeb.UI.Window("preview-announcement-win");
+        	JetsenWeb.extend(dialog, { windowStyle: 0, maximizeBox: true, minimizeBox: false, size: { width: 320, height: 280 }, title: "预览" });
+        	dialog.controls = ["divPrieviewAnnouncement"];
+            dialog.onsubmit = function () {
+                
+            };
+            dialog.showDialog();
+        }
+
+    	</script>
+	</head>
+	<body>
+		<div id="divTop" class="list-search" style="margin-bottom:3px">
+        <table width="290px" cellspacing="0" cellpadding="0" class="table-info" style="padding: 1px;">
+            <tr>
+                <td align="left">
+                	公告标题：
+                	<input type="text" class="input" id="search_txt" onkeydown="JetsenWeb.keyEvent(search)"/>
+                </td>
+                <td>
+                    <input type="button" value="查找" onclick="search();" class="button" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divAnnouncementList" class="webfx-columnlist" style="border: 0px;" onfocus="this.blur();">
+ 		数据加载中...
+	</div>
+	<div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divTaskListPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+                               公告列表
+        </div>
+        <div class="list-title-right">
+            <strong><a href="javascript:newTask();" title="新建" class="link">[新建]</a></strong>
+        </div>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div id="divAnnouncement" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+        	<caption style="font-weight: bold;">
+			</caption>
+			<colgroup span="2">
+					<col style="width: 10%" />
+					<col style="width: auto;" />
+			</colgroup>
+            <tr>
+                <td class="field-head">公告标题：</td>
+                <td>
+                    <input type="text" id="announcementTitle" validatetype="NotEmpty" maxlength="33"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+            	<td class="field-head">是否置顶：</td>
+            	<!-- 
+            	<td>
+            		<select id="isTop">
+            			<option value="1">是</option>
+            			<option value="0">否</option>
+            		</select>
+            	</td>
+            	 -->
+            	<td>
+            		<input id="isTop" class="select3" readonly type="text" handing="是~1|否~0"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" default="是" selectedvalue="1" />
+            	</td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">公告正文：</td>
+                <td>
+                    <textarea id="ckeditor1" cols="100" rows="20" validatetype="NotEmpty" style="overflow:auto;"></textarea>
+                    <span style="color: Red;vertical-align: top;">*</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divPrieviewAnnouncement" style="display: none">
+    	<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+    		<tr>
+    			<td>
+    				<div align="center">
+    					<p id="previewTitle" style="font-weight: bold"></p>
+    				</div>
+    			</td>
+    		</tr>
+    		<tr>
+    			<td>
+	    			<div align="left" id="previewContent">
+	    				
+	    			</div>
+	    		</td>
+    		</tr>
+    	</table>
+    </div>
+	</body>
+</html>

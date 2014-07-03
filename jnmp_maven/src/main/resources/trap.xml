@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!-- edited with XMLSpy v2011 (http://www.altova.com) by go (acer) -->
+<trap>
+	<server>
+		<cfg name="threadPoolSize">3</cfg>
+		<cfg name="protocol">udp</cfg>
+		<cfg name="port">162</cfg>
+		<cfg name="ip">192.168.8.145</cfg>
+	</server>
+	<configs>
+		<config>
+			<trap_oid>1.3.6.1.6.3.1.1.5.3</trap_oid>
+			<matchers>
+				<matcher>
+					<class_type>SNMP_SUB_NETWORK_IF</class_type>
+					<match_oid>1.3.6.1.2.1.2.2.1.1</match_oid>
+					<match_type>like</match_type>
+				</matcher>
+			</matchers>
+		</config>
+	</configs>
+</trap>

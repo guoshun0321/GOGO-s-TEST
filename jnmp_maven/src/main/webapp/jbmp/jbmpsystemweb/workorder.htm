@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>工单管理</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/checkbox.js"></script>
+    <script type="text/javascript" src="javascript/workorder.js"></script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom: 3px">
+        <table width="481px" cellspacing="0" cellpadding="0" class="table-info" style="padding: 1px">
+            <tr>
+            	<td>
+              		工单状态：
+	       			<select id="cboOrderState" onkeydown="JetsenWeb.keyEvent(searchWorkOrder)" style="width: 105px;">
+	       				<option value="">请选择</option>
+	       				<option value="0">初始化</option>
+	       				<option value="1">已分派</option>
+	       				<option value="2">已处理</option>
+	       				<option value="3">已关闭</option>
+	       			</select>
+	       			&nbsp;&nbsp;&nbsp;
+                </td>
+                <td align="left">
+					当前处理人：
+					<select id="cboUser" onkeydown="JetsenWeb.keyEvent(searchWorkOrder)" style="width: 105px;"></select>&nbsp;&nbsp;&nbsp;&nbsp;
+              	</td>
+                <td align="left">
+					<input type="button" value="查找" onclick="searchWorkOrder();" class="button"/>
+              	</td>
+            </tr>
+        </table>
+    </div>
+    <div id="divWorkOrderList" class="webfx-columnlist" style="background: #fff; border: 0px; margin-left: 3px"
+        onfocus="this.blur();">
+            数据加载中...</div>
+    <div id="divBottom" class="list-bottom" style="margin-left: 3px">
+        <div class="list-bottom-right">
+            <div id="divWorkOrderPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divWorkOrder" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">
+                    报警事件：
+                </td>
+                <td>
+                    <input type="text" id="txt_ALARMEVENT" validatetype="NotEmpty" readonly="readonly" onFocus="blur();" onclick="chooseAlarmEvent();"/>
+                    <span style="color: Red">*</span>
+                    <input type="button" value="选择" class="button" onclick="chooseAlarmEvent();"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                   处理人：
+                </td>
+                <td>
+                    <select id="cbo_USER" validatetype="NotEmpty,uinteger">
+                    </select>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    工单描述：
+                </td>
+                <td>
+                    <textarea id="txt_ORDER_DESC" lengthrange="200" cols="35" rows="5" onkeyup="showRemindWordCount(this.value,$('remindWord'),60);"></textarea><br />
+                         <div style="float: right;padding-right: 75px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">60</span> 字
+      				 </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divAlarmEventContent" style="display: none; overflow: auto; margin-left: 0px; margin-top: -1px; margin-right: 0px;">
+	    <div id="divAlarmEventList" class="webfx-columnlist" style="height: 300px; border: 0px" onfocus="this.blur();">
+			数据加载中...
+		</div>
+		<div id="divAlarmEventPage" class="list-bottom" style="height: 25px" align="right">
+        </div>
+	</div>
+    <div id="divWorkOrderProcessContent" style="display: none; overflow: auto; margin-left: 0px; margin-top: -1px; margin-right: 0px;">
+    	<div>
+    		<table width="100%" cellspacing="0" cellpadding="0" class="table-info" style="padding: 3px">
+                <tr style="height: 20px">
+                    <td align="left">
+            			工单当前的状态：
+            			<span id="spanOrderState"></span>
+			    		<input id="hid_ORDER_ID" type="hidden" />
+			    		<input id="hid_ORDER_DESC" type="hidden" />
+			    		<input id="hid_EVENT_ID" type="hidden" />
+                    </td>
+                    <td align="right">
+                        <input id="btnUpdateWorkOrder" type="button" value="处理工单" onclick="updateWorkOrder();" class="button" style="padding-left:2px; width: 60px;" />
+                    </td>
+                </tr>
+            </table>
+    	</div>
+	    <div id="divWorkOrderProcessList" class="webfx-columnlist" style="border: 0px" onfocus="this.blur();">
+			数据加载中...
+		</div>
+	</div>
+	<div id="divWorkOrderProcess" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">
+                  处理类型：
+                </td>
+                <td>
+                    <select id="cboChangeOrderState" onchange="processTypeChange();">
+		    			<option value="1">已分派</option>
+		    			<option value="2">已处理</option>
+		    			<option value="3">已关闭</option>
+		    		</select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                   被分派对象：
+                </td>
+                <td>
+                    <select id="cbo_PROCESS_USER" validatetype="uinteger">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    处理描述：
+                </td>
+                <td style="vertical-align: top;">
+                    <textarea id="txt_PROCESS_DESC" cols="35" rows="5" onkeyup="showRemindWordCount(this.value,$('remindWord2'),60);"></textarea>
+                    <span id="spanDescNotEmpty" style="color: Red; vertical-align: top; display: none;">*</span>
+                    <br />
+                         <div style="float: right;padding-right: 75px;">
+                 			 还可以输入 <span id="remindWord2" style="font-weight:bold;">60</span> 字
+      				 </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="list-title" id="divListTitle">
+		<div class="list-title-left">
+			工单列表
+		</div>
+        <div class="list-title-right">
+        	<strong><a href="javascript:newWorkOrder()" title="新建" class="link">[新建]</a></strong>
+        </div>
+	</div>
+    <div class="page-frame" id="divPageFrame" />
+</body>
+</html>

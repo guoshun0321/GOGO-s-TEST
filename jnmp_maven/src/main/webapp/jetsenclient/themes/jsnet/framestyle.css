@@ -1,0 +1,346 @@
+html body{font: 12px/20px Tahoma, Verdana, sans-serif;
+	word-wrap : break-word ;word-break : break-all;
+	scrollbar-shadow-color: #E2E3E4;
+	scrollbar-face-color: #BCCEF7;
+	scrollbar-highlight-color: #E2E3E4;
+	scrollbar-3dlight-color: #BCCEF7;
+	scrollbar-arrow-color: #FFFFFF;
+	scrollbar-track-color: #FFFFFF;
+	scrollbar-darkshadow-color: #E2E3E4;
+	scrollbar-base-color: #FFFFFF;
+	background-color: #3D527D;
+}	
+
+.framemain{ height:97%;visibility: inherit; width: 100%; z-index: 1; border-right: none;}
+
+.frame-title
+{
+	overflow:hidden;	
+	background: url(images/mainframe/jetsenrightbg02.gif)  repeat-x 0 0px;
+	background-color:#fff;
+}
+.frame-title-left
+{
+	background: url(images/mainframe/jetsenrightbg01.gif)  no-repeat;	
+	overflow:hidden;	
+	position:absolute;
+	width:1px;
+}
+.frame-title-icon
+{
+	background: url(images/mainframe/jetsenrightbg04.gif)  no-repeat;	
+	overflow:hidden;	
+	position:absolute;
+	padding-left:5px;
+	padding-top:3px;
+	left:10px;
+	width:15px;
+	height:29px;	
+}
+.frame-title-center
+{	
+	overflow:hidden;	
+	position:absolute;
+	font-family: "宋体";
+	font-size: 13px;
+	line-height: 160%;
+	color: #FFFFFF;
+	text-decoration: none;
+	padding-left:5px;
+	padding-top:3px;
+	left:25px;
+	width:95%;
+}
+.frame-title-right
+{
+	background: url(images/mainframe/jetsenrightbg03.gif) no-repeat right 0px;
+	text-align:right;	
+	overflow:hidden;	
+	position:absolute;
+	right:0px;
+	color: #FFFFFF;
+	width:10px;
+	height:29px;
+}
+.frame-top
+{
+	background:url(images/mainframe/jetsentopbg01.gif) repeat-x 0 -1px;
+	overflow:hidden;
+}
+
+.frame-top-left
+{
+	background:url(images/mainframe/top-logo.gif) repeat-x 0 -1px;
+	overflow:hidden;
+	height:46px;
+	position:absolute;
+	width:665px;
+}
+.frame-top-right
+{
+	text-align:right;	
+	overflow:hidden;
+	height:53px;
+	position:absolute;
+	right:0px;
+	color: #FFFFFF;
+}
+
+.frame-top-right div
+{
+	line-height: 22px;
+	padding-right:15px;
+}
+.frame-help-link
+{
+    background:url(images/mainframe/jetsentop02.gif) no-repeat 0 0px;
+	text-align: center;
+	vertical-align: middle;
+	padding-left:20px;
+	padding-right:10px;	
+	cursor:pointer;
+}
+.frame-info-link
+{
+    background:url(images/mainframe/jetsentop01.gif) no-repeat 0 0px;
+	text-align: center;
+	vertical-align: middle;
+	padding-left:20px;
+	padding-right:10px;	
+	cursor:pointer;
+}
+.frame-logout-link
+{
+    background:url(images/mainframe/jetsentop03.gif) no-repeat 0 0px;
+	text-align: center;
+	vertical-align: middle;
+	padding-left:20px;
+	cursor:pointer;
+}
+.frame-info-link:link,.frame-help-link:link, .frame-logout-link:link,.frame-help-link:visited,.frame-info-link:visited, .frame-logout-link:visited,.frame-info-link:active,.frame-help-link:active, .frame-logout-link:active {
+	font-size: 12px;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.frame-info-link:hover,.frame-help-link:hover, .frame-logout-link:hover {
+	font-size: 12px;
+	color: #90BAEB;
+	text-decoration: underline;
+}
+.frame-login-name {
+	font-size: 12px;
+	color: #FFBA00;
+}
+
+.frame-bottom 
+{
+	background:url(images/mainframe/jetsenbn01.gif) repeat-x 0 0px;
+	overflow:hidden;
+}
+.frame-bottom-left
+{
+	background:url(images/mainframe/jetsenbn02.gif);
+	background-repeat: no-repeat;
+	overflow:hidden;
+	height:28px;
+	position:absolute;	
+	padding-left:80px;
+	padding-top:5px;
+	color: #FFFFFF;
+}
+.frame-bottom-right
+{
+	text-align: right;
+	overflow: hidden;
+	position: absolute;
+	right: 0px;
+	color: #FFFFFF;
+	background-image: url(images/mainframe/jetsenbn03.gif);
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: right;
+	padding-right: 50px;
+	padding-top: 0px;
+	margin-right: 10px;
+	margin-top: 0px;
+	height:28px;
+	width:100px
+}
+.frame-left
+{
+	padding-left:5px;
+	padding-right:0px;
+	overflow: hidden;
+}
+.frame-left-top
+{
+	overflow: hidden;
+	background-image: url(images/mainframe/jetsenleft01.gif);
+	background-repeat: repeat-x;
+	background-position: center 0px;
+}
+.frame-left-bottom
+{
+	overflow: hidden;
+	background-color:#E3E3E3;
+	background-image: url(images/mainframe/jetsenleft-bottom.gif);
+	background-repeat: no-repeat;
+	background-position: center 0px;
+}
+.jetsen-pagesplit-0
+{
+	position:absolute;padding:0px;margin:0px;	
+	overflow: hidden;
+	background-color: #3D527D;
+	background: url(images/bg-pageframe-split-none.gif);
+}    
+.jetsen-hide-button-0
+{
+	position: absolute;
+	padding: 0px;
+	margin: 0px;
+	background: url(images/mainframe/collapse.gif) center center;
+	border: 0px;
+	overflow: hidden;
+	width: 13;
+	height: 13;
+	cursor: pointer;
+	z-index: 100;
+}
+.jetsen-hide-button-1
+{
+	position: absolute;
+	padding: 0px;
+	margin: 0px;
+	background: url(images/mainframe/expand.gif) center center;
+	border: 0px;
+	overflow: hidden;
+	width: 13;
+	height: 13;
+	cursor: pointer;
+	z-index: 100;
+}
+.frame-accordion
+{
+	background-color:#E3E3E3;
+	padding-left:6px;
+	padding-right:6px;
+}
+
+.jetsen-tree div.file
+{
+	cursor: default;
+	font-weight:normal;
+}
+.jetsen-tree div.open
+{
+	font-weight: bold;
+}
+.jetsen-tree div.close
+{
+	font-weight: bold;
+	margin-top:3px;
+	margin-bottom:3px;
+}
+.jetsen-tree div a:link, .jetsen-tree div a:visited, .jetsen-tree div a:hover, .jetsen-tree div a:active
+{
+	border: 0px;		
+	padding-left: 10px;
+	color: #333;
+	text-decoration: none;
+}
+.jetsen-tree div
+{	
+	padding-left: 26px;		
+}
+.jetsen-accrodion-close
+{
+	text-align: left;	
+	background: url(images/mainframe/accordion-menu.gif) no-repeat right 0%;
+	cursor: pointer;
+	padding-top: 4px;
+	vertical-align: middle;
+	padding-left: 8px;	
+	letter-spacing: 0px;
+	height: 26px;	
+	font: 14px Tahoma, Verdana, sans-serif;	
+	color: #FFFFFF;	
+	margin-bottom:1px;
+}
+.jetsen-accrodion-open
+{
+	text-align: left;	
+	background:url(images/mainframe/accordion-menu.gif) no-repeat right 0%;
+	cursor: pointer;	
+	vertical-align: middle;
+	padding-top:4px;
+	padding-left: 8px;
+	font: 14px Tahoma, Verdana, sans-serif;
+	letter-spacing: 0px;		
+	height: 26px;	
+	color: #FFFFFF;
+	margin-bottom:1px;
+}
+.headitem
+{
+    list-style-type: none;
+    z-index: 100;	
+    height: 26px !important;
+    height: 26px;
+    margin: 0;
+    padding: 0 0 0 5px;
+    width:99%;
+    overflow:hidden;
+}
+.headitem li
+{
+    padding: 2px 20px 2px 10px;
+    text-align: center;
+    cursor: pointer;
+    float: left;	
+    position:relative;
+}
+.headitem-unselect
+{
+    border: solid 1px #4c69a1;
+    background: #3D527D;
+    background:url(images/mainframe/pagepanel01.gif) repeat-x 0 0px;
+    border-bottom: 0px;
+    text-align: center;
+    margin-left: 2px;
+    margin-top: 2px;
+    height: 18px;    
+    vertical-align: middle;
+}
+.headitem-select
+{
+    background :#fff;
+    border: solid 1px #4c69a1;
+    border-bottom: 0px;
+    text-align: center;
+    margin-left: 2px;
+    margin-top: 2px;	
+    height: 19px;
+    font-weight: bold;
+    vertical-align: middle;
+    color:#000;
+}
+.jetsen-menu
+{	
+	float: left;	
+	line-height: 26px;
+	margin-left: 1px;
+	background: #fff url(images/menu/linbg.gif) repeat-y;
+	border-right: 1px solid #396AAF;
+	border-top: 0px;
+	border-left: 0px;
+	border-bottom: 1px solid #396AAF;
+}
+.menu-head
+{
+	font-size:14px;
+	display:inline-block;
+	width:75px;
+	padding-left:20px;
+	cursor:pointer;
+}

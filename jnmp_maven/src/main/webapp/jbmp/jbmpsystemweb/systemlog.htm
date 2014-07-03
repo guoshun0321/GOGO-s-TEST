@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>操作日志</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script language="javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/checkbox.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/systemlog.js"></script>
+
+	</head>
+	<body onload="pageInit()" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom: 3px">
+			<table width="900" cellspacing="0" cellpadding="0" class="table-info" style="padding: 1px">
+				<td width="183">
+					操作用户：
+					<input id="txtCreator" maxlength="18" type="text" class="input" onkeydown="JetsenWeb.keyEvent(searchSystemLog)" />
+				</td>
+				<td width="160">
+					描述：
+					<input type="text" id="txt_Key" maxlength="30" class="input" onkeydown="JetsenWeb.keyEvent(searchSystemLog)" />
+				</td>
+				<td width="485">
+					操作时间：
+					<input type="text" id="txtSDate" class="selectdate" onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" readonly />
+					<input type="text" id="txtSTime" style="width: 70px;" class="input" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" onkeydown="JetsenWeb.keyEvent(searchSystemLog)" validatetype="NotEmpty" />
+					-
+					<input type="text" id="txtEDate" class="selectdate" onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" readonly />
+					<input type="text" id="txtETime" style="width: 70px;" class="input" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" onkeydown="JetsenWeb.keyEvent(searchSystemLog)" validatetype="NotEmpty" />
+					<input type="checkbox" id="chkDate" onkeydown="JetsenWeb.keyEvent(searchSystemLog)" checked />
+				</td>
+				<td align="left">
+					<input class="button" type="button" value="查找" onclick="searchSystemLog()" />
+				</td>
+			</table>
+		</div>
+		<div id="divSystemLogList" class="webfx-columnlist" style="border: 0px; background: #fff; overflow: hidden">
+			数据加载中...
+		</div>
+		<div id="divBottom" class="list-bottom">
+			<div class="list-bottom-left">
+				 <input id="btnDelete" type="button" class="button" onclick="deleteSystemLog();" value="删除"/> 
+			</div>
+			<div class="list-bottom-right">
+				<div id="divLogPage" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				日志列表
+			</div>
+		</div>
+	 <div id="delSystemLogDiv" style="display:none">
+     <table>
+     <tr><td>开始日期：</td><td><input type="text" id="delStartDate" onclick="jetsennet.pickDate(this,false)" class="selectdate" />
+     <input type="text" id="delSTime" style="width: 60px;" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" validatetype="NotEmpty" />
+     <input type="checkbox" id="delChkSDate" onkeydown="JetsenWeb.keyEvent(searchMsgLog)"  /></td></tr>
+     <tr><td>结束日期：</td><td><input type="text" id="delEndDate" onclick="jetsennet.pickDate(this,false)" class="selectdate" />
+     <input type="text" id="delETime" style="width: 60px;" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" validatetype="NotEmpty" />
+     <input type="checkbox" id="delchkEDate" onkeydown="JetsenWeb.keyEvent(searchMsgLog)"  /></td></tr>
+     </table>
+     </div>
+	</body>
+</html>

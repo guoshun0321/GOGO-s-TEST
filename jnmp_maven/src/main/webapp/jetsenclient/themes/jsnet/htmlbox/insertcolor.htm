@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>Õ{É«°å</title>
+
+    <script language="javascript" src="../../../javascript/js_base.js" apppath="../../"></script>    
+    <script language=javascript>
+    JetsenWeb.require("js_colorpicker");
+    JetsenWeb.importCss("jetsen");
+    function createPicker()
+    {
+        var cp = new JetsenWeb.UI.ColorPicker();
+        var picker = cp.create();
+        document.body.appendChild(picker);
+        picker.style.border = "0px";
+        picker.colorPicker = cp;
+        picker.colorPicker.colorSelected = function (val)
+        {
+            top["returnValue"]=val;top.close() 
+        };
+    }
+    </script>
+</head>
+<body onload="createPicker();" scroll=no class="title" >
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>报警事件统计Post方式传值页面</title>
+<script type="text/javascript">
+	/*参数列表可能会很长，直接用url传值会有问题。该页面通过js将值用post方式传递。*/
+	window.onload = function(){	
+		document.getElementById("reportPost").action = parent.document.getElementById('report1Info').reportSrc;
+        document.getElementById("groupIds").value = parent.document.getElementById('report1Info').groupIds;
+		document.getElementById("objIds").value = parent.document.getElementById('report1Info').objIds;
+		document.getElementById("objAttrIds").value = parent.document.getElementById('report1Info').objAttrIds;
+		document.getElementById("startTime").value = parent.document.getElementById('report1Info').startTime;
+		document.getElementById("endTime").value = parent.document.getElementById('report1Info').endTime;
+		document.getElementById("reportPost").submit();
+	}
+</script>
+</head>
+<body>
+<form id="reportPost" action="" method="post" style="display:none">
+    <input id="groupIds" name="group_id" />
+	<input id="objIds" name="obj_id" />
+	<input id="objAttrIds" name="objattr_id" />
+	<input id="startTime" name="start_time" />
+	<input id="endTime" name="end_time" />
+</form>
+</body>
+</html>

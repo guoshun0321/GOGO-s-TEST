@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>文章管理</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/checkbox.js"></script>
+    <script language="javascript"  src="javascript/knowledge.js"></script>
+	<link rel="stylesheet" href="javascript/kindeditor-4.1.7/themes/default/default.css" />
+	<script charset="utf-8" src="javascript/kindeditor-4.1.7/kindeditor-min.js"></script>
+	<script charset="utf-8" src="javascript/kindeditor-4.1.7/lang/zh_CN.js"></script>
+	<script charset="utf-8">
+		// 渲染在线编辑器	
+		function createEditor(Id){
+			KindEditor.create(Id, {
+					resizeType : 1,
+					
+					cssPath : 'javascript/kindeditor-4.1.7/plugins/code/prettify.css',
+					uploadJson : '../../servlet/KindEditorUploadServlet',
+					allowFileManager : false,
+					
+					items : [ 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor',
+							'bold', 'italic', 'underline', 'removeformat', '|',
+							'justifyleft', 'justifycenter', 'justifyright',
+							'insertorderedlist', '|', 'image','link','table' ],
+					afterCreate : function(){ this.sync(); }, 
+					afterBlur : function(){	this.sync(); }
+			});
+		}
+		//	卸载在线编辑器
+		function removeEditor(Id){
+			KindEditor.remove(Id);
+		}
+	</script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom: 3px">
+        <div style="padding: 3px">
+        	<div>
+        		标题：
+        		<input id="txtKnowledgeTitle" onkeydown="JetsenWeb.keyEvent(searchKnowledge)" class="input"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        		摘要：
+        		<input id="txtKnowledgeSummary" onkeydown="JetsenWeb.keyEvent(searchKnowledge)" class="input"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        		作者：
+        		<select id="cboUser" onkeydown="JetsenWeb.keyEvent(searchKnowledge)"></select>&nbsp;&nbsp;&nbsp;&nbsp;
+        		类别：
+        		<input type="text" id="cboKnowledgeType" class="selecttree" style="width: 130px; vertical-align: top;"
+                        onclick="JetsenWeb.UI.PopupBehavior.popControl($('divKnowledgeTypeTree'), this)" onkeydown="JetsenWeb.keyEvent(searchKnowledge)" value="请选择" readonly/>&nbsp;&nbsp;&nbsp;&nbsp;                     
+        		设备类型：
+        		<select id="cboClassId" style="width: 110px;" onkeydown="JetsenWeb.keyEvent(searchKnowledge)">
+        		</select>&nbsp;&nbsp;&nbsp;&nbsp;
+        		报警规则：
+        		<select id="cboAlarmId"  style="width: 110px;" onkeydown="JetsenWeb.keyEvent(searchKnowledge)">
+        		</select>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="hidden" id="hidParentId"/>
+                <input type="hidden" id="hidSearchTypeId"/>
+        		<input type="button" value="查找" onclick="searchKnowledge();" class="button" style="vertical-align: top;" />
+        	</div>
+        </div>
+    </div>
+    <div id="divKnowledgeList" class="webfx-columnlist" style="background: #fff; border: 0px;"
+            onfocus="this.blur();">
+            数据加载中...</div>
+    <div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divKnowledgePage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divKnowledge" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="70">
+                    标题：
+                </td>
+                <td>
+                    <input type="text" id="txt_KNOWLEDGE_TITLE" validatetype="NotEmpty" maxlength="35" class="input"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    摘要：
+                </td>
+                <td>
+                    <textarea id="txt_KNOWLEDGE_SUMMARY" rows="2"  style="width: 680px;" onkeyup="showRemindWordCount(this.value,$('remindWord'),60);"></textarea><br />
+                         <div style="float: right;padding-right: 25px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">60</span> 字
+      				 </div>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    类别：
+                </td>
+                <td>
+                    <select id="cbo_KNOWLEDGE_TYPE" multiple="multiple" style="width: 200px; height: 40px;"></select>
+                    <br />
+                    <input type="button" value="添加" onclick="chooseKnowledgeType();" class="button" />
+                    <input type="button" value="删除" onclick="removeSelectedOptions($('cbo_KNOWLEDGE_TYPE'));" class="button" />
+                </td>
+            </tr>
+            <tr>
+            	<td class="field-head" style="vertical-align: top;">
+                  设备类型：
+            	</td>
+            	<td>
+            		<select id="c_class_id"  style="width: 130px;" >
+            			
+            		</select>
+            	</td>
+            </tr>
+            <tr>
+            	<td class="field-head" style="vertical-align: top;">
+                  报警规则：
+            	</td>
+            	<td>
+            		<select id="c_alarm_id" style="width: 130px;" >
+            			
+            		</select>
+            	</td>
+            </tr> 
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    内容：
+                </td>
+                <td id="tdTextArea">
+                    <textarea id="txt_KNOWLEDGE_CONTENT" rows="14" style="width: 680px;"></textarea>
+                </td>
+            </tr>
+            <tr id="trAttachment">
+                <td class="field-head" width="70">
+                    上件附件：
+                </td>
+                <td>
+                	<div style="width: 680px; border: solid 1px #CCC; ">
+	                	<div style="background-color: #F0F0EE; height: 25px; border-bottom: solid 1px #CCC; text-align: center;">
+	                		<b>附件列表</b>
+	                	</div>
+	                	<div id="haveDivAttachmentList" style="border-bottom: solid 1px #CCC; display: none;"></div>
+	                	<form id="formUpload" method="post" enctype="multipart/form-data" target="frameUpload">
+		                	<div id="newDivAttachmentList" style="padding: 3px;"></div>
+		                </form>
+					</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <span id="spanAttachment" style="display: none;">
+		<input type="file" id="fileAttachment" name="attachment" />
+		<span style="color: #FF0000; vertical-align: middle;">*</span>（上传的附件大小不能超过100M）
+		<span style="float:right; margin-right: 10px;">
+			<a href="javascript:void(0);" onclick="removeAttachmentSpan(this);" style="color: red; margin-left: 10px;">删除</a>
+			<a href="javascript:void(0);" id="addAttachLink" style="margin-left: 10px;" onclick="addAttachmentSpan();">添加</a>
+		</span>
+	</span>
+    
+    <div id="divKnowledgeTypeContent" style="display: none; overflow: hidden; margin-left: 0px; margin-top: -1px; margin-right: 0px;height: 330px;">
+	    <div id="divKnowledgeTypeList" class="webfx-columnlist" style="border: 0px;" onfocus="this.blur();">
+			数据加载中...
+		</div>
+	</div>
+	<div id="divKnowledgeContentContent" style="display: none; overflow: auto; margin-left: 0px; margin-top: -1px; margin-right: 0px;">
+		<input type="hidden" id="hidViewKnowledgeId"/>
+		<input type="hidden" id="hidCreateUserId"/>
+		<div style="margin: 10px 20px 10px 10px; border: 1px solid gray;">
+		    <div id="divKnowledgeTitle" style="text-align: center; font-size: 20px; font-weight: bold; font-family: 黑体; padding-top: 10px;"></div>
+		    <div id="divKnowledgeContent" style="padding: 10px;"></div>
+	    </div>
+		<div id="divKnowledgeAttachment" style="padding: 10px 10px 10px 10px;"></div>
+	    <div id="divKnowledgeComment" style="padding: 10px 10px 10px 10px;">
+	    	<b>发表评论：</b>
+	    	<br />
+	    	<textarea id="txtKnowledgeComment" style="width: 97.5%; height: 80px;" validatetype="NotEmpty" lengthrange="500"></textarea>
+	    	<span style="color: Red; vertical-align: top;">*</span>
+	    	<div style="text-align: right; margin-top: 3px; width: 98%;">
+	    		<input type="button" value="提交" class="button" onclick="newComment(this.parentNode.parentNode.id.substring(19));"/>
+	    		<input type="button" value="清空" class="button" onclick="$('txtKnowledgeComment' + this.parentNode.parentNode.id.substring(19)).value=''"/>
+	    	</div>
+	    </div>
+	    <div id="divKnowledgeCommentList" style="padding: 10px 23px 10px 10px;">
+	    	数据加载中...
+	    </div>
+	</div>
+	<div class="list-title" id="divListTitle">
+		<div class="list-title-left">
+			文章列表
+		</div>
+        <div class="list-title-right">
+        	<strong><a href="javascript:newKnowledge()" title="新建" class="link">[新建]</a></strong>
+        </div>
+	</div>
+    <div class="page-frame" id="divPageFrame"></div>
+    <div id="divKnowledgeTypeTree" style="display: none; width: 192px; text-align: left;" class="jetsen-tree-divc">
+    </div>
+    <iframe id="frameUpload" name="frameUpload" src="../../servlet/BMPFilesUploadServlet" style="display: none;"></iframe>
+    <form id="formDeleteFile" method="post" target="frameDeleteFile" style="display: none;"></form>
+    <iframe id="frameDeleteFile" name="frameDeleteFile" src="../../servlet/BMPOperateFileSystemServlet" style="display: none;"></iframe>
+</body>
+</html>

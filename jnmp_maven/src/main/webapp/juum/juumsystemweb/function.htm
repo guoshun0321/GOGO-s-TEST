@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>权限管理</title>
+
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script language="javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+
+	<script type="text/javascript" src="../../jbmp/jbmpsystemweb/javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/function.js"></script>
+
+    <script>
+    JetsenWeb.require(["js_gridlist","js_window","js_validate","js_sql","js_pagebar","js_pageframe","js_autocomplete","js_jetsentree"]);    
+
+    var gFrame;
+    var gWindowSizeChangedInterVal;
+    var gFunctionTree;
+    var gParentId = 0;
+    var pInfo = new JetsenWeb.UI.PageBar("pageFunction");
+    pInfo.onpagechange = function(){}
+    pInfo.onupdate = function(){
+        document.getElementById('divPage').innerHTML = this.generatePageControl();
+    };
+    var myGridList = new JetsenWeb.UI.GridList("function-grid");
+    myGridList.ondatasort = function (sortfield, desc) {
+    	pInfo.setOrderBy(sortfield, desc);
+    }
+    pInfo.orderBy = "Order By VIEW_POS";
+    var conditionCollection = new JetsenWeb.SqlConditionCollection();
+    
+    function pageInit()
+    {
+        gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"),{splitType:1,fixControlIndex:0,showSplit:false}); 
+        gFrame.splitTitle = "divListTitle";                
+        var frameContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divContent"),{splitType:1,fixControlIndex:1,showSplit:false,splitBorder:0});  
+        frameContent.addControl(new JetsenWeb.UI.PageItem("divContainer"));
+        frameContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divBottom"),{size:{width:0,height:30}}));  
+        gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divListTitle"),{size:{width:0,height:27}}));
+        gFrame.addControl(frameContent); 
+        
+        window.onresize = function(){
+            if(gWindowSizeChangedInterVal!=null)
+                window.clearTimeout(gWindowSizeChangedInterVal);
+            gWindowSizeChangedInterVal = window.setTimeout(windowResized,500);
+        };
+        windowResized();
+    
+        var parentId = JetsenWeb.queryString("PID");
+		gParentId = parentId==""?0:parseInt(parentId);
+		loadData();
+	//	loadNavigation(gParentId);
+		loadParentFunction();
+		parent.document.getElementById("spanWindowName").innerHTML = document.title;
+    }
+
+    function windowResized()
+    {
+        var size = JetsenWeb.Util.getWindowViewSize();
+        gFrame.size = {width:size.width,height:size.height};
+        gFrame.resize();
+    }
+    </script>
+
+</head>
+<body onload="pageInit();" scroll="no">
+    <div class='list-title' id="divListTitle">
+        <div class='list-title-left'>
+            权限列表
+        </div>
+        <div class='list-title-right'>
+            <strong><a href="javascript:newFunction()" title="新建">[新建]</a></strong>
+        </div>
+    </div>
+    <div id='divContainer' style="border: 0px;">
+        <input type="hidden" value="0" id="hid_TotalCount" /></div>
+    <div id="divBottom" class="list-bottom">
+        <div class='list-bottom-left'>
+            <input id="btnDelete" type="button" class="disablebutton" value="删除" onclick="deleteFunction()" disabled/></div>
+        <div class='list-bottom-right'>
+            <div id="divPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divFunction" style="display: none; width: 540px">
+        <table width="100%" summary="Format Table" border="0" cellpadding="1" cellspacing="1"
+            class="table-info">
+            <colgroup>
+                <col class="width-4w" />
+                <col width="auto" />
+            </colgroup>
+            <tr>
+                <td class="field-head">
+                    名称：</td>
+                <td>
+                    <input type='text' id="txt_Name" validatetype="NotEmpty" class="input2" maxlength="25" /><span style="color: Red">*</span></td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    权限编号：</td>
+                <td>
+                    <input type='text' id="txt_ID" validatetype="NotEmpty,Integer" class="input" maxlength="9" /><span
+                        style="color: Red">*</span></td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    排序号：</td>
+                <td>
+                    <input type='text' id="txt_ViewPos" class="input" validatetype="NotEmpty,Integer" maxlength="3" /><span
+                        style="color: Red">*</span></td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    所属功能：</td>
+                <td>
+                    <input type="text" id="txt_Function"  class="selecttree2"
+                        readonly onclick="JetsenWeb.UI.PopupBehavior.popControl($('divFunctionTree'),this)" /><input type="hidden" id="hidParentId" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    权限类型：</td>
+                <td>
+                    <input id="txtType" class="select2" readonly type="text" handing="子功能~0|权限~1|其它~2"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" default="子功能" selectedvalue="0" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    状态：</td>
+                <td>
+                    <input id="txtState" class="select2" type="text" handing="启用~0|禁用~1" default="启用"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" selectedvalue="0" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    参数：</td>
+                <td>
+                    <input type='text' id="txt_Param" class="input4" maxlength="100" /></td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    描述：</td>
+                <td>
+                    <input type='text' id="txt_Desc" class="input4" maxlength="100" /></td>
+            </tr>
+        </table>
+    </div>
+    <div id="divDelete" style="display: none">
+        <div style="padding: 20px">
+            <input type="checkbox" id="chkDeleteAll" />删除所有子权限
+        </div>
+    </div>
+    <div id="divFunctionTree" style="display: none" class="jetsen-tree-divc">
+    </div>
+    <div id="divPageFrame" style="padding: 3px">
+    </div>
+</body>
+</html>

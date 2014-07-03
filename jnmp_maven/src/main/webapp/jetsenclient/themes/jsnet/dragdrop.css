@@ -1,0 +1,78 @@
+
+.dragLayer
+{
+	border:1px solid #99BBE8;
+	margin:5px 0;
+	overflow:hidden;
+	}
+.dragLayer_over
+{
+	overflow :hidden;
+	border:1px solid #FFF;
+	background-color:#DAE7F6;
+	filter:alpha(opacity=50);
+	-moz-opacity:0.5;
+	opacity:0.5;}
+.clone_dragLayer_over
+{
+	overflow :hidden;
+	border:1px dashed #99BBE8;	
+	filter:alpha(opacity=80);
+	-moz-opacity:0.8;
+	opacity:0.8;}
+.dragHeader
+{
+	width:100%;
+	height:25px;
+	line-height:25px;
+	BACKGROUND-COLOR: lightsteelblue;	
+	cursor:move;}
+.dragBody
+{
+	overflow:hidden;
+	height:240px;
+	}
+.dragHeader_over
+{	
+	width:100%;
+	height:25px;
+	line-height:25px;
+	BACKGROUND-COLOR: lightsteelblue;	
+	cursor:move;}
+.dragHeader .left
+{
+	height:100%;
+	float:left;
+	padding-left:10px;
+	font-weight:bold;}
+.dragHeader .right
+{
+	height:100%;
+	float:right;
+	padding-right:10px;
+	width:50px;
+	text-align:right;}
+
+SPAN.min,SPAN.close
+{
+	cursor:pointer;}
+SPAN.btn
+{
+	cursor:pointer;}
+	
+.jetsen-drapdrop-move
+{
+	border-bottom: gray 2px dashed;
+	border-left: gray 2px dashed;
+	border-top: gray 2px dashed;
+	border-right: gray 2px dashed;
+}
+.jetsen-drapdrop-copy
+{
+	border-bottom: gray 2px dashed;
+	border-left: gray 2px dashed;
+	border-top: gray 2px dashed;
+	border-right: gray 2px dashed;
+	float:left
+}
+

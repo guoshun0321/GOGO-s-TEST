@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>系统设置</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/sysconfig.js"></script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom:3px">
+        <table width="290" cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+            <tr>
+                <td align="left">
+                                                     参数名称：
+					<input id="txt_Key" class="input" onkeydown="JetsenWeb.keyEvent(searchSysconfig)"/>
+				</td>
+				<td>
+                    <input type="button" value="查找" onclick="searchSysconfig();" class="button" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divSysconfigList" class="webfx-columnlist" style="border: 0px; overflow: hidden" onfocus="this.blur();">
+        数据加载中...</div>
+    <div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divSysconfigPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divSysconfig" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">参数名称：</td>
+                <td>
+                    <input type="text" id="txt_PARAM_NAME" validatetype="NotEmpty" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">参数值：</td>
+                <td>
+                    <input type="text" id="txt_PARAM_VALUE" maxlength="160"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">参数描述：</td>
+                <td>
+                    <textarea id="txt_PARAM_DESC" cols="22" rows="5" onkeyup="showRemindWordCount(this.value,$('remindWord'),60);"></textarea><br />
+                         <div style="float: right;padding-right: 122px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">60</span> 字
+      				 </div>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+            参数列表
+        </div>
+        <div class="list-title-right">
+            <!--<strong>[<a href="javascript:newSysconfig()" title="新建" class="link">新建</a>]-->
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,127 @@
+.tabPanel
+{
+	border:none;table-layout: fixed;
+	margin:0px;
+	padding:0px	
+}
+.tabPanelItem
+{	
+	cursor: hand;    
+    color:#fff;
+}
+.tabPanelItem .panelItem-0
+{
+	background: url(images/tabpanel/tab-unselect-1.gif) no-repeat;	
+	width:4px;
+}
+.tabPanelItem .panelItem-1
+{
+	background: url(images/tabpanel/tab-unselect-2.gif) repeat-x 0 0px;	
+	padding-left: 5px;
+	padding-right: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height:24px;
+	white-space: nowrap;	
+	font-size: 14px;	
+	color:#fff;
+}
+.tabPanelItem .panelItem-2
+{
+	background: url(images/tabpanel/tab-unselect-3.gif) no-repeat;	
+	width:4px;
+}
+.tabPanelItemSelected 
+{	
+	cursor: hand;	   			
+}
+.tabPanelItemSelected .panelItem-0
+{
+	background: url(images/tabpanel/tab-select-1.gif) no-repeat;	
+	width:4px;
+}
+.tabPanelItemSelected .panelItem-1
+{
+	background: url(images/tabpanel/tab-select-2.gif) repeat-x 0 0px;		
+	padding-left:5px;
+	padding-right:5px;
+	height:24px;
+	overflow:hidden;text-overflow: ellipsis;white-space: nowrap;		
+	font-size: 14px;
+	color: #393939;
+}
+.tabPanelItemSelected .panelItem-2
+{
+	background: url(images/tabpanel/tab-select-3.gif) no-repeat;	
+	width:4px;
+}
+.tabPanelPage
+{	
+	padding-top: 3px;
+	margin: 0px;
+	background :#fefefe;
+}
+
+
+.tabPanel2
+{
+	border:none;table-layout: fixed;
+	margin:0px;
+	padding:0px	
+}
+.tabPanel2Item
+{	
+	cursor: hand;    
+    color:#fff;
+}
+.tabPanel2Item .panelItem-0
+{
+	background: url(images/tabpanel/tab2-unselect-1.gif) no-repeat;	
+	width:4px;
+}
+.tabPanel2Item .panelItem-1
+{
+	background: url(images/tabpanel/tab2-unselect-2.gif) repeat-x 0 0px;	
+	padding-left: 5px;
+	padding-right: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height:24px;
+	white-space: nowrap;	
+	font-size: 14px;	
+	color:#fff;
+}
+.tabPanel2Item .panelItem-2
+{
+	background: url(images/tabpanel/tab2-unselect-3.gif) no-repeat;	
+	width:4px;
+}
+.tabPanel2ItemSelected 
+{	
+	cursor: hand;	   			
+}
+.tabPanel2ItemSelected .panelItem-0
+{
+	background: url(images/tabpanel/tab2-select-1.gif) no-repeat;	
+	width:4px;
+}
+.tabPanel2ItemSelected .panelItem-1
+{
+	background: url(images/tabpanel/tab2-select-2.gif) repeat-x 0 0px;		
+	padding-left:5px;
+	padding-right:5px;
+	height:24px;
+	overflow:hidden;text-overflow: ellipsis;white-space: nowrap;		
+	font-size: 14px;
+	color: #393939;
+}
+.tabPanel2ItemSelected .panelItem-2
+{
+	background: url(images/tabpanel/tab2-select-3.gif) no-repeat;	
+	width:4px;
+}
+.tabPanel2Page
+{
+	padding-top: 10px;
+	margin: 0px;
+}

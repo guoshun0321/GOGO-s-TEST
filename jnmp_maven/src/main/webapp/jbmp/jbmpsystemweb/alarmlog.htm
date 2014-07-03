@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>报警处理日志</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/checkbox.js"></script>
+		<script type="text/javascript" src="javascript/function.js"></script>
+		<script type="text/javascript" src="javascript/alarmlog.js"></script>
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom:3px">
+			<table cellspacing="0" cellpadding="0"
+				class="table-info" style="padding: 3px">
+				<tr>
+					<td align="left" width="180px">
+						所属系统：
+						
+						<select id="cbo_ObjGroup" style="width: 105px"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)">
+						</select>
+					</td>
+					<td align="left" width="155">
+						当前状态：
+						<select id="cboChecked" 
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)"
+							style="width: 77px">
+							<option value="">
+								请选择
+							</option>
+							<option value="1">
+								已确认
+							</option>
+							<option value="2">
+								已清除
+							</option>
+							<option value="3">
+								已处理
+							</option>
+						</select>
+					</td>
+					<td align="left" width="280">
+						开始时间：
+						<input type="text" id="txtSDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							class="selectdate" readonly />
+						<input type="text" id="txtSTime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)"
+							validatetype="NotEmpty" />
+						<input type="checkbox" id="chkSDate"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)" checked />
+					</td>
+					<td align="left" width="170">
+						&nbsp;&nbsp;&nbsp;编号：
+						<input type="text" id="txtAlarmEvtId"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)" class="input" />
+					</td>
+					<td align="left">
+						报警类型：
+						<select id="cbo_AttrType" onchange="attributeInit();" onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)">
+							<option value="">请选择</option>
+	                		<option value="1">节目</option>
+	                		<option value="2">码流</option>
+	                		<option value="3">设备</option>
+						</select>
+						<select id="cbo_Attribute" onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)" style="width: 230px;">
+						</select>
+					</td>
+				</tr>
+				<tr align="left">
+					<td align="left">
+						报警对象：
+						<input type="text" id="txtObjName"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)" class="input" />
+					</td>
+					<td align="left">
+						报警等级：
+						<select id="cboAlarmLevel"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)">
+							<option value="">
+								请选择
+							</option>
+							<option value="10">
+								警告报警
+							</option>
+							<option value="20">
+								一般报警
+							</option>
+							<option value="30">
+								重要报警
+							</option>
+							<option value="40">
+								严重报警
+							</option>
+							<option value="50">
+								离线报警
+							</option>
+						</select>
+					</td>
+					<td align="left">
+						结束时间：
+						<input type="text" id="txtEDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							class="selectdate" readonly />
+						<input type="text" id="txtETime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)"
+							validatetype="NotEmpty" />
+						<input type="checkbox" id="chkEDate"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)" checked />
+					</td>
+					<td align="left">
+						操作人：
+						<input type="text" id="txtCheckUser"
+							onkeydown="JetsenWeb.keyEvent(searchAlarmEvent)" class="input" />					
+					</td>
+					<td align="left">
+					<input type="button" value="查找" onclick="searchAlarmEvent();"
+							class="button" />
+					<input type="button" value="导出" onclick="chooseField();" class="button" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divAlarmEventList" class="webfx-columnlist"
+			style="border: 0px; overflow: hidden" onfocus="this.blur();">
+			数据加载中...
+		</div>
+		<div id="divBottom" class="list-bottom">
+			<div class='list-bottom-left'>
+				<input type="button" id="deleteAlarmLogMany" class="button" value="删除" onclick="deleteAlarmLogMany()"/>
+			 </div>
+			<div class="list-bottom-right">
+				<div id="divAlarmEventPage" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div id="divAlarmEvent" style="display: none">
+		</div>
+		<div id="divCheckAlarmEvent" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head" style="vertical-align: top;">
+						处理意见：
+					</td>
+					<td>
+						<textarea id="txt_CHECK_DESC" validatetype="NotEmpty"
+							style="width: 350px; height: 80px;"></textarea>
+							<span style="color: Red; vertical-align: top;">*</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="divExportData" style="display: none;">
+			<form id="formExportData" action="../../servlet/BMPAlarmLogReportServlet" method="post" target="_blank">
+				<input id="flag" name="flag" type="hidden" value="1"/>
+				<input id="og.GROUP_ID" name="og.GROUP_ID" type="hidden" value=""/>
+				<input id="COLL_TIME_START" name="COLL_TIME_START" type="hidden" value=""/>
+				<input id="COLL_TIME_END" name="COLL_TIME_END" type="hidden" value=""/>
+				<input id="CHECK_USER" name="CHECK_USER" type="hidden" value=""/>
+				<input id="ALARMEVT_ID" name="ALARMEVT_ID" type="hidden" value=""/>
+				<input id="o.OBJ_NAME" name="o.OBJ_NAME" type="hidden" value=""/>
+				<input id="ALARM_LEVEL" name="ALARM_LEVEL" type="hidden" value=""/>
+				<input id="EVENT_STATE" name="EVENT_STATE" type="hidden" value=""/>
+				<input id="r.ATTRIB_ID" name="r.ATTRIB_ID" type="hidden" value=""/>
+				<input id="ac.CLASS_ID" name="ac.CLASS_ID" type="hidden" value=""/>
+				<input id="ResultFields" name="ResultFields" type="hidden" value=""/>
+			</form>
+		</div>
+		
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				报警处理日志列表
+			</div>
+		</div>
+		<div id="divFieldList" style="display: none;">
+		</div>
+	</body>
+</html>
