@@ -18,14 +18,15 @@ public class DefaultPing extends AbstractPing
     @Override
     public boolean ping(String ip)
     {
-        try
-        {
-            ICMP icmp = new ICMP(InetAddress.getByName(ip));
-            return icmp.ping();
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
+//        try
+//        {
+//            ICMP icmp = new ICMP(InetAddress.getByName(ip));
+//            return icmp.ping();
+//        }
+//        catch (Exception ex)
+//        {
+//            return false;
+//        }
+    	return false;
     }
 }

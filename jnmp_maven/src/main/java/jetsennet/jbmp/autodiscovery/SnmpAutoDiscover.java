@@ -51,8 +51,8 @@ public class SnmpAutoDiscover extends AbsAutoDiscover
             coll = this.initResult(task);
 
             // ARP
-            NetworkDiscover nd = new NetworkDiscover();
-            nd.find(coll);
+//            NetworkDiscover nd = new NetworkDiscover();
+//            nd.find(coll);
 
             // SNMP
             AbsIpFilter filter = new ArpIpFilter();

@@ -1,7 +1,9 @@
 package jetsennet.jsmp.nav.service.a7;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
@@ -15,6 +17,7 @@ import jetsennet.jsmp.nav.service.a7.entity.NavCheckRequest;
 import jetsennet.jsmp.nav.service.a7.entity.RequestEntityUtil;
 import jetsennet.jsmp.nav.syn.CachedKeyUtil;
 import jetsennet.jsmp.nav.util.DateUtil;
+import jetsennet.orm.annotation.Business;
 import jetsennet.util.SafeDateFormater;
 import junit.framework.TestCase;
 
@@ -29,15 +32,16 @@ public class NavBusinessTest extends TestCase
 	{
 	}
 
+	public void testGetUpdateInfo() throws Exception
+	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("getUpdateInfo : " + nb.GetUpdateInfo(null));
+	}
+
 	public void testNavCheck() throws Exception
 	{
-		// request解析
-		String xml = "<?xml version='1.0' encoding=\"UTF-8\" ?> <NavCheck clientId=\"1\" deviceId=\"12345\" smcId=\"1234\"/>";
-		NavCheckRequest req = RequestEntityUtil.map2Obj(NavCheckRequest.class, A7Util.requestXml2Map(xml));
-		assertNotNull(req);
-		assertEquals("1", req.getClientId());
-		assertEquals("12345", req.getDeviceId());
-		assertEquals("1234", req.getSmcId());
+		NavBusiness nb = new NavBusiness();
+		System.out.println("navCheck : " + nb.navCheck(null));
 	}
 
 	public void testGetFolderContents() throws Exception
@@ -62,7 +66,7 @@ public class NavBusinessTest extends TestCase
 		xml1 = String.format(xml, column1.getAssetId());
 		str = nb.getFolderContents(A7Util.requestXml2Map(xml1));
 		System.out.println(str);
-		
+
 		// level3
 		subs = op.getListInt(CachedKeyUtil.subColumn(column1.getColumnId(), column1.getRegionCode()));
 		column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
@@ -94,34 +98,64 @@ public class NavBusinessTest extends TestCase
 
 	public void testGetSavedPrograms()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("getSavedPrograms : " + nb.getSavedPrograms(null));
 	}
 
 	public void testGetBookmarks()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("getBookMarks : " + nb.getBookmarks(null));
 	}
 
 	public void testGetItemData()
 	{
+		NavBusiness nb = new NavBusiness();
+		DataCacheOp op = DataCacheOp.getInstance();
+		List<Integer> tops = op.get(CachedKeyUtil.topColumn());
+		ColumnEntity column = op.get(CachedKeyUtil.columnKey(tops.get(0)));
+
+		List<Integer> subs = op.getListInt(CachedKeyUtil.subColumn(column.getColumnId(), column.getRegionCode()));
+		ColumnEntity column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
+
+		subs = op.getListInt(CachedKeyUtil.subColumn(column1.getColumnId(), column1.getRegionCode()));
+		column1 = op.get(CachedKeyUtil.columnKey(subs.get(0)));
+
+		subs = op.getListInt(CachedKeyUtil.columnPgm(column1.getColumnId()));
+		ProgramEntity pgm = op.get(CachedKeyUtil.programKey(subs.get(0)));
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("titleAssetId", pgm.getAssetId());
+		System.out.println("getItemData : " + nb.getItemData(map));
 	}
 
 	public void testGetEntitlement()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("getEntitlement : " + nb.getEntitlement(null));
 	}
 
 	public void testAddBookmark()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("addBookmark : " + nb.addBookmark(null));
 	}
 
 	public void testDeleteBookmark()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("deleteBookmark : " + nb.deleteBookmark(null));
 	}
 
 	public void testDeleteSavedProgram()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("deleteSavedProgram : " + nb.deleteSavedProgram(null));
 	}
 
 	public void testSearchValidate()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("searchValidate : " + nb.searchValidate(null));
 	}
 
 	public void testSelectionStart() throws Exception
@@ -193,22 +227,32 @@ public class NavBusinessTest extends TestCase
 
 	public void testSelectionResume()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("SelectionResume : " + nb.selectionResume(null));
 	}
 
 	public void testValidatePlayEligibility()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("ValidatePlayEligibility : " + nb.validatePlayEligibility(null));
 	}
 
 	public void testAddSavedProgram()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("AddSavedProgram : " + nb.addSavedProgram(null));
 	}
 
 	public void testSetResumePoint()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("SetResumePoint : " + nb.setResumePoint(null));
 	}
 
 	public void testGetUpsellOffer()
 	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("GetUpsellOffer : " + nb.getUpsellOffer(null));
 	}
 
 	public void testGetChannels() throws Exception
@@ -255,6 +299,12 @@ public class NavBusinessTest extends TestCase
 
 	public void testGetAssociatedPrograms()
 	{
+	}
+	
+	public void testSearchContentInfo()
+	{
+		NavBusiness nb = new NavBusiness();
+		System.out.println("SearchContentInfo : " + nb.searchContentInfo(null));
 	}
 
 }

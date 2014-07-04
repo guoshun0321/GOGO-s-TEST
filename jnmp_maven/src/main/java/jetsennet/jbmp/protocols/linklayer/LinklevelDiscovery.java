@@ -59,7 +59,8 @@ public class LinklevelDiscovery
 
 		// arp扫描
 		ArrayARP ping = new ArrayARP();
-		Map<String, byte[]> pingIps = ping.arp(routeIps);
+//		Map<String, byte[]> pingIps = ping.arp(routeIps);
+		Map<String, byte[]> pingIps = null;
 		List<String> pingArray = new ArrayList<String>();
 
 		for (String pingIp : pingIps.keySet())
