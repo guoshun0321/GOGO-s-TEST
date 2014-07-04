@@ -37,7 +37,7 @@ public class NavServiceGet extends HttpServlet
 				{
 					String str = busi.invoke(method, map);
 					str = str == null ? "" : str;
-					resp.setHeader("Content-type", "text/html;charset=UTF-8");
+					resp.setHeader("Content-type", "text/xml;charset=UTF-8");
 					out.write(str.getBytes("UTF-8"));
 					out.flush();
 				}
