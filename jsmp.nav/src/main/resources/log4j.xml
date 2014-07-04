@@ -13,7 +13,7 @@
 	<appender name="FILE"
 		class="org.apache.log4j.JetsenDailyRollingFileAppender">
 		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
-		<param name="File" value="d:/log/jbmp.log" />
+		<param name="File" value="/tmp/jsmp.log/jsmp.log" />
 		<param name="Append" value="true" />
 		<param name="Threshold" value="DEBUG" />
 		<param name="MaxFileSize" value="100MB" />
