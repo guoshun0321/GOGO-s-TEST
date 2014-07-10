@@ -27,7 +27,7 @@ public class S2ServiceServlet extends HttpServlet
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		ErrorHandle.illegalRequest(resp);
+		ErrorHandle.illegalRequest(resp, null);
 	}
 
 	@Override
@@ -53,13 +53,14 @@ public class S2ServiceServlet extends HttpServlet
 				catch (Exception ex)
 				{
 					logger.error("", ex);
-					ErrorHandle.illegalRequest(resp);
+					ErrorHandle.illegalRequest(resp, ex, null);
 				}
 			}
 			else
 			{
-				logger.error("不合法的方法名称：" + method);
-				ErrorHandle.illegalRequest(resp);
+				String msg = "不合法的方法名称：" + method;
+				logger.error(msg);
+				ErrorHandle.illegalRequest(resp, msg);
 			}
 		}
 		finally

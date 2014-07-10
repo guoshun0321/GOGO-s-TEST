@@ -260,6 +260,7 @@ public class TestObjGenUtil
 				special.put("PGM_ID", prog.getPgmId());
 				special.put("PGM_ASSETID", prog.getAssetId());
 				special.put("VIDEO_QUALITY", 2);
+				special.put("ASPECT_RATIO", "Widescreen");
 				files.addAll(TestObjGenUtil.genObj(FileItemEntity.class, 4, special, fileId));
 
 			}

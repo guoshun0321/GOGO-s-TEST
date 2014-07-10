@@ -2,7 +2,9 @@ package jetsennet.jsmp.nav.service.a7;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,7 +34,7 @@ public class NavServiceGet extends HttpServlet
 			String method = req.getParameter("method");
 			if (method != null)
 			{
-				Map<String, String> map = req.getParameterMap();
+				Map<String, String> map = parseRequest(req);
 				try
 				{
 					String str = busi.invoke(method, map);
@@ -41,16 +43,17 @@ public class NavServiceGet extends HttpServlet
 					out.write(str.getBytes("UTF-8"));
 					out.flush();
 				}
-				catch (Exception ex)
+				catch (Throwable ex)
 				{
 					logger.error("", ex);
-					ErrorHandle.illegalRequest(resp);
+					ErrorHandle.illegalRequest(resp, ex, null);
 				}
 			}
 			else
 			{
-				logger.error("找不到方法名称！");
-				ErrorHandle.illegalRequest(resp);
+				String msg = "找不到method参数！";
+				logger.error(msg);
+				ErrorHandle.illegalRequest(resp, msg);
 			}
 		}
 		finally
@@ -59,11 +62,25 @@ public class NavServiceGet extends HttpServlet
 		}
 	}
 
+	private Map<String, String> parseRequest(HttpServletRequest req)
+	{
+		Map<String, String[]> map = req.getParameterMap();
+		Map<String, String> retval = new HashMap<String, String>(map.size());
+		Set<String> keys = map.keySet();
+		for(String key : keys) {
+			String[] values = map.get(key);
+			if(values != null && values.length > 0) {
+			retval.put(key, values[0]);
+			}
+		}
+		return retval;
+	}
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
 		logger.error("NavServiceGet不支持POST操作！");
-		ErrorHandle.illegalRequest(resp);
+		ErrorHandle.illegalRequest(resp, "NavServiceGet不支持POST操作！");
 	}
 
 }

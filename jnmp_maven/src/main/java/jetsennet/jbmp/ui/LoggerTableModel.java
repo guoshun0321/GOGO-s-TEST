@@ -73,7 +73,6 @@ public class LoggerTableModel extends AbstractTableModel
                 eventArray1 = null;
                 eventArray2 = null;
             }
-            System.gc();
         }
         events.add(le);
         fireTableDataChanged();
