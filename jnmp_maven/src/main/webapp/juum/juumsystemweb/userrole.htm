@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>角色管理</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script language="javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/function.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/userrole.js"></script>
+    <script type="text/javascript" src="javascript/userrole_sysgroup.js"></script>
+</head>
+<body onload="pageInit()" scroll="no">
+    <div class='list-title' id="divListTitle">
+        <div class='list-title-left'>
+            角色列表
+        </div>
+        <div class='list-title-right'>
+            <strong><a href="javascript:addUserRole()" title="新建">[新建]</a></strong>
+        </div>
+    </div>
+    <div id='divContainer' class="webfx-columnlist" style="border: 0px; background: #fff">
+    </div>
+    <div id="divRole" style="display: none">
+        <div class="panel-head2">
+            <table id="tabPane" width="320px" border="0" cellspacing="0" cellpadding="0" style="margin-left: 5px;
+                padding-top: 1px">
+                <tr>
+                    <td align="center">
+                        常规
+                    </td>
+                    <td align="center">
+                        所属权限
+                    </td>
+                    <td align="center">
+                        拓扑权限
+                    </td>
+                    <td align="center">
+                        组权限
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="tabPage">
+            <div>
+                <table width="100%" border="0">
+                    <colgroup>
+                        <col width="40px" />
+                        <col class="width-4w" />
+                        <col width="auto" />
+                    </colgroup>
+                    <tr>
+                        <td>
+                            <img src="images/rolebig.gif"/>
+                        </td>
+                        <td>
+                            <table id="Table3">
+                                <tr>
+                                    <td align="right" style="vertical-align: top;">
+                                        角色名称：
+                                    </td>
+                                    <td align="left">
+                                        <input id="txtRoleName" maxlength="18" class="input2" /><span style="color: Red">*</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right" style="vertical-align: top;">
+                                        描述信息：
+                                    </td>
+                                    <td align="left">
+                                        <textarea id="txtDescription" class="textarea" style="width: 200px" onkeyup="showRemindWordCount(this.value,$('remindWord'),60);"></textarea><br />
+				                         <div style="float: right;padding-right: 13px;">
+				                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">60</span> 字
+				      				     </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            成员：<br />
+                            <select id="selMember" style="width: 100%; height: 150px;" multiple>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="添加 " class="button" id="btnAdd" onclick="selectUser();" />
+                            <input type="button" value="删除 " class="button" id="btnDel" onclick="selectOptionsDel($('selMember'));" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <div id="divFunction" style="height: 350px; padding-left: 20px; overflow: auto;
+                    overflow-x: hidden">
+                </div>
+            </div>
+            <div>
+                <div id="divTopo" style="height: 350px; padding-left: 20px; overflow: auto;
+                    overflow-x: hidden">
+                </div>
+            </div>
+            <div>
+                <div id="divObjGroup" style="height: 350px; overflow: auto;
+                    overflow-x: hidden">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divSelectUser" style="display: none;margin-left:3px;margin-top:1px;margin-right:3px">
+        <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="padding-left: 3px;padding-top: 4px;padding-bottom: 3px;padding-right: 3px;
+            border: 0px">
+            <tr>
+                <td>
+                   用户姓名：<input type="text" id="txtUserName" maxlength="18" class="input" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;登录名称：<input type="text" maxlength="18"
+                        id="txtLoginName" class="input" />
+                </td>
+                <td align="right">
+					<input value="查找" type="button" class="button" onclick="searchSelectUserData();"/>
+                </td>
+            </tr>
+        </table>
+        <div id="divSelectUserList" style="height: 200px; border: 0px; background: #fff"
+            class="webfx-columnlist">
+        </div>
+        <div id="divSelectUserPage" class="list-bottom" style="height: 25px" align="right">
+        </div>
+    </div>
+    <div id="divPageFrame" style="padding: 3px;">
+    </div>
+    
+    <div id="divShowTopo2RF" style="display: none;background: #3D527D;">
+    	<div>
+	    	<div style="width:300px;height:300px;float:left;background: white;">
+		        <div id="divTopo2RF" style="height: 300px; padding-left: 20px; overflow: auto;overflow-x: hidden"></div>
+	    	</div>
+	    	<div style="width:492px;height:300px;float:right;background: white;">
+		    	<div id="divTopo2RFList" style="background-repeat: no-repeat; overflow: auto; height: 270px; border: 0px; background: #fff" class="webfx-columnlist">
+			    	房间拓扑图列表(单击房间显示)
+			    </div>
+			    <div style="height:30px;background: #BCCEF7;">
+			    	<input type="button" value="添加" onclick="toMyTopo()" class="button" style="margin-top:5px;margin-left:5px;"/>
+			    </div>
+	    	</div>
+	    	<div style="clear:both"></div>
+    	</div>
+    	<div style="overflow:auto;height:170px;background:white;margin-top:5px;">
+    		<div style="margin:2px;">当前角色拓扑权限:</div>
+	    	<div id="myTopo"></div>
+    	</div>
+    </div>
+</body>
+</html>

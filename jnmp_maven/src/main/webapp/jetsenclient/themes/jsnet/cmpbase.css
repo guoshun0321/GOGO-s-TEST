@@ -1,0 +1,123 @@
+﻿.xdata-textarea{
+	width: 99%;
+	background: none;
+	font-size: 13px;
+	border:solid 1px #a5a5a5;	
+}
+.xdata-mark{
+	background: url(images/cmpbase/catalog-mark.gif) no-repeat center center;
+	border: 0px;
+	height: 12px;
+	width: 12px;
+	cursor:pointer;
+}
+.xdata-mark-gray{
+	background: url(images/cmpbase/catalog-mark-gray.gif) no-repeat center center;
+	border: 0px;
+	height: 12px;
+	width: 12px;
+	cursor:pointer;
+}
+.xdata-selectfile,.xdata-uploadfile{
+	border: solid 1px #7F9DB9;		
+}
+.xdata-input{
+	width: 99%;
+	background: none;
+	border:solid 1px #a5a5a5;
+	height:20px;
+}
+.xdata-select{
+	width: 99%;
+	background: url(images/cmpbase/dropdown.gif) no-repeat right center;
+	cursor: pointer;
+	border: solid 1px #a5a5a5;
+	height: 19px;
+}
+.xdata-selectdate{
+	width: 99%;
+	background: url(images/cmpbase/selectdate.gif) no-repeat right center;
+	cursor: pointer;
+	border:solid 1px #a5a5a5;
+	height:19px;
+}
+.xdata-autolearn{
+	width: 99%;
+	background: url(images/cmpbase/autocomplete.gif) no-repeat right center;
+	cursor: pointer;
+	border:solid 1px #a5a5a5;
+	height:19px;
+}
+.xdata-selecttree{
+	width: 99%;
+	background: url(images/cmpbase/selecttree.gif) no-repeat right center;
+	cursor: pointer;
+	border:solid 1px #a5a5a5;
+	height:19px;
+}
+.xdata-checkbox{
+	width: 99%;
+	background: url(images/cmpbase/check.gif) no-repeat right center;
+	cursor: pointer;
+	border:solid 1px #a5a5a5;
+	height:19px;
+}
+.xdata-radio{
+	width: 99%;
+	background: url(images/cmpbase/radio.gif) no-repeat right center;
+	cursor: pointer;
+	border:solid 1px #a5a5a5;
+	height:19px;
+}
+.xdata-table{}
+.xdata-table td{
+	vertical-align: middle;
+	text-align: right;
+	padding: 3px;
+}
+.xdata-repeattable{	
+}
+.xdata-repeattable thead tr td{
+	background: #d7e0e7;
+	text-align: center;
+	font-weight: bold;
+}
+.xdata-repeattable tbody tr td{
+	padding: 0 0px;	
+	text-align: left;
+}
+.xdata-repeattable tbody tr td input{
+	width: 99%;
+	border: 0;
+}
+.xdata-repeattable tbody tr td div table thead  tr td{
+	background: #f7f7f7;
+	text-align: center;
+	font-weight: bold;
+}
+.xdata-deletetd{
+	text-align: center;
+	width: 1px;
+}
+.xdata-deleteimg, .xdata-deleteimggray{
+	cursor: pointer;
+	background: url(images/cmpbase/delete.gif) no-repeat center;
+	width: 14px;
+	height: 14px;
+}
+.xdata-repeattableoutter{
+	width: 99%;
+	border:solid 1px #a5a5a5;
+	text-align: left;
+}
+
+.xdata-repeattabletip{
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+	
+	text-align: left;
+	background: #ffffe0;
+}
+.xdata-focus{ background-color:#fdffe6;color:#222;}

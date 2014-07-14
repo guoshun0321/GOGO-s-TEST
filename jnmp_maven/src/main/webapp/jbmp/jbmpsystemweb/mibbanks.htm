@@ -1,0 +1,523 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>MIB管理</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/mibbanks.js"></script>
+    <script type="text/javascript" src="javascript/mibbanks_snmpnode.js"></script>
+    <script type="text/javascript" src="javascript/mibbanks_trap.js"></script>
+    <script type="text/javascript" src="javascript/mibbanks_enum.js"></script>
+    <script type="text/javascript" src="flex/swfobject.js"></script>
+        <script type="text/javascript">
+            <!-- For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. --> 
+            var swfVersionStr = "10.0.0";
+            <!-- To use express install, set to playerProductInstall.swf, otherwise the empty string. -->
+            var xiSwfUrlStr = "flex/playerProductInstall.swf";
+            var flashvars = {};
+            var params = {};
+            params.quality = "high";
+            params.bgcolor = "#ffffff";
+            params.allowscriptaccess = "sameDomain";
+            params.allowfullscreen = "true";
+            var attributes = {};
+            attributes.id = "FlexUpload";
+            attributes.name = "FlexUpload";
+            attributes.align = "middle";
+            swfobject.embedSWF(
+                "flex/FlexUpload.swf", "flashContent", 
+                "795px", "465px", 
+                swfVersionStr, xiSwfUrlStr, 
+                flashvars, params, attributes);
+			<!-- JavaScript enabled so display the flashContent div in case it is not replaced with a swf object. -->
+			swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+        </script>
+</head>
+<body onload="init();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom:3px">
+        <table cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+            <tr>
+                <td align="left">
+                	<span>MIB库名称：</span>
+					<input id="txt_Key" class="input" onkeydown="JetsenWeb.keyEvent(search)"/>
+				</td>
+				<td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="查找" onclick="search();" class="button" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divList" class="webfx-columnlist" style="border: 0px" onfocus="this.blur();">
+        数据加载中...
+	</div>
+    <div id="divBottom" class="list-bottom">
+    	<div class="list-bottom-left">
+    		<input type="button" value="MIB文件" onclick="mibFileList();" class="button4" />
+        </div>
+        <div class="list-bottom-right">
+            <div id="divManPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divMan" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">名称：</td>
+                <td>
+                    <input type="text" id="txt_MIB_NAME" validatetype="NotEmpty" validatetype="maxlength,minlength" maxlength="60" minlength="1" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" width="30%">别名：</td>
+                <td>
+                    <input type="text" id="txt_MIB_ALIAS" validatetype="NotEmpty" validatetype="maxlength,minlength" maxlength="60" minlength="1" />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="field-head" style="vertical-align: top;">描述：</td>
+                <td>
+                    <textarea id="txt_MIB_DESC" cols="22" rows="5" onkeyup="showRemindWordCount(this.value,$('remindWorddesc'),600);"></textarea><br />
+                    <div style="float: right;padding-right: 83px;">
+                 			 还可以输入 <span id="remindWorddesc" style="font-weight:bold;">600</span> 字
+      				 </div>
+                    
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+            <span>MIB库列表</span>
+        </div>
+        <div class="list-title-right">
+       	    <strong>[<a href="javascript:importMibXml();" title="导入mib库" class="link">导入</a>]</strong>
+            <strong>[<a href="javascript:newMan();" title="新建" class="link">新建</a>]</strong>
+        </div>
+    </div>
+    <!-- 文件加载页面 -->
+    <div id="divFileList" style="display:none;">
+		<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+			<tr>
+				<td>
+					<table align="center">
+						<tr>
+							<td><select id="listLeft" multiple
+								style="width: 230px; height: 400px;" scroll="yes">
+							</select></td>
+						</tr>
+						<tr>
+							<td style="text-align: center"><b>未加载</b></td>
+						</tr>
+					</table>
+				</td>
+				<td style="width: 115px;">
+					<table align="center">
+						<tr>
+							<td height="50px"><input type="button" value="&gt;&gt;&gt;"
+								class="button" id="btnSelGroup2" onclick="move(0); " /></td>
+						</tr>
+						<tr>
+							<td height="50px"><input type="button" value="&lt;&lt;&lt;"
+								class="button" id="btnDel" onclick="move(1)" /></td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table align="center">
+						<tr>
+							<td><select id="listRight" multiple
+								style="width: 230px; height: 400px;" scroll="yes">
+							</select></td>
+						</tr>
+						<tr>
+							<td style="text-align: center"><b>已加载<b/></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!-- MIB库详细情况 -->
+	<div id="divContentList" style="display: none;">
+       	<div id="divSnmp" style="overflow: hidden;width:798px;height:432px;">
+       		<div id="divSnmpContent1" style="position: relative;">
+	       		<div id="divSnmpContent" style="display:none; position: relative;">
+		       		<div id="divSnmpTree">
+		       			<span>数据加载中...</span>
+		       		</div>
+		       		<div id="divSnmpNode">
+		       			<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+				            <tr style="display:none;">
+				                <td class="field-head" width="60px">名称：</td>
+				                <td>
+				                    <input type="text" id="txt_NODE_NAME"  readonly="readonly" disabled/>
+				                </td>
+				            </tr>
+				            <tr style="display:none;">
+				                <td class="field-head" width="60px">OID：</td>
+				                <td>
+				                    <input type="text" id="txt_NODE_OID"  readonly="readonly" disabled/>
+				                </td>
+				            </tr>
+				            <tr style="display:none;">
+				                <td class="field-head" width="60px">文件：</td>
+				                <td>
+				                    <input type="text" id="txt_MIB_FILE"  readonly="readonly" disabled/>
+				                </td>
+				            </tr>
+				            <!-- <tr>
+				                <td class="field-head" width="60px">枚举：</td>
+				                <td>
+				                    <input type="button" value="编辑" id="btn_NODE_OID" class="button" disable/>
+				                </td>
+				            </tr> -->
+				            <tr>
+				                <td class="field-head" width="60px" style="vertical-align: top;">英文描述：</td>
+				                <td>
+				                    <textarea id="txt_NODE_DESC" cols="110" rows="3"  readonly="readonly" disabled></textarea>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td class="field-head" width="60px" style="vertical-align: top;">中文描述：</td>
+				                <td>
+				                	<input id="txt_NODE_EXPLAIN" type="text" style="width: 630px;" maxlength="160" />
+				                    <input type="button" id="btnSnmpNode" value="修改" onclick="editSnmpNode();" class="button"/>
+				                </td>
+				            </tr>
+				        </table>
+		       		</div>
+				</div>
+			</div>
+       	</div>
+       	<div style="display:none">
+       		<input type="text" id="curMibType"/>
+       		<input type="text" id="curNodeId"/>
+       		<input type="text" id="curNodeType"/>
+       	</div>
+	</div>
+	<div id="divPopSnmp" style="display: none; overflow: auto;">
+		<table id="tablePopSnmp" width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+			<tr>
+				<td class="field-head" width="30%" style="height: 22px">
+					名称：
+				</td>
+				<td style="height: 22px">
+					<input type="text" id="txt_NODE_NAME1" validatetype="NotEmpty" maxlength="100" />
+					<span style="color: Red">*</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="field-head" style="height: 24px">
+					OID：
+				</td>
+				<td style="height: 24px">
+					<input type="text" id="txt_NODE_OID1" validatetype="NotEmpty" maxlength="35"/>
+					<span style="color: Red">*</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="field-head" style="height: 24px">
+					类型：
+				</td>
+				<td style="height: 24px">
+					<select id="sel_NODE_TYPE1" style="width: 152px;">
+						<option value="0">
+							被管理节点
+						</option>
+						<option value="1">
+							标量
+						</option>
+						<option value="2">
+							表
+						</option>
+						<option value="3">
+							行
+						</option>
+						<option value="4">
+							列
+						</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="field-head" style="height: 24px">
+					索引：
+				</td>
+				<td style="height: 24px">
+					<input type="text" id="txt_NODE_INDEX1" maxlength="65"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="field-head" style="height: 24px;vertical-align: top;">
+					分类描述：
+				</td>
+				<td style="height: 24px">
+					<textarea id="txt_NODE_EXPLAIN1" type="text"
+						style="width: 148px; height: 50px" onkeyup="showRemindWordCount(this.value,$('remindWord'),150);"></textarea><br />
+                         <div style="float: right;padding-right: 123px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">150</span> 字
+      				 </div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!-- Trap详细情况 -->
+   	<div id="divTrap" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+			<tr style="height: 20px">
+				<td align="left">
+					<span id="spanMibName" style="font-weight: bold"></span>的Trap列表：
+				</td>
+				<td align="right">
+					<strong><a href="#" onclick="newTrap();"style="font-weight: bold;"> [新建]</a></strong>
+				</td>
+			</tr>
+		</table>
+		<div id="divTrapList" class="webfx-columnlist"
+			style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 400px;">
+			数据加载中...
+		</div>
+		<div id="divTrapBottom" class="list-bottom" style="position: relative; height: 30px;">
+	        <div class="list-bottom-right">
+	            <div id="divTrapPage" class="text_style">
+	            </div>
+	        </div>
+    	</div>
+	</div>
+	<div id="divTrapNew" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <colgroup span="2" style="height: 24px;">
+                <col style="width: 30%;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tr>
+                <td class="field-head">
+                    	英文名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_TRAP_NAME" validatetype="NotEmpty" maxlength="60"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+					OID：
+                </td>
+                <td>
+                    <input type="text" id="txt_TRAP_OID" validatetype="NotEmpty" maxlength="60"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    	中文名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_NAME_CN" maxlength="60"/>                    
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    英文描述：
+                </td>
+                <td>
+                    <textarea type="textarea" id="txt_TRAP_DESC" rows="5" cols="22" onkeyup="showRemindWordCount(this.value,$('remindWorddesca'),600);">
+                    </textarea><br />
+                    <div style="float: right;padding-right: 116px;">
+                 			 还可以输入 <span id="remindWorddesca" style="font-weight:bold;">600</span> 字
+      				 </div>                  
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    中文描述：
+                </td>
+                <td>
+                    <textarea id="txt_DESC_CN" rows="5" cols="22" onkeyup="showRemindWordCount(this.value,$('remindWorddescb'),600);">
+                    </textarea><br />
+                    <div style="float: right;padding-right: 116px;">
+                 			 还可以输入 <span id="remindWorddescb" style="font-weight:bold;">600</span> 字
+      				 </div>                  
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divSubTrap" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px">
+			<tr style="height: 20px">
+				<td align="left">
+					<span id="spanSubTrap" style="font-weight: bold"></span>的子节点列表：
+				</td>
+				<td align="right">
+					<a href="#" onclick="newTrapSub();return false;" title="新建"
+						style="font-weight: bold;"> [新建]</a>
+				</td>
+			</tr>
+		</table>
+		<div id="divSubTrapList" class="webfx-columnlist"
+			style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 300px;">
+			数据加载中...
+		</div>
+	</div>
+	<!-- MIB文件 -->
+   	<div id="divMibFile" class="webfx-columnlist"
+			style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+			<tr style="height: 20px">
+				<td align="left">
+					<label>MIB文件列表</label>
+				</td>
+				<td align="right">
+					<strong><a href="#" onclick="mibFileUpload();"style="font-weight: bold;"> [添加]</a></strong>
+					<strong><a href="#" onclick="delMibFiles();return false;" title="删除"> [删除]</a></strong>
+				</td>
+			</tr>
+		</table>
+		<div id="divMibFileList" class="webfx-columnlist"
+			style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 400px;">
+			数据加载中...
+		</div>
+	</div>
+	<div id="divMibFileUpload"  style="display: none; width:795px;height:465px;overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px;background-color: black;">
+		<div id="flashContent" style="display:block;text-align:left;width:795px;height:460px;background-color:#002323;">
+           <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="795px" height="460px"
+               id="FlexUpload">
+               <param name="movie" value="flex/FlexUpload.swf" />
+               <param name="quality" value="high" />
+               <param name="allowScriptAccess" value="sameDomain" />
+               <param name="allowFullScreen" value="true" />
+               <param name="wmode" value="transparent" />
+           </object>
+       </div>
+	</div>
+	<!-- 枚举  -->
+	<div id="divEnum" class="webfx-columnlist" style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px;height:465px; width:790px;">
+		<div>
+		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+			<tr style="height: 20px">
+				<td align="left" width="180px;">
+					<span>英文描述：</span>
+					<input id="txt_Enum_Desc" class="input"/>
+				</td>
+				<td>
+					&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnEnum" value="查找" onclick="searchEnum();" class="button" style="margin-left: 0px;"/>
+				</td>
+				<td align="right">
+					<strong><a href="#" onclick="addEnum(0);"style="font-weight: bold;"> [新建]</a></strong>
+				</td>
+			</tr>
+		</table>
+		</div>
+		<div id="divEnumList" class="webfx-columnlist"
+			style="background: #fff; border: 0px; background-repeat: no-repeat; overflow-y: auto; overflow-x: hidden; height: 400px;">
+			数据加载中...
+		</div>
+		<div id="divEnumBottom" class="list-bottom" style="position: relative; height: 30px;">
+	        <div class="list-bottom-right">
+	            <div id="divEnumPage" class="text_style">
+	            </div>
+	        </div>
+    	</div>
+	</div>
+	<div id="divEnumDetail" class="webfx-columnlist" style="display: none; overflow: hidden;margin-left:2px;margin-top:1px;margin-right:3px">
+		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px;">
+			<tr style="height: 20px">
+				<td align="right">
+					<strong><a href="#" onclick="addEnum(1);"style="font-weight: bold;"> [新建]</a></strong>
+				</td>
+			</tr>
+		</table>
+		<div id="divEnumDetailList" class="webfx-columnlist"
+			style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto; height: 400px;">
+			数据加载中...
+		</div>
+	</div>
+	<div id="divEnumEdit" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <colgroup span="2" style="height: 24px;">
+                <col style="width: 30%;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    <span>中文描述：</span>
+                </td>
+                <td>
+                    <textarea id="txt_Enum_DESC_CN" rows="5" cols="22"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+	<div id="divEnumAdd" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <colgroup span="2" style="height: 24px;">
+                <col style="width: 30%;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tr id="trAttribValue">
+                <td class="field-head">
+                    属性值
+                </td>
+                <td>
+                    <input type="text" id="txt_ATTRIB_VALUE" validatetype="Integer"  />
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    英文描述
+                </td>
+                <td>
+                    <input type="text" id="txt_VALUE_NAME" validatetype="NotEmpty" maxlength = "33"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    中文描述
+                </td>
+                <td>
+                    <input type="text" id="txt_VALUE_DESC" maxlength = "33" />
+                </td>
+            </tr>
+        </table>
+    </div>
+       
+    <div id="divImportMibXml" style="display: none">
+    	<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="70">
+                    选择文件：
+                </td>
+                <td>
+                <!-- target="frameUpload" -->
+                	<form id="formImportMibXml" method="post" enctype="multipart/form-data" target="frameImportMibXml" >
+						<input type="file" id="fileAttachment" name="attachment" />
+                    	<input type="hidden" id="hidClassId"/>
+                    </form>
+                </td>
+            </tr>
+              <tr>
+            	<td class="field-head" width="70">
+                    &nbsp;
+                </td>
+            	<td>
+            		<span style="color: #FF0000; vertical-align: middle;">*</span>（导入的xml文件大小不能超过10M）
+            	</td>
+            </tr>
+        </table>
+    </div>
+    <div id="divImportMib" style="display: none; text-align: center;">
+    	Mib库正在导入中……
+    </div>
+      <iframe id="frameImportMibXml" name="frameImportMibXml" src="" style="display: none;"></iframe>
+</body>
+</html>

@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>采集器</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+	<script type="text/javascript" src="javascript/js_ip.js"></script>
+    <script type="text/javascript" src="javascript/collector.js"></script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom:3px">
+    	<table cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+    		<td>
+	       	 采集器名称：
+	        	<input id="txtCollName" type="text" onkeydown="JetsenWeb.keyEvent(searchCollector)" class="input" maxlength="12"/>
+	       	</td>
+	       	<td>
+	       	&nbsp;&nbsp;&nbsp;&nbsp;
+			IP地址：
+		        <!-- <div style="border:none; width:180px; font-size:12px;">
+		        	<div style="float: left;">IP：</div>
+	   				<div id="txtIP"></div>
+				</div> -->
+	        	<input id="txtIP" type="text" onkeydown="JetsenWeb.keyEvent(searchCollector)" class="input"/>
+	        	&nbsp;&nbsp;&nbsp;&nbsp;
+	        </td>
+	        <td>
+	            <input type="button" value="查找" onclick="searchCollector();" class="button" />
+	       	</td>
+	    </table>
+    </div>
+    <div id="divCollectorList" class="webfx-columnlist" style="background: #fff; border: 0px;
+        background-repeat: no-repeat" onfocus="this.blur();">
+        数据加载中...</div>
+    <div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divCollectorPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divCollector" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" style="width: 100px;" >
+                    采集器名称：
+                </td>
+                <td>
+                    <input id="txt_COLL_NAME" validatetype="NotEmpty" maxlength="20" />
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="width: 100px;">
+       IP地址：
+                </td>
+                <td>
+                	<span style="border:none; width:160px; font-size:12px;">
+   						<div id="txt_COLL_IP"></div>
+					</span>
+					<span style="color: Red;padding-left: 3px;">*</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+            采集器列表
+        </div>
+        <div class="list-title-right">
+            <strong>[<a href="javascript:newCollector()" title="新建" class="link">新建</a>]
+        </div>
+    </div>
+</body>
+</html>

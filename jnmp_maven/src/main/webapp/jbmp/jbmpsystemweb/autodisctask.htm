@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>自动发现</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/js_ip.js"></script>
+		<script type="text/javascript" src="javascript/validate.js"></script>
+		<script type="text/javascript" src="javascript/autodisctask.js"></script>
+	</head>
+	<body>
+		<div id="divTop" class="list-search" style="margin-bottom:3px">
+        <table width="300px" cellspacing="0" cellpadding="0" class="table-info" style="padding: 1px;">
+            <tr>
+                <td align="left" width="200px">
+                	<span>采集器名称：</span>
+                	<select  id="sel_COLL_ID" style="width: 105px">
+                		<option value="-1">请选择</option>
+                	</select>
+                </td>
+                <td>
+                    <input type="button" value="查找" onclick="search();" class="button" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divTaskList" class="webfx-columnlist" style="border: 0px; overflow: hidden" onfocus="this.blur();">
+ 		数据加载中...
+	</div>
+	<div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divTaskListPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+                               任务列表
+        </div>
+        <div class="list-title-right">
+            <strong><a href="javascript:newTask();" title="新建" class="link">[新建]</a></strong>
+        </div>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div id="divAutoTask" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+        	<tr>
+                <td class="field-head" style="vertical-align: top;">任务类型：</td>
+                <td>
+                	<!-- 
+                		自动发现类型：
+                		0 SNMP自动发现
+                		1 金数信码流、节目发现（中国有线项目）
+                		2 HTTP自动发现
+                		3 FTP自动发现
+                	 -->
+                    <select id="sel_TASK_TYPE" style="width:155px;" onchange="typeChange();">
+                    	<option value="0" selected>SNMP自动发现</option>
+                    	<option value="1">金数信码流、节目发现</option>
+                    	<option value="2">HTTP服务器自动发现</option>
+                    	<option value="3">FTP服务器自动发现</option>
+                    	<option value="4">数码视讯自动发现</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="trSnmp1">
+                <td class="field-head" width="30%">开始IP：</td>
+                <td>
+                    <!-- <input type="text" id="txt_BEGIN_IP"/> -->
+                    <div style="border:none; width:160px; font-size:12px; display:inline;">
+   						<div id="txt_BEGIN_IP"></div>
+					</div>
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr id="trSnmp2">
+                <td class="field-head" width="30%">结束IP：</td>
+                <td>
+                    <!-- <input type="text" id="txt_END_IP"/> -->
+                    <div style="border:none; width:160px; font-size:12px; display:inline;">
+   						<div id="txt_END_IP"></div>
+					</div>
+					<span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr id="trSnmp3">
+                <td class="field-head" width="30%">附加信息：</td>
+                <td>
+                    <input type="text" id="txt_COMMUNITY" maxlength="20" />
+                </td>
+            </tr>
+            <tr id="trInfo">
+                <td class="field-head" width="30%">附加信息：</td>
+                <td>
+                    <input type="text" id="txt_ADD_INFO" maxlength="20" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">采集器名称：</td>
+                <td>
+                    <select id="sel_COLL_ID1" style="width:155px;">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">执行方式：</td>
+                <td>
+                    <select id="sel_EXE_TYPE" style="width:155px;" onchange="exeTypeChange();">
+                    	<option value="0" selected>手动执行</option>
+                    	<option value="1">自动执行</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="trWeek" >
+                <td class="field-head">
+        			<span>星期：</span>
+                </td>
+                <td>
+                    <input name="chkWeek" type="checkbox" value="1" default="1" />周一&nbsp;
+                    <input name="chkWeek" type="checkbox" value="2" default="2" />周二&nbsp;
+                    <input name="chkWeek" type="checkbox" value="3" default="3" />周三&nbsp;
+                    <input name="chkWeek" type="checkbox" value="4" default="4" />周四&nbsp;
+                    <input name="chkWeek" type="checkbox" value="5" default="5" />周五&nbsp;
+                    <input name="chkWeek" type="checkbox" value="6" default="6" />周六&nbsp;
+                    <input name="chkWeek" type="checkbox" value="7" default="7" />周日
+                </td>
+            </tr>
+            <tr id="trHour" >
+                <td class="field-head">
+                    <span>时间：</span>
+                </td>
+                <td>
+                    <input type="text" id="txt_TimePoint" style="width: 70px;" onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent()" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head"><span>自动实例化：</span></td>
+                <td>
+                    <input id="chk_AutoIns" name="chkAutoIns" type="checkbox" value="1" default="1" />
+                </td>
+            </tr>
+        </table>
+    </div>
+	</body>
+</html>

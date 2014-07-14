@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>事件报警分析Post方式传值页面</title>
+<script type="text/javascript">
+	/*参数列表可能会很长，直接用url传值会有问题。该页面通过js将值用post方式传递。*/
+	window.onload = function(){
+		var iframe = parent.document.getElementById('reportInfo');
+		if(iframe.reportSrc != null){
+			document.getElementById("reportPost").action = iframe.reportSrc;
+		}
+		if(iframe.objIds != null){
+			document.getElementById("objIds").value = iframe.objIds;
+		}
+		if(iframe.objAttrIds != null){
+			document.getElementById("objAttrIds").value = iframe.objAttrIds;
+		}
+		if(iframe.alarmType != null){
+			document.getElementById("alarmType").value = iframe.alarmType;
+		}
+		if(iframe.alarmId != null){
+			document.getElementById("alarmId").value = iframe.alarmId;
+		}
+		if(iframe.alarmLevel != null){
+			document.getElementById("alarmLevel").value = iframe.alarmLevel;
+		}
+		if(iframe.startTime != null){
+			document.getElementById("startTime").value = iframe.startTime;
+		}
+		if(iframe.endTime != null){
+			document.getElementById("endTime").value = iframe.endTime;
+		}
+		document.getElementById("reportPost").submit();
+	}
+</script>
+</head>
+<body>
+<form id="reportPost" action="" method="post" style="display:none">
+	<input id="objIds" name="obj_id" value=""/>
+	<input id="objAttrIds" name="objattr_id" value=""/>
+	<input id="alarmType" name=alarm_type value=""/>
+	<input id="alarmId" name="alarm_id" value=""/>
+	<input id="alarmLevel" name="alarm_level" value=""/>
+	<input id="startTime" name="start_time" value=""/>
+	<input id="endTime" name="end_time" value=""/>
+</form>
+</body>
+</html>

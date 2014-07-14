@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>    
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/floor.js"></script>
+    <script type="text/javascript" src="javascript/room.js"></script>
+    <script type="text/javascript" src="javascript/topo2rf.js"></script>
+    <title>楼层管理</title>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom:3px">
+    	<table width="490px" cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+           <tr>
+              <td align="left">楼层名称：
+                  <input id="FLOOR_NAME_SEARCH" type="text" onkeydown="JetsenWeb.keyEvent(searchFloor)" class="input" maxlength="100"/>&nbsp;&nbsp;&nbsp;&nbsp;
+              </td>
+              <td align="left">楼层别名：
+                  <input id="FLOOR_ALIAS_SEARCH" type="text" onkeydown="JetsenWeb.keyEvent(searchFloor)" class="input" maxlength="100"/>&nbsp;&nbsp;&nbsp;&nbsp;
+              </td>
+              <td>
+                  <input type="button" value="查找" onclick="searchFloor();" class="button" />
+              </td>
+           </tr>  	
+      </table>
+    </div>
+    
+   
+    <div id="divFloorList" class="webfx-columnlist" style="background: #fff; border: 0px;
+        background-repeat: no-repeat" onfocus="this.blur();">
+        数据加载中...</div>
+        
+        
+    <div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divFloorPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-frame" id="divPageFrame"/>
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+         楼层列表
+        </div>
+        <div class="list-title-right">
+            <strong>[<a href="javascript:newFloor()" title="新建" class="link">新建</a>]
+        </div>
+    </div>
+    
+    <div id="divFloor" style="display: none">
+       <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info"> 
+             <tr> 
+               <td class="field-head">    
+                    楼层名称：
+               </td>
+               <td>
+                   <input id="FLOOR_NAME" class="input1" validatetype="NotEmpty" maxlength="100"/>
+                   <span style="color: Red">*</span>
+               </td> 
+             </tr>    
+             <tr> 
+               <td class="field-head">    
+                    楼层别名：
+               </td>
+               <td>
+                   <input id="FLOOR_ALIAS" class="input1" maxlength="100"/>
+               </td> 
+             </tr>
+             <tr>
+             	<td class="field-head">    
+                    所在建筑物：
+               </td>
+               <td>
+                   	<input type="radio" name="FLOOR_ATTACH" value="0" default="0" onclick="setFloorNum()" checked>主楼</input>
+					<input type="radio" name="FLOOR_ATTACH" value="1" default="1" onclick="setFloorNum()">裙楼</input>
+               </td>
+             </tr>  
+             <tr>
+             	<td class="field-head">    
+                    楼层：
+               </td>
+               <td>
+               		<select id="FLOOR_NUM" style="width:50px;">
+               		</select>
+               </td>
+             </tr>  
+       </table>
+    </div>
+    
+    <!-- 显示房间列表 -->
+    <div id="divShowListRoom" style="display: none;margin:3px;">
+	    <table class="tablepanel" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;padding: 3px;border: 0px;height:30px;">
+	        <tr>
+	        	<td align="left">
+	        		房间名称：
+	                <input id="ROOM_NAME_SEARCH" type="text" onkeydown="JetsenWeb.keyEvent(searchRoom)" class="input" maxlength="100"/>&nbsp;&nbsp;&nbsp;&nbsp;
+	            	房间别名：
+	                <input id="ROOM_ALIAS_SEARCH" type="text" onkeydown="JetsenWeb.keyEvent(searchRoom)" class="input" maxlength="100"/>&nbsp;&nbsp;&nbsp;&nbsp;
+	            </td>
+	            <td align="right">
+	                <input type="button" value="查找" onclick="searchRoom();" class="button" />
+	                <input type="button" value="新增" onclick="newRoom();" class="button" />
+	            </td>
+	        </tr>
+	    </table>
+	    <div id="divRoomList" style="background-repeat: no-repeat; overflow: auto; height: 358px; border: 0px; background: #fff" class="webfx-columnlist">
+	    	数据加载中...
+	    </div>
+	    <div id="divRoomBottom" class="list-bottom" style="position: relative; height: 30px;">
+	        <div class="list-bottom-right">
+	            <div id="divRoomPage" class="text_style">
+	            </div>
+	        </div>
+    	</div>
+	</div>
+    
+    <div id="divRoom" style="display: none">
+       <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info"> 
+             <tr> 
+               <td class="field-head">    
+                    房间名：
+               </td>
+               <td>
+                   <input id="ROOM_NAME" class="input1" validatetype="NotEmpty"/>
+                   <span style="color: Red">*</span>
+               </td> 
+             </tr>    
+             <tr> 
+               <td class="field-head">    
+                    房间别名：
+               </td>
+               <td>
+                   <input id="ROOM_ALIAS" class="input1"/>
+               </td> 
+             </tr>    
+       </table>
+    </div>
+    
+    <!-- 显示拓扑列表 -->
+    <div id="divShowListTopo2RF" style="display: none;margin:3px;">
+	    <div>
+            <div id="divTopo" style="height: 350px; padding-left: 20px; overflow: auto;
+                overflow-x: hidden">
+            </div>
+        </div>
+	</div>
+    
+</body>
+</html>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<syslog>
+	<server>
+		<cfg name="threadPoolSize">3</cfg>
+		<cfg name="ip">127.0.0.1</cfg>
+		<cfg name="port">514</cfg>
+	</server>
+</syslog>

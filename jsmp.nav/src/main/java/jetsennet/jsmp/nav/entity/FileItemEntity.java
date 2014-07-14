@@ -24,6 +24,7 @@ public class FileItemEntity implements Serializable
 	 * 文件媒资唯一ID
 	 */
 	@Column("ASSET_ID")
+	@IdentAnnocation("fileAssertId")
 	private String assetId;
 	/**
 	 * 所属节目ID，关联NS_PROGRAM表
@@ -85,12 +86,12 @@ public class FileItemEntity implements Serializable
 	 * 画面宽高比
 	 */
 	@Column("ASPECT_RATIO")
+	@IdentAnnocation("screenShape")
 	private String aspectRatio;
 	/**
 	 * 分辨率高
 	 */
 	@Column("BROWSE_HEIGHT")
-	@IdentAnnocation("screenShape")
 	private int browseHeight;
 	/**
 	 * 分辨率宽

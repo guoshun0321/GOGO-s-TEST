@@ -1,0 +1,259 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>定制报表管理</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/function.js"></script>
+		<script type="text/javascript" src="javascript/report_comm.js"></script>
+		<script type="text/javascript" src="javascript/reporttime.js"></script>
+		
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom:3px;">
+			<table width="835" cellspacing="0" cellpadding="0" class="table-info" style="padding: 3px">
+				<tr>
+					<td align="left">
+						任务名称：
+						<input type="text" id="txt_TaskKey"
+							onkeydown="JetsenWeb.keyEvent(searchReportTime1)" class="input" style="width: 99px;" />&nbsp;&nbsp;&nbsp;
+						开始时间：
+						<input type="text" id="txtSDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtSTime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReportTime1)" value="00:00:00" validatetype="NotEmpty" />
+						<input type="checkbox" id="chkSDate"
+							onkeydown="JetsenWeb.keyEvent(searchReportTime1)" />&nbsp;&nbsp;&nbsp;
+						任务类型：
+						<select id="cboTaskType" style="width:90px" onkeydown="JetsenWeb.keyEvent(searchReportTime1)">
+							<option value="">请选择</option>
+	                        <option value="1">周期任务</option>
+	                        <option value="2">单次任务</option>
+	                    </select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						报表类型：
+						<select id="cbo_ReportType" style="width: 103px;"
+							onkeydown="JetsenWeb.keyEvent(searchReportTime1)">
+						</select>&nbsp;&nbsp;&nbsp;
+						结束时间：
+						<input type="text" id="txtEDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtETime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							onkeydown="JetsenWeb.keyEvent(searchReportTime1)" validatetype="NotEmpty" />
+						<input type="checkbox" id="chkEDate"
+							onkeydown="JetsenWeb.keyEvent(searchReportTime1)" />&nbsp;&nbsp;&nbsp;
+						<input type="button" value="查找" onclick="searchReportTime1()" class="button" />
+						<input id="hid_REPORT_ID" type="hidden" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divReportTimeList" class="webfx-columnlist"  
+			style="border: 0px" onfocus="this.blur();">
+			数据加载中...
+		</div>
+		<div id="divBottom" class="list-bottom">
+			<div class="list-bottom-right">
+				<div id="divReportTimePage" class="text_style">
+				</div>
+			</div>
+		</div>
+		<div id="divReportTimeEdit" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head" style="width: 100px;">
+						任务名称：
+					</td>
+					<td>
+						<input type="text" id="txt_TASK_NAME" validatetype="NotEmpty" maxlength="20" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						任务类型：
+					</td>
+					<td>
+						<select id="cbo_TASK_TYPE" validatetype="NotEmpty,Integer"
+							onchange="changeTaskType(this.value)">
+							<option value="1">
+								周期任务
+							</option>
+							<option value="2">
+								单次任务
+							</option>
+						</select>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr id="trWeek" style="display: none;">
+					<td class="field-head">
+						<input id="chkMon" name="chkWeek" type="checkbox" value="64"
+							default="64" />
+						<label id="lchkMon" for="chkMon">
+							周一
+						</label>
+					</td>
+					<td>
+						<input id="chkTue" name="chkWeek" type="checkbox" value="32"
+							default="32" />
+						<label id="lchkTue" for="chkTue">
+							周二
+						</label>
+						&nbsp;
+						<input id="chkWed" name="chkWeek" type="checkbox" value="16"
+							default="16" />
+						<label id="lchkWed" for="chkWed">
+							周三
+						</label>
+						&nbsp;
+						<input id="chkThu" name="chkWeek" type="checkbox" value="8"
+							default="8" />
+						<label id="lchkThu" for="chkThu">
+							周四
+						</label>
+						&nbsp;
+						<input id="chkFri" name="chkWeek" type="checkbox" value="4"
+							default="4" />
+						<label id="lchkFri" for="chkFri">
+							周五
+						</label>
+						&nbsp;
+						<input id="chkSat" name="chkWeek" type="checkbox" value="2"
+							default="2" />
+						<label id="lchkSat" for="chkSat">
+							周六
+						</label>
+						&nbsp;
+						<input id="chkSun" name="chkWeek" type="checkbox" value="1"
+							default="1" />
+						<label id="lchkSun" for="chkSun">
+							周日
+						</label>
+					</td>
+				</tr>
+				<tr id="trHour" style="display: none;">
+					<td class="field-head">
+						起始时间：
+					</td>
+					<td>
+						<input id="txtSHour" name="txtSHour" type="text"
+							style="width: 20px;" default="0" />
+						点-
+						<input id="txtEHour" name="txtEHour" type="text"
+							style="width: 20px;" default="23" />
+						点
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						开始日期：
+					</td>
+					<td>
+						<input type="text" id="txt_START_DATE"
+							validatetype="NotEmpty,DateTime"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							style="width: 80px" />&nbsp;<span style="color: Red">*</span>
+						<input type="text" id="txt_START_TIME" style="width: 80px;display: none;"
+							default="00:00:00" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+						
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						结束日期：
+					</td>
+					<td>
+						<input type="text" id="txt_END_DATE"
+							validatetype="NotEmpty,DateTime"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)"
+							style="width: 80px" />&nbsp;<span style="color: Red">*</span>
+						<input type="text" id="txt_END_TIME" style="width: 80px;display: none;" 
+							default="23:59:59" onfocus="new JetsenWeb.UI.TimeEditor(this,3)" />
+						
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						生成周期：
+					</td>
+					<td>
+						<input type="text" id="txt_COLL_TIMESPAN_DAY"
+							validatetype="NotEmpty,Integer" style="width: 20px" default="0" /> 天 
+						<input type="text" id="txt_COLL_TIMESPAN_HOUR"
+							validatetype="NotEmpty,Integer" style="width: 20px" default="0" /> 时 
+						<input type="text" id="txt_COLL_TIMESPAN_MINUTE"
+							validatetype="NotEmpty,Integer" style="width: 20px" default="0" /> 分 
+						<input type="text" id="txt_COLL_TIMESPAN_SECOND"
+							validatetype="NotEmpty,Integer" style="width: 20px" default="0" /> 秒 
+						<span style="color: Red">*</span>
+						<input type="hidden" id="txt_COLL_TIMESPAN"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						报表格式：
+					</td>
+					<td>
+						<select id="cbo_FILE_FORMAT" validatetype="NotEmpty">
+							<option value="0">
+								excel
+							</option>
+							<option value="1">
+								word
+							</option>
+							<option value="2">
+								pdf
+							</option>
+						</select>
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						是否邮件：
+					</td>
+					<td>
+						<select id="cbo_IS_MAIL" validatetype="NotEmpty,Integer">
+							<option value="0">
+								否
+							</option>
+							<option value="1">
+								是
+							</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				定制任务
+			</div>
+		</div>
+		<div id="divViewReportParam" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info">
+				<tr>
+					<td class="field-head" style="vertical-align: top;">
+						报表参数：
+					</td>
+					<td>
+						<textarea id="txt_view_reportParam" style="width: 350px; height: 80px;"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

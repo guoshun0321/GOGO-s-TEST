@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>项目管理</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js?ti=1"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/checkbox.js"></script>
+    <script language="javascript"  src="javascript/simpleasset.js"></script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom: 3px">
+        <div style="padding: 3px">
+        	<div>
+        		资产编号：
+        		<input id="txtAssetId" onkeydown="JetsenWeb.keyEvent(searchAsset)" class="input"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        		设备名称：
+        		<input id="txtObjName" onkeydown="JetsenWeb.keyEvent(searchAsset)" class="input"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        		<input type="button" value="查找" onclick="searchAsset();" class="button" />
+        		<input id="hidTop" type="hidden" value="10"/>
+        	</div>
+        </div>
+    </div>
+    <div id="divAssetList" class="webfx-columnlist" style="background: #fff; border: 0px; margin-left: 3px; ; overflow: hidden"
+            onfocus="this.blur();">
+            数据加载中...</div>
+	<div class="list-title" id="divListTitle">
+		<div class="list-title-left">
+			设备列表
+		</div>
+        <div class="list-title-right">
+        </div>
+	</div>
+    <div class="page-frame" id="divPageFrame" />
+    <iframe id="frameUpload" name="frameUpload" src="../../servlet/BMPFilesUploadServlet" style="display: none;"></iframe>
+</body>
+</html>

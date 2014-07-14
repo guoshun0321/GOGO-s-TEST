@@ -9,7 +9,7 @@ public class DataSynCachePgmBase extends DataSynCache<PgmBaseEntity>
     @Override
     protected String genKey(PgmBaseEntity obj)
     {
-        return CachedKeyUtil.pgmBaseKey(obj.getPgmId());
+		return CachedKeyUtil.pgmBaseKey(obj.getPgmId());
     }
 
 }

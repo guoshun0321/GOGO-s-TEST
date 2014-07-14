@@ -27,7 +27,7 @@ public class DataSynCacheChannel extends DataSynCache<ChannelEntity>
 	public void delete(ChannelEntity obj)
 	{
 		super.delete(obj);
-		this.del2CachedSet(CachedKeyUtil.channelIndex(obj.getRegionCode(), obj.getLanguageCode()), obj.getChlId());
+		this.del2CachedSet(CachedKeyUtil.channelIndex(obj.getRegionCode(), obj.getLanguageCode()), Integer.valueOf(obj.getChlId()));
 	}
 
 }

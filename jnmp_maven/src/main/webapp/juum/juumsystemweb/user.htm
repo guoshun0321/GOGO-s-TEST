@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>用户管理</title>
+
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script language="javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/user.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+
+    <script type="text/javascript">
+	JetsenWeb.require(["js_sql","js_window","js_gridlist","js_plugins","js_pagebar","js_validate","js_tabpane","js_pageframe","js_xtree"]);		
+    var gSysConfigs = null;
+    var AC_IMG_PATH = "./images/";
+	var gFrame;
+    var gWindowSizeChangedInterVal;	
+	var gUserGrid;
+	var gTabPane;
+	var gGroupId = 0;
+	var gUserPage = new JetsenWeb.UI.PageBar("User");
+    gUserPage.onpagechange = function(){loadUser();}
+     gUserPage.orderBy = "order by ID desc";
+    gUserPage.onupdate = function()
+    {
+        $('divUserPage').innerHTML = this.generatePageControl();
+    };
+    var gUserGrid = new JetsenWeb.UI.GridList("user-grid");
+        gUserGrid.ondatasort=function(sortfield,desc)
+        {
+            gUserPage.setOrderBy(sortfield,desc);
+        }	
+    
+    var gUserCondition = new JetsenWeb.SqlConditionCollection();	
+	
+    function  pageInit()
+    {
+        /*
+        gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"),{splitType:1,fixControlIndex:0,enableResize:false,splitBoder:0,showSplit:false});        
+        var frameLeft = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divLeft"),{splitType:1,fixControlIndex:0,splitBorder:0,size:{width:200,height:0},showSplit:false});        
+        var frameRgiht = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divRight"),{splitType:1,fixControlIndex:0,splitBorder:0,showSplit:false});        
+        frameLeft.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeftTitle"),{size:{width:0,height:27}}));
+        frameLeft.addControl(new JetsenWeb.UI.PageItem("divTree"));
+        
+        frameRgiht.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divRightTitle"),{size:{width:0,height:27}}));
+        var frameRgihtBottom = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divRgihtBottom"),{splitType:1,fixControlIndex:1,splitBorder:0,showSplit:false });            
+        frameRgihtBottom.addControl(new JetsenWeb.UI.PageItem("divContainer"));
+        frameRgihtBottom.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divBottom"),{size:{width:0,height:30}}));  
+        frameRgiht.addControl(frameRgihtBottom);
+        
+        var frameContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divContent"),{splitType:0,fixControlIndex:0,splitBorder:0,showSplit:true}); 
+        frameContent.addControl(frameLeft );
+        frameContent.addControl(frameRgiht);
+        
+        gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divTop"),{size:{width:0,height:30}}));
+        gFrame.addControl(frameContent);
+        */
+		
+		gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"),{splitType: 0, fixControlIndex: 0, enableResize: true});      
+		var objContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divObjContent"), { splitType: 1, fixControlIndex: 1, showSplit: false });
+        objContent.addControl(new JetsenWeb.UI.PageItem("divContainer"));
+        objContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divBottom"), { size: { width: 0, height: 30} }));
+
+        var objFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divObj"), { splitType: 1,fixControlIndex: 0, enableResize:false, splitTitle : "divListTitle", splitSize : 27 });
+        objFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divTop"), { size: { width: 0, height: 30} }));
+        objFrame.addControl(objContent);
+
+        var divLeftFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divaLeft"), { splitType: 1, fixControlIndex: 0, size:{width:210,height:0},showSplit: false });
+		divLeftFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeftTitle"),{size:{width:0,height:27}}));
+		divLeftFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeft"),{ size: { width: 228, height: 0} }));
+		gFrame.addControl(divLeftFrame);
+		gFrame.addControl(objFrame);
+		
+        window.onresize = function(){
+            if(gWindowSizeChangedInterVal!=null)
+                window.clearTimeout(gWindowSizeChangedInterVal);
+            gWindowSizeChangedInterVal = window.setTimeout(windowResized,500);
+        };
+        windowResized();
+        
+        $('divObj').style.top = '0px';
+    
+	    gTabPane = new JetsenWeb.UI.TabPane($('tabPane'),$('tabPage'));
+	   
+	    loadGroupTree();
+	    parent.document.getElementById("spanWindowName").innerHTML = document.title;
+    }
+
+    function windowResized()
+    {
+        var size = JetsenWeb.Util.getWindowViewSize();
+        gFrame.size = {width:size.width,height:size.height};
+        gFrame.resize();
+    }
+    </script>
+
+</head>
+<body onload="pageInit()" scroll="no">
+     <div id="divTop" class="list-search" style="margin-bottom:3px;">
+    	<table width="280px" cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+           <tr>
+              <td align="left">用户姓名：
+                 <input type="text" id="txtUserName" onkeydown="JetsenWeb.keyEvent(searchUser)" class="input" />
+              </td>
+              <td>
+              &nbsp;&nbsp;
+                  <input type="button" onclick="searchUser()" value="查找" class="button" style="padding: 3px"/>
+              </td>
+           </tr>  	
+      </table>
+    </div>
+ 
+    <div class="list-title" id="divListTitle">
+		<div class="list-title-left">
+			用户列表
+		</div> 
+		<div class="list-title-right">
+			<strong><a href="#" id="newUserLink" title="新建" class="link" style="font-weight: bold;" onclick="newUser();return false;">[新建]</a></strong>
+		</div>
+	</div>
+    
+    <div class="list-title" style="border: none;margin-right:3px" id="divLeftTitle">
+        <div class="list-title-left">
+            分组树
+        </div>
+        <div class="list-title-right">
+        </div>
+    </div>
+    
+    <div id="divLeft" >
+    </div>
+    
+    <div id="divRight" >
+        <div id='divContainer' style="border: 0px;">
+        </div>
+        <div id="divBottom" class="list-bottom">
+            <div class='list-bottom-left'>
+                <input type="button" class="button" value="删除" onclick="deleteUser()" /></div>
+            <div class='list-bottom-right'>
+                <div id="divUserPage" class="text_style">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="divUser" style="display: none">
+        <div class="panel-head2">
+            <table cellspacing="0" cellpadding="0" border="0" width="350px" id="tabPane" style="margin-left: 5px;
+                padding-top: 1px; margin-bottom: 0px; padding-bottom: 0px">
+                <tr>
+                    <td align="center">
+                        常规</td>
+                    <td align="center">
+                        隶属组</td>
+                    <td align="center">
+                        角色管理</td>
+                </tr>
+            </table>
+        </div>
+        <div id="tabPage">
+            <div>
+                <table width="100%" summary="Format Table" border="0" cellpadding="2" cellspacing="1">
+                    <colgroup>
+                        <col class="width-4w" />
+                        <col class="width-input" />
+                        <col class="width-4w" />
+                        <col width="auto" />
+                    </colgroup>
+                    <tr>
+                        <td class="field-head">
+                            用户姓名：</td>
+                        <td>
+                            <input type='text' id="txt_USER_NAME" validatetype="NotEmpty" maxlength="18"
+                                class="input" /><span style="color: Red">*</span></td>
+                    <td class="field-head">
+                            登录名称：</td>
+                        <td>
+                            <input type='text' id="txt_LOGIN_NAME" validatetype="NotEmpty" maxlength="18"
+                                class="input" /><span style="color: Red">*</span></td>
+                    </tr>
+                    <tr id="tr_ModifyPw">
+                        <td class="field-head">
+                            修改密码：</td>
+                        <td colspan="3">
+                            <input type="checkbox" id="chk_ModifyPw" maxlength="18" onclick="if(this.checked){$('tr_password').style.display='';$('txt_PASSWORD').value='';$('txt_PASSWORD2').value='';}else{$('tr_password').style.display='none';$('txt_PASSWORD').value='123';$('txt_PASSWORD2').value='123';}" /></td>
+                    </tr>
+                    <tr id="tr_password">
+                        <td class="field-head">
+                            用户密码：</td>
+                        <td>
+                            <input type='password' id="txt_PASSWORD"  validatetype="NotEmpty" maxlength="18"
+                                class="input" style="width: 100px;"/><span style="color: Red">*</span></td>
+                        <td class="field-head">
+                            确认密码：</td>
+                        <td>
+                            <input type='password' id="txt_PASSWORD2" validatetype="NotEmpty" maxlength="18"
+                                class="input" style="width: 100px;"/><span style="color: Red">*</span></td>
+                    </tr>
+                    <tr>
+                        <td class="field-head">
+                            手机号码：</td>
+                        <td>
+                            <input type='text' id="txt_MOBILE_PHONE" maxlength="18" class="input" />
+                        </td>
+                        <td class="field-head">
+                           电子邮箱：</td>
+                        <td>
+                            <input type='text' id="txt_EMAIL" maxlength="33" class="input" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="field-head">
+                            用户状态：</td>
+                        <td>
+                            <select id="txt_STATE" validatetype="NotEmpty,Integer" style="width: 104px;" default="0">
+                                <option value="0">启用</option>
+                                <option value="1">停用</option>
+                            </select>
+                        </td>
+                        <td class="field-head">
+                            用户密级：</td>
+                        <td>
+                            <select id="txt_RIGHT_LEVEL" default="0" style="width: 104px;" validatetype="NotEmpty">
+                                <option value="0" selected="selected">公开</option>
+                                <option value="1">内部</option>
+                                <option value="2">秘密 </option>
+                                <option value="3">机密 </option>
+                                <option value="4">绝密 </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="field-head" style="vertical-align: top;">
+                            用户参数：</td>
+                        <td colspan="3">
+                            <textarea id="txt_APP_PARAM" class="textarea" style="width: 310px;" onkeyup="showRemindWordCount(this.value,$('remindWord2'),300);"></textarea>
+                         	<br />
+                         	<div style="float: right;padding-right: 110px;">
+                 				 还可以输入 <span id="remindWord2" style="font-weight:bold;">300</span> 字
+      				 		</div>
+                       </td>
+                    </tr>
+                    <tr>
+                        <td class="field-head" style="vertical-align: top;">
+                            描述信息：</td>
+                        <td colspan="3">
+                            <textarea id="txt_DESCRIPTION" class="textarea" style="width: 310px;" onkeyup="showRemindWordCount(this.value,$('remindWord'),60);"></textarea>
+                            <br />
+	                         <div style="float: right;padding-right: 110px;">
+	                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">60</span> 字
+	      				 	</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table width="100%" border="0" id="Table2">
+                    <tr>
+                        <td>
+                            隶属于：</td>
+                    </tr>
+                    <tr height="100%">
+                        <td>
+                            <select name="select" id="selectGroup" multiple style="width: 100%; height: 150px;">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="button" value="添加" class="button" id="btnSelGroup" onclick="selectUserGroup();" />
+                            <input type="button" value="删除" class="button" id="btnDel" onclick="selectOptionsDel($('selectGroup'));" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table style="width: 100%" border="0" id="Table3">
+                    <tr>
+                        <td>
+                            隶属角色：</td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <select name="select" id="selectRole" multiple style="width: 100%; height: 150px;">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="button" value="添加" class="button" id="selRole" onclick="selectUserRole();" />
+                            <input type="button" value="删除" class="button" id="delRole" onclick="selectOptionsDel($('selectRole'));" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="divSelectUserGroup" style="display: none; overflow: hidden;margin-left:0px;margin-top:-1px;margin-right:0px">
+        <div id="divSelectUserGroupList" style="height: 300px">
+        </div>
+    </div>
+    <div id="divSelectUserRole" style="display: none; overflow: hidden;margin-left:0px;margin-top:-1px;margin-right:0px">
+        <div id="divSelectUserRoleList" style="height: 300px">
+        </div>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div class="page-frame" id="divObj" />
+</body>
+</html>
+

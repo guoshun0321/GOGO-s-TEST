@@ -1,0 +1,290 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>[NET_CTRLWORD]</title>
+
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+
+    <script type="text/javascript">
+        JetsenWeb.require(["js_gridlist","js_pagebar","js_sql","js_window","js_validate","js_pageframe","js_xmldoc"]);
+        var gFrame;
+        var gWindowSizeChangedInterVal;
+        var gCtrlwordPage = new JetsenWeb.UI.PageBar("Ctrlword");
+        gCtrlwordPage.onpagechange = function(){loadCtrlword();};
+        gCtrlwordPage.orderBy = "";//ORDER BY CREATE_TIME DESC
+        gCtrlwordPage.onupdate = function(){
+            $('divCtrlwordPage').innerHTML = this.generatePageControl();
+        };
+        var gCtrlwordCondition = new JetsenWeb.SqlConditionCollection();
+        var gGridList = new JetsenWeb.UI.GridList();
+        gGridList.ondatasort=function(sortfield,desc)
+        {
+            gCtrlwordPage.setOrderBy(sortfield,desc);
+        };
+        var gSqlQuery = new JetsenWeb.SqlQuery();
+        var gQueryTable = JetsenWeb.createQueryTable("NET_CTRLWORD","");
+        JetsenWeb.extend(gSqlQuery,{IsPageResult:1,KeyId:"CW_ID",PageInfo:gCtrlwordPage,QueryTable:gQueryTable});
+
+        //加载=====================================================================================
+        function loadCtrlword()
+        {
+            gSqlQuery.OrderString = gCtrlwordPage.orderBy;
+            gSqlQuery.Conditions = gCtrlwordCondition;
+            
+            var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.oncallback = function(ret)
+            {
+                $('divCtrlwordList').innerHTML = JetsenWeb.Xml.transformXML("xslt/ctrlword.xsl",ret.resultVal);
+                gGridList.bind($('divCtrlwordList'), $('tabCtrlword'));
+                gCtrlwordPage.setRowCount($('hid_CtrlwordCount').value);
+            };
+            ws.onerror = function(ex){ jetsennet.error(ex);};
+            ws.call("uumObjQuery",[gSqlQuery.toXml()]);
+        }
+        function searchCtrlword()
+        {
+            gCtrlwordCondition.SqlConditions = [];
+            gCtrlwordCondition.SqlConditions.push(JetsenWeb.SqlCondition.create("CW_TYPE",-1,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.NotEqual,JetsenWeb.SqlParamType.Numeric));
+            if($('sel_contrlType').value!=""){
+                gCtrlwordCondition.SqlConditions.push(JetsenWeb.SqlCondition.create("CW_TYPE",$('sel_contrlType').value,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+            }
+            gCtrlwordPage.currentPage = 1;
+            loadCtrlword();
+        }
+        //删除=====================================================================================
+        function deleteCtrlword(keyId)
+        {
+        	jetsennet.confirm("确定删除？", function () 
+        	{
+        		var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+	            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+	            ws.oncallback = function(ret)
+	            {
+	                loadCtrlword();
+	            };
+	            ws.onerror = function(ex){ jetsennet.error(ex);};
+	            ws.call("uumObjDelete",["NET_CTRLWORD",keyId]);
+                
+                return true;
+            });
+        }
+        //新增=====================================================================================
+        function  newCtrlword()
+        {
+            var areaElements = JetsenWeb.Form.getElements('divCtrlword');
+            JetsenWeb.Form.resetValue(areaElements);
+            JetsenWeb.Form.clearValidateState(areaElements);
+            var dialog = new JetsenWeb.UI.Window("new-object-win");
+            JetsenWeb.extend(dialog,{maximizeBox:false,minimizeBox:false,submitBox:true,cancelBox:true,size:{width:400,height:0},title:"新增受控词"});           
+            dialog.controls = ["divCtrlword"];
+            dialog.onsubmit = function()
+            {
+                if(JetsenWeb.Form.Validate(areaElements,true))
+                {
+                    var objCtrlword = {
+                        CW_TYPE :$('sel_contrlType1').value,
+                        CW_NAME:$("txt_CW_NAME").value,
+                        CW_DESC:$("txt_CW_DESC").value
+                    };
+                    var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+                    ws.soapheader = JetsenWeb.Application.authenticationHeader;
+                    ws.oncallback = function(ret)
+                    {
+                        JetsenWeb.UI.Windows.close("new-object-win");
+                        loadCtrlword();
+                    };
+                    ws.onerror = function(ex){ jetsennet.error(ex);};
+                    ws.call("uumObjInsert",["NET_CTRLWORD",JetsenWeb.Xml.serialize(objCtrlword,"NET_CTRLWORD")]);
+                }
+            };
+            dialog.showDialog();
+        }
+        //编辑=====================================================================================
+        function editCtrlword(keyId)
+        {
+            var areaElements = JetsenWeb.Form.getElements('divCtrlword');
+            JetsenWeb.Form.resetValue(areaElements);
+            JetsenWeb.Form.clearValidateState(areaElements);
+            
+            var condition = new JetsenWeb.SqlConditionCollection();
+            condition.SqlConditions.push(JetsenWeb.SqlCondition.create("CW_ID",keyId,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+            //condition.SqlConditions.push(JetsenWeb.SqlCondition.create("CW_TYPE","-1",JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.NotEqual,JetsenWeb.SqlParamType.Numeric));
+            
+            var sqlQuery = new JetsenWeb.SqlQuery();
+            JetsenWeb.extend(sqlQuery,{IsPageResult:0,KeyId:"CW_ID",PageInfo:null,QueryTable:JetsenWeb.extend(new JetsenWeb.QueryTable(),{TableName:"NET_CTRLWORD"})});
+            sqlQuery.Conditions = condition;
+            
+            var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.oncallback = function(ret)
+            {
+                var objCtrlword = JetsenWeb.Xml.toObject(ret.resultVal,"Record")[0];
+                $("txt_CW_NAME").value = objCtrlword.CW_NAME;
+                $("txt_CW_DESC").value = objCtrlword.CW_DESC;
+
+            };
+            ws.onerror = function(ex){ jetsennet.error(ex);};
+            ws.call("uumObjQuery",[sqlQuery.toXml()]);
+            
+            var dialog = new JetsenWeb.UI.Window("edit-object-win");
+            JetsenWeb.extend(dialog,{submitBox:true,cancelBox:true,size:{width:400,height:0},showScroll:false,title:"编辑受控词"});           
+            dialog.controls = ["divCtrlword"];
+            dialog.onsubmit = function()
+            {
+                if(JetsenWeb.Form.Validate(areaElements,true))
+                {
+                    var oCtrlword = {
+                        CW_ID:keyId,
+                        CW_TYPE :$('sel_contrlType1').value,
+                        CW_NAME:$("txt_CW_NAME").value,
+                        CW_DESC:$("txt_CW_DESC").value
+                    };
+                    var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+                    ws.soapheader = JetsenWeb.Application.authenticationHeader;
+                    ws.oncallback = function(ret)
+                    {
+                        JetsenWeb.UI.Windows.close("edit-object-win");
+                        loadCtrlword();
+                    };
+                    ws.onerror = function(ex){ jetsennet.error(ex);};
+                    ws.call("uumObjUpdate",["NET_CTRLWORD",JetsenWeb.Xml.serialize(oCtrlword,"NET_CTRLWORD")]);
+                }
+            };
+            dialog.showDialog();
+        }
+        
+        //初始化受控词类型=================================
+        function initControlWordType(){
+            var condition = new JetsenWeb.SqlConditionCollection();
+            condition.SqlConditions.push(JetsenWeb.SqlCondition.create("CW_TYPE","-1",JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+            var sqlQuery = new JetsenWeb.SqlQuery();
+            JetsenWeb.extend(sqlQuery,{IsPageResult:0,KeyId:"CW_ID",PageInfo:null,QueryTable:JetsenWeb.extend(new JetsenWeb.QueryTable(),{TableName:"NET_CTRLWORD"})});
+            sqlQuery.Conditions = condition;
+            var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.oncallback = function(ret)
+            {                
+                var targetSeleElement  = $("sel_contrlType");
+                var targetSeleElement1 = $("sel_contrlType1");
+                targetSeleElement.options.length = 0;  
+                targetSeleElement1.options.length = 0;  
+                
+                var obj = JetsenWeb.Xml.toObject(ret.resultVal,"Record");       
+                if(obj && obj.length>0)
+                {
+                    var len = obj.length;
+                    for(var i=0;i<len;i++)
+                    {
+                        //用描述字段存类型代码
+                        option  = new Option( obj[i].CW_NAME,obj[i].CW_DESC);
+                        option1 = new Option( obj[i].CW_NAME,obj[i].CW_DESC);
+                        targetSeleElement.options[targetSeleElement.length]  = option;
+                        targetSeleElement1.options[targetSeleElement1.length] = option1;
+                    }
+                }
+            };
+            ws.onerror = function(ex){ jetsennet.error(ex);};
+            ws.call("uumObjQuery",[sqlQuery.toXml()]);
+        }
+   
+        //初始化===================================================================================
+        function  pageInit()
+        {       
+            //页面布局
+            gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"),{splitType:1,fixControlIndex:0,enableResize:false,splitTitle:"divListTitle",splitSize:27});
+            var frameContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divContent"),{splitType:1,fixControlIndex:1,showSplit:false}); 
+            frameContent.addControl(new JetsenWeb.UI.PageItem("divCtrlwordList"));
+            frameContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divBottom"),{size:{width:0,height:30}}));
+            gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divTop"),{size:{width:0,height:30}}));
+            gFrame.addControl(frameContent);
+            initControlWordType();
+            window.onresize = function()
+            {
+                if(gWindowSizeChangedInterVal!=null)
+                    window.clearTimeout(gWindowSizeChangedInterVal);
+                gWindowSizeChangedInterVal = window.setTimeout(windowResized,500);
+            };
+            windowResized();
+            //查询数据
+            searchCtrlword();
+        }
+
+        function windowResized()
+        {
+            var size = JetsenWeb.Util.getWindowViewSize();
+            gFrame.size = {width:size.width,height:size.height};
+            gFrame.resize();
+        }
+    </script>
+
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search">
+        <table width="100%" cellspacing="0" cellpadding="0" class="table-info">
+            <colgroup>
+                <col class="width-2w" />
+                <col width="100px;" />
+                <col width="auto" />
+            </colgroup>
+            <tr>
+                <td class="field-head">类型：</td>
+                <td>
+                    <select id="sel_contrlType" onchange="searchCtrlword()">
+                        <!--<option value="1">机构注册资金划分 </option>
+                        <option value="2">演出场所人数据划分 </option>-->
+                    </select> 
+                </td>
+                <td><!--<input type="button" value="查找" onclick="searchCtrlword();" class="button" />--></td>
+
+            </tr>
+        </table>
+    </div>
+    <div class="page-frame" id="divPageFrame" />
+    <div class="list-title" id="divListTitle">
+        <div class="list-title-left">
+            数据列表
+        </div>
+        <div class="list-title-right">
+            [<a href="javascript:newCtrlword()" title="新建受控词" class="link">新建</a>]
+        </div>
+    </div>
+    <div id="divCtrlwordList" class="webfx-columnlist" style="border: 0px" onfocus="this.blur();">
+        数据加载中...</div>
+    <div id="divBottom" class="list-bottom">
+        <input type="hidden" id="hid_CtrlwordCount" />
+        <div class="list-bottom-right">
+            <div id="divCtrlwordPage" class="text_style">.</div>
+        </div>
+    </div>
+    <div id="divCtrlword" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <colgroup>
+                <col class="width-4w" />
+                <col width="auto" />
+            </colgroup>
+            <tr>
+                <td class="field-head">受控类型：</td>
+                <td>
+                    <select id="sel_contrlType1" validatetype="NotEmpty">
+                       <!-- <option value="1">sss</option>-->
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">名称：</td>
+                <td>
+                    <input type="text" class="input2" id="txt_CW_NAME" validatetype="NotEmpty" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">描述：</td>
+                <td>
+                    <input type="text" id="txt_CW_DESC" class="textarea2"  />
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -9,7 +9,7 @@ import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
 
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
+ * 
  */
 @Table("NS_PROGRAM")
 public class ProgramEntity implements Serializable

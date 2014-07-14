@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>公告栏</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/js_ip.js"></script>
+		<script type="text/javascript">
+        JetsenWeb.require(["js_gridlist", "js_pagebar", "js_sql", "js_window", "js_validate", "js_pageframe"]);
+
+        var gPage = new JetsenWeb.UI.PageBar("AnnouncemnetList");
+        gPage.onpagechange = function () { 
+        	queryAllAnnouncement(); 
+        };
+        gPage.orderBy = "ORDER BY a.IS_TOP DESC,a.CREATE_TIME DESC";
+        gPage.onupdate = function () {
+            $('divShowAnnouncementPage').innerHTML = this.generatePageControl();
+        };
+        // 表格渲染
+        var gGridList = new JetsenWeb.UI.GridList();
+        gGridList.ondatasort = function (sortfield, desc) {
+        	gPage.setOrderBy(sortfield, desc);
+        };
+
+        window.onload = function() {
+        	getLatestAnnouncement();
+        }
+
+        //查询最近发布的那条公告显示在首页
+        function getLatestAnnouncement()
+        {
+            var sqlQuery = new JetsenWeb.SqlQuery();
+            var queryTable = JetsenWeb.createQueryTable("BMP_ANNOUNCEMENT", "a");
+            JetsenWeb.extend(sqlQuery, { IsPageResult: 1, KeyId: "a.ANNOUNCEMENT_ID", queryTable: queryTable, ResultFields: "a.*" });
+            sqlQuery.OrderString = gPage.orderBy;
+            var ws = new JetsenWeb.Service(BMP_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.oncallback = function (ret) {
+                var object = JetsenWeb.Xml.toObject(ret.resultVal, "Record");
+                if(object)
+                {
+                    object = JetsenWeb.Xml.toObject(ret.resultVal, "Record")[0];
+                	$('title').innerHTML = replaceSpcial(formatContent(object['ANNOUNCEMENT_TITLE']));
+                    $('content').innerHTML = replaceSpcial(formatContent(object['ANNOUNCEMENT_CONTENT']));
+                    $('time').innerHTML = replaceSpcial(formatContent(object['CREATE_TIME'] + '   '));
+                }
+            };
+            ws.onerror = function (ex) { jetsennet.error(ex); };
+            ws.call("bmpObjQuery", [sqlQuery.toXml()]);
+        }
+
+        //点击"更多"连接查询所有的公告并分页显示
+        function queryAllAnnouncement()
+        {
+        	var sqlQuery = new JetsenWeb.SqlQuery();
+            var queryTable = JetsenWeb.createQueryTable("BMP_ANNOUNCEMENT", "a");
+            JetsenWeb.extend(sqlQuery, { IsPageResult: 1, KeyId: "a.ANNOUNCEMENT_ID",PageInfo: gPage, queryTable: queryTable, ResultFields: "a.*" });
+            sqlQuery.OrderString = gPage.orderBy;
+            var ws = new JetsenWeb.Service(BMP_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.oncallback = function (ret) {
+                $('announcementlist').innerHTML = JetsenWeb.Xml.transformXML("xslt/announcementlistonfirstpage.xslt", ret.resultVal);
+                gGridList.bind($('announcementlist'), $('announcementListOnFirPage'));
+                gPage.setRowCount($('hid_pageCount').value);
+                $('showAnnouncement').style.display = "";
+            };
+            ws.onerror = function (ex) { jetsennet.error(ex); };
+            ws.call("bmpObjQuery", [sqlQuery.toXml()]);
+
+            var dialog = JetsenWeb.extend(new JetsenWeb.UI.Window("select-user"),{title:"公告列表",windowStyle: 1,cancelBox:false,size:{width:510,height:450},maximizeBox:false,minimizeBox:false});
+            dialog.controls =["showAnnouncement"];
+            dialog.showDialog();
+        }
+
+      //点击公告栏列表中的一条查看详细信息
+        function showTheAnnouncement(announcementId)
+        {
+        	var sqlQuery = new JetsenWeb.SqlQuery();
+            var queryTable = JetsenWeb.createQueryTable("BMP_ANNOUNCEMENT", "a");
+            JetsenWeb.extend(sqlQuery, { IsPageResult: 1, KeyId: "a.ANNOUNCEMENT_ID", queryTable: queryTable, ResultFields: "a.*" });
+            var condition = new JetsenWeb.SqlConditionCollection();
+            condition.SqlConditions = [];
+            condition.SqlConditions.push(JetsenWeb.SqlCondition.create("a.ANNOUNCEMENT_ID", announcementId, JetsenWeb.SqlLogicType.And, JetsenWeb.SqlRelationType.Equal, JetsenWeb.SqlParamType.Number));
+            sqlQuery.Conditions = condition;
+            sqlQuery.OrderString = "ORDER BY a.CREATE_TIME DESC";
+            var ws = new JetsenWeb.Service(BMP_SYSTEM_SERVICE);
+            ws.soapheader = JetsenWeb.Application.authenticationHeader;
+            ws.oncallback = function (ret) {
+                var object = JetsenWeb.Xml.toObject(ret.resultVal, "Record");
+                if(object)
+                {
+                    object = JetsenWeb.Xml.toObject(ret.resultVal, "Record")[0];
+                	$('announcementTitle').innerHTML = replaceSpcial(formatContent(object['ANNOUNCEMENT_TITLE']));
+                    $('announcementContent').innerHTML = replaceSpcial(formatContent(object['ANNOUNCEMENT_CONTENT']));
+                    $('announcementTime').innerHTML = replaceSpcial(formatContent(object['CREATE_TIME']));
+                }
+            };
+            ws.onerror = function (ex) { jetsennet.error(ex); };
+            ws.call("bmpObjQuery", [sqlQuery.toXml()]);
+
+            var dialog = JetsenWeb.extend(new JetsenWeb.UI.Window("detailAnnouncement"),{title:"",cancelBox:false,size:{width:585,height:455},maximizeBox:true,minimizeBox:false});
+            dialog.controls = ["detailInformation"];
+            dialog.showDialog();
+        }
+		
+      //让文章按原样输出
+        function formatContent(content)
+        {
+            if(content)
+            {
+                return content.replaceAll('\n', '<br>').replaceAll(' ', '&nbsp;');
+            }
+        }
+
+        //去除正文中第一个@
+        function replaceSpcial(content)
+        {
+            if(content)
+            {
+                return content.replace('@', '');
+            }
+        }
+    	</script>
+	</head>
+	<body>
+		<div style="height: 99%; width: 99%; background-color: #FFE1FF">
+			<div id="divtop" style="height: 10%; width: 100%; background-color: #FFE1FF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+				系统公告
+			</div>
+			<div style="height: 1px; width: 100%; background-color: #121212"><div></div></div> 
+			<!-- <hr style="color: #121212"/> -->
+			<div id="divcontent" style="height: 90%; width: 100%;">
+				<div align="center" style="height: 10%; width: 100%;">
+					<p id="title" style="font-weight: bold"></p>
+				</div>
+				<div align="left" id="content" style="height: 60%; width: 100%; background-color: #FFE1FF; overflow:hidden;text-overflow:ellipsis">
+					
+				</div>
+				<div align="right" id="time" style="height: 10%; width: 100%;"></div>
+				<div align="right" id="more" style="height: 10%; width: 100%;">
+					<a href="javascript:queryAllAnnouncement();">更多...&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				</div>
+			</div>
+		</div>
+		
+		<div>
+			<div id="showAnnouncement" style="display: none;margin-left:3px;margin-top:-1px;margin-right:3px;">
+				<div id="announcementlist" class="webfx-columnlist" style="height:383px; border: 0px; background: #fff; width:100%" onfocus="this.blur();">
+					数据加载中...
+				</div>
+				<div class="list-bottom" style="height: 25px">
+					<div id="divShowAnnouncementPage" align="right"></div>
+				</div>
+				
+			</div>
+		</div>
+		
+		<div id="detailInformation" style="display: none; padding: 3px">
+			<div id="announcementTitle" align="center" style="height: 10%; width: 100%; font-weight: bold"></div>
+			<div id="announcementContent" align="left" style="height: 80%; width: 100%"></div>
+			<br />
+			<br />
+			<div id="announcementTime" style="height: 10%; width: 100%" align="right"></div>
+		</div>
+		
+	</body>
+</html>

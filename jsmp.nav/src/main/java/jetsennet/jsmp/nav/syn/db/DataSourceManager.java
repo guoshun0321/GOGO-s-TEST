@@ -1,5 +1,9 @@
 package jetsennet.jsmp.nav.syn.db;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.Column2RelateruleEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
@@ -28,6 +32,8 @@ public class DataSourceManager
 
 	public static final SqlSessionFactory NAV_FACTORY;
 
+	private static final Logger logger = LoggerFactory.getLogger(DataSourceManager.class);
+
 	static
 	{
 		MEDIA_FACTORY = SqlSessionFactoryBuilder.builder(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
@@ -50,6 +56,10 @@ public class DataSourceManager
 		MEDIA_FACTORY.getTableInfo(ProgramEntity.class);
 		MEDIA_FACTORY.getTableInfo(RelateBlackEntity.class);
 		MEDIA_FACTORY.getTableInfo(RelateColumnEntity.class);
+		if (Config.ISDEBUG)
+		{
+			logger.debug("nav_url : " + NAV_FACTORY.getConfig().configFile);
+		}
 	}
 
 }

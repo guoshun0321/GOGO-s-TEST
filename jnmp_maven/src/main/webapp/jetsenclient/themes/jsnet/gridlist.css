@@ -1,0 +1,99 @@
+.webfx-columnlist {
+	border: 0px;
+	-moz-user-select: none;
+	-moz-user-focus: normal;
+	-moz-user-input: enabled;
+	background-image: url(images/bg-title.gif);	
+	overflow: hidden;
+	display: block;
+}
+.webfx-columnlist-body {
+	border:none;
+	background: #ffffff;
+	overflow: auto;	
+	width:100%;	
+}
+
+.webfx-columnlist-body table {
+	table-layout: fixed;
+}
+
+.webfx-columnlist-body td {
+	border-bottom: solid white;
+	border-width:  0px 1px 1px 0px;	
+	overflow: hidden;
+	text-overflow: ellipsis;	
+	word-wrap: normal ;word-break : keep-all;
+}
+
+.webfx-columnlist-head {		
+	-moz-user-select: none;	
+	overflow:hidden;	
+	width:100%;	
+	background: url(images/grid/head-bg.gif) repeat-x;
+}
+
+.webfx-columnlist-head table {
+	table-layout: fixed;
+}
+
+.webfx-columnlist-head td {
+	border: solid 1px threedshadow;
+	border-left: solid 1px threedhighlight;
+	background-image: url(images/grid/head-bg.gif);
+	padding-left:0px;
+	overflow: hidden;
+	text-overflow: ellipsis;	
+	word-wrap: normal ;word-break : keep-all;
+}
+
+.webfx-columnlist-head td img {
+	width:    8px;
+	height:   7px;
+	margin:   0px 5px 0px 5px;
+	display:  none;
+}
+.webfx-columnlist-body tr.selected td {
+	background:   #d2dfe8;
+}
+
+.webfx-columnlist-body tr.odd td
+{
+	background: #f0f0f0;
+}
+
+.webfx-columnlist-body tr.even td {
+	background:   #ffffff;
+}
+
+.webfx-columnlist-move-header {
+	position: absolute;
+	background: threedshadow;
+	font: menu;
+	padding: 2px;	
+	filter: Alpha(Opacity=50);
+	-moz-opacity: 0.5;
+	-moz-user-select: none;
+}
+
+.webfx-columnlist-active-header {
+	border-color: threedface !important;
+}
+
+.webfx-columnlist-separator-header
+{
+	position: absolute;
+	font: menu;
+	width: 2px;
+	overflow: hidden;
+	background: #cccccc;
+	padding: 3px 0px;
+	z-index: 5000;
+}
+.cell-overflow-hidden
+{
+	width:100%;
+	height:20px;
+	overflow:hidden;text-overflow: ellipsis;
+	z-index: 5000;
+}

@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>报警类型</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/alarmclass.js"></script>
+	</head>
+	<body onload="pageInit()" scroll="no">
+			<div class='list-title' id="divListTitle">
+        <div class='list-title-left'>
+            分类列表
+        </div>
+        <div class='list-title-right'>
+            <strong><a href="javascript:newType()" title="新建">[新建]</a></strong>
+        </div>
+    </div>
+    <div id='divContainer' class="webfx-columnlist" style="border: 0px; background: #fff">
+    </div>
+		
+		<div id="divType" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+				<tr>
+					<td class="field-head">
+						名称：
+					</td>
+					<td>
+						<input type="text" id="txt_TYPE_NAME" validatetype="NotEmpty" style="width: 130px;" maxlength="20" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						父类型：
+					</td>
+					<td>
+						<input type="text" id="txtParentType"  class="selecttree2"
+                        			readonly onclick="JetsenWeb.UI.PopupBehavior.popControl($('divParentTypeTree'),this)" /><input type="hidden" id="hidParentId" />
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="vertical-align: top;">
+						描述：
+					</td>
+					<td>
+						<textarea id="txt_TYPE_DESC" style="width: 200px; height: 60px;" onkeyup="showRemindWordCount(this.value,$('remindWord'),60);"></textarea><br />
+						<div style="float: right;padding-right: 110px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">60</span> 字
+         				 </div>
+						
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divClassIdentify" style="display: none; overflow: hidden;">
+			<div id="divClassIdentifyTop" style="overflow: hidden;">
+				<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="margin-top: 2px; margin-left: 2px; margin-right: 2px; padding: 3px">
+					<tr style="height: 20px">
+						<td align="left">
+							<span id="spanClassConfig" style="font-weight: bold"></span>的标识列表：
+							<input id="hid_TYPE_ID" type="hidden" />
+						</td>
+						<td align="right">
+							<strong><a href="javascript:newClassIdentify()" title="新建">[新建]</a>
+							</strong>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="divClassIdentifyContent" style="height: 83%; overflow: auto;">
+				<div id="divClassIdentifyList" class="webfx-columnlist" style="background: #fff; border: 0px; margin-left: 3px" onfocus="this.blur();">
+					数据加载中...
+				</div>
+			</div>
+		</div>
+		<div id="divClassIdentifyEdit" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+				<tr>
+					<td class="field-head">
+						SysOID
+					</td>
+					<td>
+						<input type="text" id="txt_SNMP_SYSOID" style="width: 250px" validatetype="NotEmpty" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						SysName
+					</td>
+					<td>
+						<input type="text" id="txt_SNMP_SYSNAME" style="width: 250px" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divClassSet" style="display: none; overflow: hidden;">
+			<div id="divClassSetTop" style="overflow: hidden;">
+				<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="margin-top: 2px; margin-left: 2px; margin-right: 2px; padding: 3px">
+					<tr style="height: 20px">
+						<td align="left">
+							<span id="spanClassSet" style="font-weight: bold"></span>的属性集列表：
+							<input id="hid_CLASS_ID_ClassSet" type="hidden" />
+						</td>
+						<td align="right">
+							<strong><a href="javascript:newClassSet()" title="新建">[新建]</a>
+							</strong>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="divClassSetContent" style="height: 83%; overflow: auto;">
+				<div id="divClassSetList" class="webfx-columnlist" style="background: #fff; border: 0px; margin-top: 2px; margin-left: 2px; margin-right: 2px;" onfocus="this.blur();">
+					数据加载中...
+				</div>
+			</div>
+		</div>
+		<div id="divClassSetEdit" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+				<tr>
+					<td class="field-head" width="30%">
+						名称：
+					</td>
+					<td>
+						<input type="text" id="txt_CLASS_NAME_ClassSet" validatetype="NotEmpty" style="width: 130px;" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						别名：
+					</td>
+					<td>
+						<input type="text" id="txt_CLASS_TYPE_ClassSet" validatetype="NotEmpty" style="width: 130px;" />
+						<span style="color: Red">*</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head">
+						类型：
+					</td>
+					<td>
+						<select id="cbo_CLASS_LEVEL_ClassSet" style="height: 21px">
+							<option value="100">
+								自定义属性
+							</option>
+							<option value="101">
+								配置属性
+							</option>
+							<option value="102">
+								监测指标
+							</option>
+							<option value="103">
+								性能指标
+							</option>
+							<option value="104">
+								Trap属性
+							</option>
+							<option value="105">
+								信号属性
+							</option>
+							<option value="106">
+								表格数据
+							</option>
+                            <option value="107">
+                            	Syslog属性
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="field-head" style="vertical-align: top;">
+						描述：
+					</td>
+					<td>
+						<textarea id="txt_CLASS_DESC_ClassSet" style="width: 200px; height: 60px;"></textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divParentTypeTree" style="display: none" class="jetsen-tree-divc"></div>
+		<div class="page-frame" id="divPageFrame" />
+	</body>
+</html>

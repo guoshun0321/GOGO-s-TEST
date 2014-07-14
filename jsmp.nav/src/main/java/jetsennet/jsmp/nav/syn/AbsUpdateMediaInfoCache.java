@@ -1,10 +1,7 @@
 package jetsennet.jsmp.nav.syn;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.syn.cache.IDataSynCache;
@@ -23,11 +20,11 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 	protected void add2CachedSet(String cachedKey, int addition)
 	{
 		Object cachedValue = cache.get(cachedKey, true);
-		if (cachedValue == null || !(cachedValue instanceof LinkedHashSet))
+		if (cachedValue == null || !(cachedValue instanceof List))
 		{
-			cachedValue = new LinkedHashSet<Integer>();
+			cachedValue = new ArrayList<Integer>();
 		}
-		((LinkedHashSet<Integer>) cachedValue).add(addition);
+		((List<Integer>) cachedValue).add(addition);
 		cache.put(cachedKey, cachedValue);
 	}
 
@@ -36,13 +33,14 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 	 * @param cachedKey
 	 * @param discard
 	 */
-	protected void del2CachedSet(String cachedKey, int discard)
+	protected void del2CachedSet(String cachedKey, Integer discard)
 	{
 		Object cachedValue = cache.get(cachedKey, true);
-		if (cachedValue != null && (cachedValue instanceof LinkedHashSet))
+		if (cachedValue != null && (cachedValue instanceof List))
 		{
-			((LinkedHashSet<Integer>) cachedValue).remove(discard);
+			((List<Integer>) cachedValue).remove(discard);
 		}
+		cache.put(cachedKey, cachedValue);
 	}
 
 	/**
@@ -54,11 +52,11 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 	protected void add2CachedSet(String cachedKey, String addition)
 	{
 		Object cachedValue = cache.get(cachedKey, true);
-		if (cachedValue == null || !(cachedValue instanceof LinkedHashSet))
+		if (cachedValue == null || !(cachedValue instanceof List))
 		{
-			cachedValue = new LinkedHashSet<String>();
+			cachedValue = new ArrayList<String>();
 		}
-		((LinkedHashSet<String>) cachedValue).add(addition);
+		((List<String>) cachedValue).add(addition);
 		cache.put(cachedKey, cachedValue);
 	}
 
@@ -70,19 +68,28 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 	protected void del2CachedSet(String cachedKey, String discard)
 	{
 		Object cachedValue = cache.get(cachedKey, true);
-		if (cachedValue != null && (cachedValue instanceof LinkedHashSet))
+		if (cachedValue != null && (cachedValue instanceof List))
 		{
-			((LinkedHashSet<String>) cachedValue).remove(discard);
+			((List<String>) cachedValue).remove(discard);
 		}
+		cache.put(cachedKey, cachedValue);
 	}
 
-	protected void addSet(String key)
+	/**
+	 * 将字符数据添加到cache
+	 * 
+	 * @param cachedKey
+	 * @param addition
+	 */
+	protected void add2CachedSet(String cachedKey, Object addition)
 	{
-		cache.put(key, new HashSet<Integer>());
+		Object cachedValue = cache.get(cachedKey, true);
+		if (cachedValue == null || !(cachedValue instanceof List))
+		{
+			cachedValue = new ArrayList<Object>();
+		}
+		((List<Object>) cachedValue).add(addition);
+		cache.put(cachedKey, cachedValue);
 	}
 
-	protected void delSet(String key)
-	{
-		cache.del(key);
-	}
 }

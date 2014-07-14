@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<backup>
+	<module>
+		<name>alarm</name>
+		<backupRoot>E:/backup</backupRoot>
+		<outdayKey>HisAlarmDataKeepDays</outdayKey>
+		<className>jetsennet.jbmp.entity.AlarmEventEntity
+		</className>
+	</module>
+	<module>
+		<name>log</name>
+		<backupRoot>E:/backup</backupRoot>
+		<outdayKey>LogDataKeepDays</outdayKey>
+		<className>jetsennet.jbmp.entity.OperatorLogEntity
+		</className>
+	</module>
+	<module>
+		<name>trap</name>
+		<backupRoot>E:/backup</backupRoot>
+		<outdayKey>TrapDataKeepDays</outdayKey>
+		<className>jetsennet.jbmp.entity.TrapEventEntity
+		</className>
+	</module>
+	<module>
+		<name>syslog</name>
+		<backupRoot>E:/backup</backupRoot>
+		<outdayKey>SyslogDataKeepDays</outdayKey>
+		<className>jetsennet.jbmp.entity.SyslogEntity
+		</className>
+	</module>
+	<module>
+		<name>perfdatahour</name>
+		<backupRoot>E:/backup</backupRoot>
+		<outdayKey>HourPerfDataKeepDays</outdayKey>
+		<className>jetsennet.jbmp.entity.PerfDataHourEntity
+		</className>
+	</module>
+	<module>
+		<name>perfdataday</name>
+		<backupRoot>E:/backup</backupRoot>
+		<outdayKey>DayPerfDataKeepDays</outdayKey>
+		<className>jetsennet.jbmp.entity.PerfDataDayEntity
+		</className>
+	</module>
+</backup>

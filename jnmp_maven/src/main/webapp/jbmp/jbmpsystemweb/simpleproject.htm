@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>项目管理</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/checkbox.js"></script>
+    <script language="javascript"  src="javascript/simpleproject.js"></script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" class="list-search" style="margin-bottom: 3px">
+        <div style="padding: 3px">
+        	<div>
+        		项目名称：
+        		<input id="txtProjectName" onkeydown="JetsenWeb.keyEvent(searchProject)" class="input"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        		项目类别：
+        		<select id="cboProjectType" onkeydown="JetsenWeb.keyEvent(searchProject)">
+        			<option value="">请选择</option>
+        			<option value="1">内部项目</option>
+        			<option value="2">新项目</option>
+        			<option value="3">升级项目</option>
+        		</select>&nbsp;&nbsp;&nbsp;&nbsp;
+        		申报时间：
+        		<input type="text" id="txtReportTime" onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+				<input type="checkbox" id="chkDate" onkeydown="JetsenWeb.keyEvent(searchProject)"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        		<input type="button" value="查找" onclick="searchProject();" class="button" style="padding-top:4px"/>
+        	</div>
+        </div>
+    </div>
+    <div id="divProjectList" class="webfx-columnlist" style="background: #fff; border: 0px; margin-left: 3px; "
+            onfocus="this.blur();">
+            数据加载中...</div>
+    <div id="divAttachmentList" style="display: none; text-align: center;">
+    	数据加载中……
+    </div>
+    <div id="divBottom" class="list-bottom" style="margin-left: 3px">
+        <div class="list-bottom-right">
+            <div id="divProjectPage" class="text_style">
+            </div>
+        </div>
+    </div>
+	<div class="list-title" id="divListTitle">
+		<div class="list-title-left">
+			项目列表
+		</div>
+        <div class="list-title-right">
+        </div>
+	</div>
+    <div class="page-frame" id="divPageFrame" />
+</body>
+</html>

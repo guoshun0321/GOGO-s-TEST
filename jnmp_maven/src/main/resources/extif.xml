@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extif>
+	<server>
+		<cfg name="threadPoolSize">10</cfg>
+		<cfg name="ip">127.0.0.1</cfg>
+		<cfg name="port">8088</cfg>
+	</server>
+  <service>
+    <cfg>jetsennet.jbmp.services.BMPExtendService</cfg>
+  </service>
+</extif>

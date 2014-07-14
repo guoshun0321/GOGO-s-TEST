@@ -20,10 +20,13 @@ public class ChannelSelectionStartRequest
 	private String channelId;
 
 	@IdentAnnocation("startDateTime")
-	private Date startDateTime;
+	private String startDateTime;
 
 	@IdentAnnocation("assetId")
-	private Date assetId;
+	private String assetId;
+
+	@IdentAnnocation("serviceCode")
+	private String serviceCode;
 
 	public String getClientId()
 	{
@@ -65,24 +68,34 @@ public class ChannelSelectionStartRequest
 		this.channelId = channelId;
 	}
 
-	public Date getStartDateTime()
+	public String getStartDateTime()
 	{
 		return startDateTime;
 	}
 
-	public void setStartDateTime(Date startDateTime)
+	public void setStartDateTime(String startDateTime)
 	{
 		this.startDateTime = startDateTime;
 	}
 
-	public Date getAssetId()
+	public String getAssetId()
 	{
 		return assetId;
 	}
 
-	public void setAssetId(Date assetId)
+	public void setAssetId(String assetId)
 	{
 		this.assetId = assetId;
+	}
+
+	public String getServiceCode()
+	{
+		return serviceCode;
+	}
+
+	public void setServiceCode(String serviceCode)
+	{
+		this.serviceCode = serviceCode;
 	}
 
 }

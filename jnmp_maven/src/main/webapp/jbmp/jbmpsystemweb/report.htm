@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>报表配置</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+	<script type="text/javascript" src="javascript/jnmpconstants.js"></script>
+	<script type="text/javascript" src="javascript/select.js"></script>
+	<script type="text/javascript" src="javascript/base.js"></script>
+	<script type="text/javascript" src="javascript/report_comm.js"></script>
+    <script type="text/javascript" src="javascript/report.js"></script>
+
+</head>
+<body onload="pageInit();" scroll="no">
+    <div class='list-title' id="divListTitle" style="margin-left: 3px;margin-top: 3px;margin-right: 3px">
+        <div class='list-title-left'>
+            所有报表<span id="divNavigation"></span>
+        </div>
+        <div class='list-title-right'>
+            <strong><a href="javascript:newReport()" title="新建">[新建]</a></strong>
+        </div>
+    </div>
+    <div id='divContainer' style="border: 0px;margin-left: 3px;margin-right: 3px">
+        <input type="hidden" value="0" id="hid_TotalCount" /></div>
+    <div id="divBottom" class="list-bottom" style="margin-left: 3px;margin-bottom: 3px;margin-right: 3px">
+        <div class='list-bottom-left'>
+            <input type="button" class="button" value="删除" onclick="deleteReport()" /></div>
+        <div class='list-bottom-right'>
+            <div id="divPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divReport" style="display: none; width: 540px">
+        <table width="100%" summary="Format Table" border="0" cellpadding="1" cellspacing="1"
+            class="table-info">
+            <colgroup>
+                <col class="width-4w" />
+                <col width="auto" />
+            </colgroup>
+            <!-- <tr>
+                <td class="field-head">
+                    报表编号:</td>
+                <td>
+                    <input type='text' id="txt_ID" validatetype="NotEmpty,Integer" class="input" /><span
+                        style="color: Red">*</span></td>
+            </tr> -->
+            <tr>
+                <td class="field-head">
+                    名称:</td>
+                <td>
+                    <input type='text' id="txt_Name" validatetype="NotEmpty" class="input2" maxlength="20"/><span style="color: Red">*</span></td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    所属报表:</td>
+                <td>
+                    <input type="text" id="txt_Report"  class="selecttree2"
+                        readonly onclick="JetsenWeb.UI.PopupBehavior.popControl($('divReportTree'),this)" /><input type="hidden" id="hidParentId" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    排序号:</td>
+                <td>
+                    <input type='text' id="txt_ViewPos" class="input" validatetype="NotEmpty,Integer" maxlength="5"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    报表类型:</td>
+                <td>
+                    <!--<input id="txtType" class="select" readonly type="text" handing="子报表~0|报表~1|其它~2"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" default="子报表" selectedvalue="0"  onblur=""/>
+                    --><select id="txtType"
+							style="width: 104px">
+							<option value="0">
+								报表
+							</option>
+							<option value="1">
+								子报表
+							</option>
+							<option value="2">
+								其它
+							</option>
+						</select>    
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    状态:</td>
+                <td><!--
+                    <input id="txtState" class="select" readonly type="text" handing="启用~0|禁用~1" default="启用"
+                        onclick="JetsenWeb.UI.DropDownList.show(this)" selectedvalue="0" />
+                        -->
+                        <select id="txtState"
+							style="width: 104px">
+							<option value="0">
+								启用
+							</option>
+							<option value="1">
+								禁用
+							</option>
+						</select>
+						
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    链接参数:</td>
+                <td>
+                    <input type='text' id="txt_Param" class="input4" maxlength="70" /></td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    描述:</td>
+                <td>
+                    <input type='text' id="txt_Desc" class="input4" maxlength="70" /></td>
+            </tr>
+        </table>
+    </div>
+    <div id="divDelete" style="display: none;">
+        <div style="padding: 20px;">
+            <input type="checkbox" id="chkDeleteAll" style="vertical-align:top;"/>
+            删除所有子报表
+        </div>
+    </div>
+    <div id="divReportTree" style="display: none" class="jetsen-tree-divc">
+    </div>
+    <div id="divPageFrame">
+    </div>
+</body>
+</html>

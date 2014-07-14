@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>工单列表</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/checkbox.js"></script>
+    <script type="text/javascript" src="javascript/simpleworkorder.js"></script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divWorkOrderList" class="webfx-columnlist" style="background: #fff; border: 0px; margin-left: 3px"
+        onfocus="this.blur();">
+            数据加载中...</div>
+    <div id="divBottom" class="list-bottom" style="margin-left: 3px">
+        <div class="list-bottom-right">
+        </div>
+    </div>
+    <div id="divWorkOrderProcessContent" style="display: none; overflow: auto; margin-left: 0px; margin-top: -1px; margin-right: 0px;">
+    	<div>
+    		<table width="100%" cellspacing="0" cellpadding="0" class="tablepanel" style="padding: 3px">
+                <tr style="height: 20px">
+                    <td align="left">
+            			工单当前的状态：
+            			<span id="spanOrderState"></span>
+			    		<input id="hid_ORDER_ID" type="hidden" />
+			    		<input id="hid_ORDER_DESC" type="hidden" />
+			    		<input id="hid_EVENT_ID" type="hidden" />
+                    </td>
+                    <td align="right">
+                        <input id="btnUpdateWorkOrder" type="button" value="处理工单" onclick="updateWorkOrder();" class="button" style="padding-left:2px; width: 60px;" />
+                    </td>
+                </tr>
+            </table>
+    	</div>
+	    <div id="divWorkOrderProcessList" class="webfx-columnlist" style="border: 0px" onfocus="this.blur();">
+			数据加载中...
+		</div>
+	</div>
+	<div id="divWorkOrderProcess" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">
+                  处理类型：
+                </td>
+                <td>
+                    <select id="cboChangeOrderState">
+		    			<option value="1">已分派</option>
+		    			<option value="2">已处理</option>
+		    			<option value="3">已关闭</option>
+		    		</select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                   给予：
+                </td>
+                <td>
+                    <select id="cbo_PROCESS_USER" validatetype="uinteger">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    处理描述：
+                </td>
+                <td>
+                    <textarea id="txt_PROCESS_DESC" cols="35" rows="5"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="list-title" id="divTop">
+		<div class="list-title-left">
+			工单列表
+		</div>
+	</div>
+    <div class="page-frame" id="divPageFrame" />
+</body>
+</html>

@@ -8,6 +8,23 @@
 	<name>jsmp.nav</name>
 	<url>http://maven.apache.org</url>
 
+	<distributionManagement>
+		<repository>
+			<id>jetsen-release</id>
+			<name>jetsen distribution repository</name>
+			<url>http://192.168.8.171:8081/nexus/content/repositories/jetsen/</url>
+		</repository>
+		<snapshotRepository>
+			<id>jetsen-snapshots</id>
+			<name>jetsen distribution snapshot repository</name>
+			<url>http://192.168.8.171:8081/nexus/content/repositories/jetsen/</url>
+		</snapshotRepository>
+		<site>
+			<id>www.jetsen.com</id>
+			<url>file://Z:/orm</url>
+		</site>
+	</distributionManagement>
+
 	<build>
 		<plugins>
 			<plugin>

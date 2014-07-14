@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>手工录入</title>
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/js_ip.js"></script>
+		<script type="text/javascript" src="javascript/setvaluemanu.js"></script>
+	    <style>
+	    	#divAc a {
+	    		font-size : 12px;
+	    	}
+	    </style>
+	</head>
+	<body>
+		<div id="divAc" style="margin-right:3px">
+	        	<div id="divAttribClass" style="overflow: auto;width:700px;"></div>
+		</div>
+		<div id="divTop" class="list-search" style="margin-left: 3px;">
+			<div style="padding: 3px">
+				<div style="float: left;">
+					<div id="findObject">
+						对象名称：
+						<input id="txt_Key" class="input" onkeydown="JetsenWeb.keyEvent(searchButton)"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						IP地址：
+						<input id="txt_IPAddress" class="input" onkeydown="JetsenWeb.keyEvent(searchButton)"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="button" id="buttonSearch1" value="查找" onclick="searchButton();"
+							class="button" style="padding: 3px"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="divElementList" class="webfx-columnlist"
+			style="border: 0px; background-repeat: no-repeat; overflow: auto;margin-left: 3px;">
+		</div>
+		<div id="divBottom" class="list-bottom" style="margin-left: 3px">
+			<div class='list-bottom-left'>
+            </div>
+			<div class="list-bottom-right" id ="listbottomright">
+				<div id="divListPagination" class="text_style">
+				</div>
+				<div id="myDivListPagination" class="text_style"></div>
+			</div>
+		</div>
+		<div id="divSubObjectList" class="webfx-columnlist"
+			style="border: 0px; background-repeat: no-repeat; overflow: hidden; height: 310px;">
+			<div id="divSubObjectListTable" class="webfx-columnlist"
+				style="background: #fff; border: 0px; background-repeat: no-repeat; overflow: auto;margin-top: -1px;height: 330px;">
+				
+			</div>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div id="divAssign" style="display: none; overflow: hidden;margin-left:3px;margin-top:1px;margin-right:3px">
+	        <div id="divAssignContent" style="height: 330px; overflow: auto;">
+	            <div id="divAssignList" class="webfx-columnlist" style="height: 330px; background: #fff; border: 0px"
+	                onfocus="this.blur();">
+	                数据加载中...</div>
+	        </div>
+    	</div>
+	</body>
+</html>

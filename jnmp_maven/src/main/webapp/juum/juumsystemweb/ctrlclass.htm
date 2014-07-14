@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>分类管理</title>
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/ctrlclass.js" defer="defer"></script>
+    <script type="text/javascript">
+    JetsenWeb.require(["js_gridlist","js_sql","js_pagebar","js_datepicker","js_window","js_pageframe","js_popupbehavior","js_validate","js_jetsentree","js_menu"]);
+    var gsqlQuery = new JetsenWeb.SqlQuery();    
+    var gconditions = new JetsenWeb.SqlConditionCollection();
+    var gClassGrid =new JetsenWeb.UI.GridList();
+    var gClassTypeTree ;
+    var resultXmlDoc = new JetsenWeb.XmlDoc();    //顶层数据xml
+    var subClassTypeDoc = new JetsenWeb.XmlDoc(); //请求到的下级xml
+    
+    function pageInit(){        
+        //页面布局
+        gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"),{splitType:1,enableResize:false,showSplit:true,splitTitle:"divListTitle",splitSize:27});
+        var frameContent = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divContaier"),{splitType:0,fixControlIndex:1,showSplit:true,splitBorder:0});          
+        frameContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divLeftTree"),{size:{width:"20%",height:"100%"}}));
+        frameContent.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divControlClass"),{size:{width:"80%",height:"100%"}}));
+        gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divTop"),{size:{width:0,height:30}}));
+        gFrame.addControl(frameContent); 
+        window.onresize = function(){
+            if(gWindowSizeChangedInterVal!=null)
+                window.clearTimeout(gWindowSizeChangedInterVal);
+            gWindowSizeChangedInterVal = window.setTimeout(windowResized,500);
+        };
+        windowResized();
+        loadClassType();
+        searchTopClass();
+    }
+    
+    function searchTopClass(){
+        gconditions.SqlConditions = [];
+        var fields = "CLASS_ID,PARENT_ID,CLASS_TYPE,CLASS_NAME,CLASS_LAYER,CLASS_DESC,VIEW_NAME,SUB_CLASSID,FIELD_1,FIELD_2";
+        JetsenWeb.extend(gsqlQuery,{ResultFields:fields,IsPageResult:false,KeyId:"CLASS_ID",OrderBy:"CLASS_ID,CLASS_LAYER",PageInfo:null,Conditions:gconditions,QueryTable:JetsenWeb.extend(new JetsenWeb.QueryTable(),{TableName:"NET_CTRLCLASS",AliasName:"T"})});
+        //gconditions.SqlConditions.push(JetsenWeb.SqlCondition.create("CLASS_TYPE",-1,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.NotEqual,JetsenWeb.SqlParamType.Numeric));
+        gconditions.SqlConditions.push(JetsenWeb.SqlCondition.create("PARENT_ID",0,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+        gconditions.SqlConditions.push(JetsenWeb.SqlCondition.create("CLASS_TYPE",$('ddlControlClassType').value,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+        var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+        ws.soapheader = JetsenWeb.Application.authenticationHeader;    	
+        ws.oncallback = function(resultXml)
+        {
+            resultXmlDoc.loadXML( resultXml.resultVal );
+	        el("divControlClass").innerHTML=JetsenWeb.Xml._transformXML("xslt/ctrlclass.xslt",resultXmlDoc);
+	        gClassGrid.bind(document.getElementById('divControlClass'), document.getElementById('tabWorkTb'));
+	        createTree(null);
+        }
+        ws.onerror = function(ex){ jetsennet.error(ex);};
+        ws.call("uumObjQuery",[gsqlQuery.toXml()]);
+    }
+    
+    function searchSubCtrClass(parentId){
+        var conditions = new JetsenWeb.SqlConditionCollection();
+        conditions.SqlConditions.push(JetsenWeb.SqlCondition.create("PARENT_ID",parentId,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+        conditions.SqlConditions.push(JetsenWeb.SqlCondition.create("CLASS_TYPE",$("ddlControlClassType").value,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+       
+        var sqlQuery = new JetsenWeb.SqlQuery();    
+        JetsenWeb.extend(sqlQuery,{IsPageResult:0,KeyId:"CLASS_ID",PageInfo:null,Conditions:conditions,QueryTable:JetsenWeb.extend(new JetsenWeb.QueryTable(),{TableName:"NET_CTRLCLASS"})});
+        
+	    var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+	    ws.soapheader = JetsenWeb.Application.authenticationHeader;
+	    ws.async = false;
+	    ws.oncallback = function(resultXml)
+	    {
+	        subClassTypeDoc = null;
+	        subClassTypeDoc = new JetsenWeb.XmlDoc(); 
+            subClassTypeDoc.loadXML(resultXml.resultVal);
+            el("divControlClass").innerHTML=JetsenWeb.Xml._transformXML("xslt/ctrlclass.xslt",subClassTypeDoc);
+            gClassGrid.bind(document.getElementById('divControlClass'), document.getElementById('tabWorkTb'));
+	    }
+	    ws.onerror = function(ex){ jetsennet.error(ex);};
+	    ws.call("uumObjQuery",[sqlQuery.toXml()]);
+    }
+    
+    
+    //加载分类类型
+    function loadClassType(){   
+	    var conditions = new JetsenWeb.SqlConditionCollection();
+        conditions.SqlConditions.push(JetsenWeb.SqlCondition.create("CLASS_TYPE","-1",JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+        var sqlQuery = new JetsenWeb.SqlQuery();    
+        JetsenWeb.extend(sqlQuery,{IsPageResult:0,KeyId:"ID",PageInfo:null,Conditions:conditions,QueryTable:JetsenWeb.extend(new JetsenWeb.QueryTable(),{TableName:"NET_CTRLCLASS"})});
+        
+	    var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+	    ws.soapheader = JetsenWeb.Application.authenticationHeader;
+	    ws.async = false;
+	    ws.cacheLevel = 2;
+	    ws.oncallback = function(resultXml)
+	    {
+            var control = $('ddlControlClassType');
+            var control1 = $('ddlControlClassType2');
+            control.options.length = 0;
+            control1.options.length = 0;
+            
+	        var objs = JetsenWeb.Xml.toObject(resultXml.resultVal,"Record");
+	        if(objs && objs.length>0)
+	        {
+	            for(var i=0;i<objs.length;i++)
+	            {
+	                control.options[i] = new Option(objs[i].CLASS_NAME,objs[i].CLASS_DESC);
+	                control1.options[i] = new Option(objs[i].CLASS_NAME,objs[i].CLASS_DESC);
+	            }
+	        }
+	    }
+	    ws.onerror = function(ex){ jetsennet.error(ex);};
+	    ws.call("uumObjQuery",[sqlQuery.toXml()]);
+    }
+
+    function windowResized(){
+        var size = JetsenWeb.Util.getWindowViewSize();
+        gFrame.size = {width:size.width,height:size.height};
+        gFrame.resize();
+    }  
+    </script>
+
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divTop" style="overflow: hidden" class="list-search">
+        <table class="table-info" style="width: 100%;" cellpadding="0" cellspacing="0">
+            <colgroup>
+                <col class="width-2w"/>
+                <col width="auto" />
+            </colgroup>
+            <tr>
+                <td class="field-head">
+                    类别：
+                </td>
+                <td>
+                    <select id="ddlControlClassType" onchange="searchTopClass()">
+                        <!--<option value="">请选择</option>-->
+                        <option value="100">机构行政划分</option>
+                        <option value="101">机构性质</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class='list-title' id="divListTitle">
+        <div class='list-title-left'>
+            <span id="selectPath">所有</span>
+        </div>
+        <div class='list-title-right'>
+            [<a href="javascript:addControlClass()" title="新建" id="btnAddClass" class="link">新建</a>]
+        </div>
+    </div>
+    
+    <div id="divPageFrame" class="page-frame">
+    </div>
+    
+    <div id="divContaier">
+        <div id="divLeftTree" class="jetsen-tree-divc">
+            <div id="treeContent" style="height:90%"> 
+                loading...
+            </div>
+        </div>
+        <div id="divControlClass" class="webfx-columnlist" style="border: 0px">
+        </div>
+    </div>
+
+    <div id="divControlClassDetail" style="display: none">
+        <table width="100%" id="controlclassInfo" border="0" cellpadding="0" cellspacing="0" class="table-info">            
+            <tr>
+                <td class="field-head">
+                    分类类别：</td>
+                <td>
+                    <select id="ddlControlClassType2" validatetype="NotEmpty">
+                       <!-- <option value="">请选择</option>-->
+                        <option value="100">机构行政划分</option>
+                        <option value="101">机构性质</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">父类：</td>
+                <td align="left">
+                    <input type="text" id="txtParentName" class="input" readonly value=""  />
+                    <input type="hidden" id="hidParentId" default="0" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head">名称：</td>
+                <td align="left">
+                    <input type="text" id="txtClassName" validatetype="NotEmpty" class="input3"/></td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    显示数据：</td>
+                <td align="left">
+                    <input type="text" id="txtClassViewName" class="input3"/></td>
+            </tr>
+            <tr style="display:none">
+                <td class="field-head">
+                    层次关系：</td>
+                <td align="left">
+                    <input type="text" id="txtClassLayer" class="input" value="0"/></td>
+            </tr>
+            <tr>
+                <td class="field-head">
+                    描述：</td>
+                <td align="left">
+                    <textarea id="txtClassDesc" class="textarea3"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+     
+    
+    <!--<div id="DIVClassTree" class="jetsen-tree-divc" style="border:solid 1px #7F9DB9;width:250px;height:250px;display:none;overflow:auto"></div>-->
+    
+    <!--<div id="DIVClassDetailContaier" style="display:none">
+        <div id="DIVClassDetail" class="webfx-columnlist" style=" height:98%; background: #fff; border: 0px"></div>
+    </div>-->
+</body>
+</html>

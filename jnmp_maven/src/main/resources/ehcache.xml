@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="true"
+	monitoring="autodetect" dynamicConfig="true">
+
+	<diskStore path="java.io.tmpdir" />
+
+	<!--
+		<cacheManagerEventListenerFactory
+		class="gogo.test.ehcache.TestCacheManagerEventListenerFactory"
+		properties="" />
+	-->
+	<!--  <cacheManagerPeerProviderFactory
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+		properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.1, multicastGroupPort=4446, timeToLive=32" />
+	-->
+
+	<!-- 指定除自身之外的网络群体中其他提供同步的主机列表，用“|”分开不同的主机 -->
+	<!--<cacheManagerPeerProviderFactory
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+		properties="peerDiscovery=manual,rmiUrls=//192.168.8.156:60000/jbmpcache|//192.168.8.156:60001/jbmpcache|//192.168.8.156:60010/jbmpcache" />
+ -->
+	<!-- 配宿主主机配置监听程序，来发现其他主机发来的同步请求 -->
+	<cacheManagerPeerListenerFactory
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+		properties="hostName=192.168.8.156,port=60000,socketTimeoutMillis=120000" />
+
+	<!-- 默认缓存 -->
+	<defaultCache maxElementsInMemory="10000" eternal="false"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"
+		diskSpoolBufferSizeMB="30" maxElementsOnDisk="10000000"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
+		memoryStoreEvictionPolicy="LRU">
+	</defaultCache>
+
+	<!-- 缓存 -->
+	<cache name="jbmpcache" maxElementsInMemory="1000" eternal="true"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" memoryStoreEvictionPolicy="LRU">
+		<!--  <cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=true, replicateRemovals=true" />
+		<bootstrapCacheLoaderFactory
+			class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"
+			properties="bootstrapAsynchronously=false" />
+		-->
+		
+	</cache>
+</ehcache>

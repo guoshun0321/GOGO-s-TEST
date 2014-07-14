@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>类别管理</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/checkbox.js"></script>
+    <script type="text/javascript" src="javascript/knowledgetype.js"></script>
+</head>
+<body onload="pageInit();" scroll="no">
+    <div id="divKnowledgeTypeList" class="webfx-columnlist" style="background: #fff; border: 0px;"
+        onfocus="this.blur();">
+        数据加载中...</div>
+    <div id="divBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divKnowledgeTypePage" class="text_style">
+            </div>
+        </div>
+    </div>
+    <div id="divKnowledgeType" style="display: none">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="table-info">
+            <tr>
+                <td class="field-head" width="30%">
+                    类别名称：
+                </td>
+                <td>
+                    <input type="text" id="txt_TYPE_NAME" validatetype="NotEmpty" maxlength="33" style="width: 200px"/>
+                    <span style="color: Red">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    父类别：
+                </td>
+                
+                <td>
+                    <input type="text" id="txtParentType"  class="selecttree2" readonly onclick="JetsenWeb.UI.PopupBehavior.popControl($('divParentTypeTree'),this)" />
+                    <input type="hidden" id="hidParentId" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-head" style="vertical-align: top;">
+                    类别描述：
+                </td>
+                <td>
+                    <textarea id="txt_TYPE_DESC" cols="30" rows="5" lengthrange="200" onkeyup="showRemindWordCount(this.value,$('remindWord'),60);"></textarea><br />
+                         <div style="float: right;padding-right: 110px;">
+                 			 还可以输入 <span id="remindWord" style="font-weight:bold;">60</span> 字
+      				 </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="list-title" id="divListTitle">
+		<div class="list-title-left">
+			类别列表
+		</div>
+        <div class="list-title-right">
+        	<strong><a href="javascript:newKnowledgeType()" title="新建" class="link">[新建]</a></strong>
+        </div>
+	</div>
+	<div id="divParentTypeTree" style="display: none" class="jetsen-tree-divc"></div>
+    <div class="page-frame" id="divPageFrame" />
+</body>
+</html>

@@ -1,0 +1,229 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>捷成网络监控平台</title>
+
+    <script language="javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+
+    <style>
+    .serviceLoading
+    {
+	    PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-WEIGHT: bold; FONT-SIZE: 9pt; Z-INDEX: 10000000; RIGHT: 2px; POSITION: absolute; TOP: 2px
+    }
+    </style>
+
+    <script type="text/javascript">  
+    function login(){    
+        var _name = JetsenWeb.Util.trim($("txtUserName").value);
+        var _password = JetsenWeb.Util.trim($("txtPassword").value);
+        if(_name==""){
+            jetsennet.alert("请输入用户名！");return;
+        }
+        if(_password==""){
+            jetsennet.alert("请输入密码！");return;
+        }
+        var _ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);       
+        _ws.onerror = function(ex){jetsennet.error(ex);}
+	    _ws.oncallback = function(sResult){          
+		    loginSuccess(sResult);	        
+	    }
+	    _ws.call("uumUserLogin",[_name,_password]);
+    }
+    function loginSuccess(sResult)
+    {
+        var userInfoXmlDoc = new JetsenWeb.XmlDoc();				
+        userInfoXmlDoc.loadXML(sResult.resultVal);	
+        
+	    JetsenWeb.Util.cookie("UserLoginId",$("txtUserName").value,{ expires:7});	    
+    
+        var _userInfo = new JetsenWeb.UserProfile();
+        _userInfo.fromXml(userInfoXmlDoc);
+        //编导用户
+        if(_userInfo.UserType=="110")
+        {            
+            selectColumn(_userInfo); 
+            return;
+        }
+        
+        JetsenWeb.setUserInfo(_userInfo);
+        var _url = JetsenWeb.queryString("url");             
+        if(JetsenWeb.LinkType == JetsenWeb.UserCardLink && !JetsenWeb.Util.isNullOrEmpty(_url)){
+            var _userCard = JetsenWeb.createUserCard();   
+            if(!JetsenWeb.Util.isNullOrEmpty(_userCard)){  
+                if(_url.indexOf("?")>=0)
+                    _url = _url+"&userCard="+_userCard;
+                else
+                    _url = _url+"?userCard="+_userCard;
+                window.location = "../../jdvn/jdvncatalogweb/innercheck.htm?istop=1&"+JetsenWeb.getValideQueryString();   
+                return;
+            }
+        }
+        window.location = "../../jdvn/jdvncatalogweb/innercheck.htm?istop=1&"+JetsenWeb.getValideQueryString();   
+    }
+    function selectColumn(_userInfo)
+    {
+        JetsenWeb.require("js_dialog");
+        JetsenWeb.require("js_sql");
+        var _sqlQuery = new JetsenWeb.SqlQuery();
+        
+        var _condition = new JetsenWeb.SqlConditionCollection();
+        JetsenWeb.extend(_sqlQuery,{IsPageResult:0,KeyId:"ID",ResultFields:"ID,NAME",PageInfo:null,QueryTable:JetsenWeb.extend(new JetsenWeb.QueryTable(),{TableName:"UUM_USERGROUP"})});
+        _condition.SqlConditions.push(JetsenWeb.SqlCondition.create("UUM_USERGROUP.USER_ID",_userInfo.UserId,JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Custom,JetsenWeb.SqlParamType.Numeric));  
+        _condition.SqlConditions.push(JetsenWeb.SqlCondition.create("TYPE","1",JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));  
+        _sqlQuery.Conditions = _condition;
+        
+        JetsenWeb.Application.userInfo = _userInfo;
+        var _ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);
+        _ws.soapheader = JetsenWeb.Application.authenticationHeader;
+        _ws.cacheLevel = 2;
+        _ws.oncallback = function(ret)
+        {
+             var _obj = JetsenWeb.Xml.toObject(ret.resultVal,"Record");
+             if(_obj==null)
+             {
+                jetsennet.alert("找不到相关栏目！");
+                return;
+             }
+            if(_obj.length==1)
+            {
+                _userInfo.ColumnId = _obj[0].ID;               
+                JetsenWeb.setUserInfo(_userInfo);               
+                window.location = "../../jdvn/jdvncatalogweb/innercheck.htm?istop=1&"+JetsenWeb.getValideQueryString();                             
+            }
+            else
+            {
+                $('divSelectColumn').innerHTML = "";
+                var _htmlStr = "";
+                for(var i=0;i<_obj.length;i++)
+                {
+                    _htmlStr += "<div><input type='radio' value='"+_obj[i].ID+"' name='rad_Column' "+(i==0?"checked":"")+"/>"+_obj[i].NAME+"</div>";
+                }
+                $('divSelectColumn').innerHTML = _htmlStr;
+             
+                var _dialog = new JetsenWeb.UI.ConfirmDialog();
+                _dialog.contentId = "divSelectColumn";
+                _dialog.title = "选择栏目";
+                _dialog.onsubmit = function()
+                {         
+                    var _isCheck = false;
+                    var _columnName = "";
+                    var _objs = document.getElementsByName("rad_Column");   
+                    if(_objs!=null)
+                    {
+                        for(var i=0;i<_objs.length;i++)
+                        {
+                            if(_objs[i].checked == true)
+                            {
+                                _isCheck = true;
+                                _columnName = _objs[i].parentNode.innerText;
+                                _userInfo.ColumnId = _objs[i].value;
+                                break;
+                            }
+                        }
+                    }  
+                    if(_isCheck==false)
+                    {
+                        jetsennet.alert("请选择栏目！");
+                        return;
+                    }                    
+                    JetsenWeb.setUserInfo(_userInfo);                
+                    window.location = "../../jdvn/jdvncatalogweb/innercheck.htm?istop=1&"+JetsenWeb.getValideQueryString();   
+                };
+                _dialog.show();                       
+             }
+        };
+        _ws.onerror = function(ex){jetsennet.error(ex);};
+        _ws.call("uumObjQuery",[_sqlQuery.toXml()]);
+    }
+    function keyDown()
+    {
+	    if(JetsenWeb.getEvent().keyCode==13)
+		    login();
+	}
+		
+    function pageInit()
+    {    
+        if(JetsenWeb.isIE())
+        {
+            document.attachEvent("onkeydown",keyDown);
+        }
+        else
+        {
+            document.addEventListener("keydown",keyDown,false);
+        }
+        
+        $('txtUserName').value = JetsenWeb.Util.cookie("UserLoginId");
+        
+        var _isOut = JetsenWeb.queryString("out");
+        if(_isOut && _isOut=="1"){
+            JetsenWeb.setUserInfo();
+            return;
+        }
+        if(JetsenWeb.LinkType == JetsenWeb.UserCardLink && JetsenWeb.isLogin())
+        {
+            var _url = JetsenWeb.queryString("url");             
+            if(!JetsenWeb.Util.isNullOrEmpty(_url)){
+                var _userCard = JetsenWeb.createUserCard();
+                if(!JetsenWeb.Util.isNullOrEmpty(_userCard)){  
+                    if(_url.indexOf("?")>=0)
+                        _url = _url+"&userCard="+_userCard;
+                    else
+                        _url = _url+"?userCard="+_userCard;
+                    window.location = "../../jdvn/jdvncatalogweb/innercheck.htm?istop=1&"+JetsenWeb.getValideQueryString();   
+                    return;
+                }	           
+	        }  
+        }
+    }    
+    </script>
+
+</head>
+<body onload="pageInit();" background="images/bg-login.gif">
+    <table height="100%" cellspacing="0" cellpadding="0" width="100%" align="center"
+        border="0">
+        <tbody>
+            <tr>
+                <td>
+                    <table height="350" cellspacing="0" cellpadding="0" width="570" align="center" background="images/login.jpg"
+                        border="0">
+                        <tbody>
+                            <tr>
+                                <td colspan="3" style="height: 174px">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td width="162px" style="height: 40px">
+                                    &nbsp;</td>
+                                <td style="height: 40px"><input id="txtUserName" name="txtUserName" value="" style="width: 310px; height: 26px;padding-left:5px;
+                                        border: 0px;background-color: transparent;" />
+                                </td>
+                                <td style="width: 50px; height: 40px;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="height: 48px">
+                                    &nbsp;
+                                </td>
+                                <td style="height: 48px"><input id="txtPassword" type="password" name="txtPassword" style="width: 310px; height: 26px;;padding-left:5px;
+                                        border: 0px;background-color: transparent;" />
+                                </td>
+                                <td style="width: 50px; height: 48px;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td colspan="2" align="left"  valign="top">
+                                    <a onclick="login()">
+                                        <img src="images/loginbutton.jpg" border="0" style="cursor:pointer"></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="divSelectColumn" style="display: none; padding: 10px">
+    </div>
+</body>
+</html>

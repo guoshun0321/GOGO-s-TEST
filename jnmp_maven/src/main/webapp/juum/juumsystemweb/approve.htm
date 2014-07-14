@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>用户审核</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+
+    <script language="javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+
+
+    <script type="text/javascript">
+	JetsenWeb.require(["js_sql","js_gridlist","js_pagebar","js_window","js_pageframe"]);		
+	var gFrame;
+    var gWindowSizeChangedInterVal;		
+    var gGrid =new JetsenWeb.UI.GridList();
+	//初始化===============================================================
+	function pageInit()
+	{
+	    gFrame = JetsenWeb.extend(new JetsenWeb.UI.PageFrame("divPageFrame"),{splitType:1,showSplit:false});        
+        gFrame.addControl(JetsenWeb.extend(new JetsenWeb.UI.PageItem("divListTitle"),{size:{width:0,height:27}}));
+        gFrame.addControl(new JetsenWeb.UI.PageItem("divContent"));
+
+        window.onresize = function(){
+            if(gWindowSizeChangedInterVal!=null)
+                window.clearTimeout(gWindowSizeChangedInterVal);
+            gWindowSizeChangedInterVal = window.setTimeout(windowResized,500);
+        };
+        windowResized();        
+        loadUser();
+    }
+
+    function windowResized()
+    {
+        var size = JetsenWeb.Util.getWindowViewSize();
+        gFrame.size = {width:size.width,height:size.height};
+        gFrame.resize();
+    }
+    
+    function loadUser()
+    {
+        var query = new JetsenWeb.SqlQuery();  
+        var condition = new JetsenWeb.SqlConditionCollection();  
+        condition.SqlConditions = [];
+        condition.SqlConditions.push(JetsenWeb.SqlCondition.create("STATE","-1",JetsenWeb.SqlLogicType.And,JetsenWeb.SqlRelationType.Equal,JetsenWeb.SqlParamType.Numeric));
+        JetsenWeb.extend(query,{KeyId:"CLASS_ID",ResultFields:"ID,USER_NAME,OFFICE_PHONE,FIELD_3,ADDRESS,USER_TYPE",Conditions:condition,QueryTable:JetsenWeb.extend(new JetsenWeb.QueryTable(),{TableName:"UUM_USER"})});
+        
+        var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);       
+        ws.onerror = function(ex){jetsennet.error(ex);}
+        ws.oncallback = function(sResult){          
+	        el("divContainer").innerHTML=JetsenWeb.Xml.transformXML("xslt/approve.xslt",sResult.resultVal);
+	        gGrid.bind($('divContainer'),$('tabUser'));  
+	    
+        }
+        ws.call("uumObjQuery",[query.toXml()]);    
+    }
+    
+    function approveUser(uid,state)
+    {
+	    var dailog;
+	    if(state==1){
+	      dailog = "确定通过？";
+	    }else(
+	      dailog = "确定打回？";
+	    }
+	    jetsennet.confirm(dailog, function () 
+        var ws = new JetsenWeb.Service(UUM_SYSTEM_SERVICE);       
+        ws.onerror = function(ex){jetsennet.error(ex);}
+        ws.oncallback = function(sResult){          
+	        loadUser();      
+        }
+        ws.call("uumApproveUser",[uid,state]);
+        return true;
+        });
+    }
+    
+    </script>
+
+</head>
+<body onload="pageInit()" scroll="no">
+    <div class='list-title' id="divListTitle">
+        <div class='list-title-left'>
+            用户列表
+        </div>
+        <div class='list-title-right'>
+            <strong></strong>
+        </div>
+    </div>
+    <div id="divContent" style="height: 83%; overflow: auto">
+        <div id='divContainer' class="webfx-columnlist" style="border: 0px; background: #fff">
+        </div>
+    </div>
+    <div id="divPageFrame" style="padding: 5px;">
+    </div>
+</body>
+</html>

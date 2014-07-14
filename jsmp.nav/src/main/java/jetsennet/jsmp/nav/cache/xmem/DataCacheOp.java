@@ -1,5 +1,6 @@
 package jetsennet.jsmp.nav.cache.xmem;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -14,6 +15,8 @@ import net.rubyeye.xmemcached.utils.AddrUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.code.yanf4j.core.impl.StandardSocketOption;
 
 public class DataCacheOp
 {
@@ -42,7 +45,8 @@ public class DataCacheOp
 			// 使用二进制文件  
 			builder.setCommandFactory(new BinaryCommandFactory());
 			// 连接池大小
-			builder.setConnectionPoolSize(Config.CACHE_POOLSIZE);
+			//			builder.setConnectionPoolSize(Config.CACHE_POOLSIZE);
+			builder.setSocketOption(StandardSocketOption.TCP_NODELAY, false);
 			client = builder.build();
 		}
 		catch (Exception ex)
@@ -73,7 +77,7 @@ public class DataCacheOp
 	{
 		putTimeout(key, value, Config.CACHE_TIMEOUT);
 	}
-	
+
 	/**
 	 * 往缓存放置数据，并设置过期时间
 	 * 
@@ -95,11 +99,19 @@ public class DataCacheOp
 
 	public <T> T get(String key)
 	{
+		if (key == null)
+		{
+			return null;
+		}
 		return this.get(key, false);
 	}
 
 	public int getInt(String key)
 	{
+		if (key == null)
+		{
+			return -1;
+		}
 		return (int) this.get(key, false);
 	}
 
@@ -159,8 +171,26 @@ public class DataCacheOp
 		return retval;
 	}
 
+	public <T> List<T> getList(String key)
+	{
+		List<T> retval = null;
+		try
+		{
+			retval = client.get(key, Config.CACHE_TIMEOUT);
+		}
+		catch (Exception ex)
+		{
+			this.exceptionHandle(ex);
+		}
+		return retval;
+	}
+
 	public Map<String, Object> gets(List<String> keys)
 	{
+		if (keys == null)
+		{
+			return new HashMap<String, Object>(0);
+		}
 		Map<String, Object> retval = null;
 		try
 		{

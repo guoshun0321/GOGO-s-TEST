@@ -3,7 +3,7 @@ package jetsennet.jsmp.nav.service.a7.entity;
 public class A7Constants
 {
 
-	public static final String DEF_LANG = "zh-CN";
+	public static final String DEF_LANG = "zh_CN";
 
 	public static final String PROVIDER_ID = "Jetsen";
 

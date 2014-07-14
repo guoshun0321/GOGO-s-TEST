@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>    
+    <script type="text/javascript" src="javascript/select.js"></script>
+    <script type="text/javascript" src="javascript/portmanage.js"></script>
+    <title>端口管理</title>
+</head>
+<body onload="pageInit();" scroll="no">	
+    <div class="page-frame" id="divPageFrame"/>
+    <!-- 网段列表 -->
+    <div id="divGroup" class="list-search" style="margin-bottom:3px">
+    	<table width="490px" cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+           <tr>
+              <td align="left" style="width:325px;">网&nbsp;&nbsp;段：
+	              <select id="sel_Group" style="width: 255px" onchange="loadDev()"></select>&nbsp;&nbsp;&nbsp;&nbsp;
+	          </td>
+	          <td align="left">
+	              <input type="button" value="刷新连接" class="button" onclick="refreshP2p()" style="margin-bottom:2px;" />
+	          </td>
+           </tr>  	
+      </table>
+    </div>
+    <!-- 左侧端口列表 -->
+    <div id="divLeftTop" class="list-search" style="margin-bottom:3px">
+    	<table width="490px" cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+           <tr>
+              <td align="left">A设备：
+	              <select id="sel_LeftFather" style="width: 255px" onchange="searchLeftObject();searchP2pObject();"></select>&nbsp;&nbsp;&nbsp;&nbsp;
+              </td>
+           </tr>  	
+      </table>
+    </div>
+   
+    <div id="divLeftObjectList" class="webfx-columnlist" style="background: #fff; border: 0px;
+        background-repeat: no-repeat" onfocus="this.blur();">
+        数据加载中...</div>
+        
+        
+    <div id="divLeftBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divLeftObjectPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    
+    <div class="list-title" id="divLeftListTitle">
+        <div class="list-title-left">
+       A设备对象列表
+        </div>
+        <div class="list-title-right">
+        </div>
+    </div>
+    <!-- 右侧端口列表 -->
+    <div id="divRightTop" class="list-search" style="margin-bottom:3px">
+    	<table width="490px" cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+           <tr>
+              <td align="left">B设备：
+              	  <select id="sel_RightFather" style="width: 255px" onchange="searchRightObject();searchP2pObject();"></select>&nbsp;&nbsp;&nbsp;&nbsp;
+              </td>
+           </tr>  	
+      </table>
+    </div>
+   
+    <div id="divRightObjectList" class="webfx-columnlist" style="background: #fff; border: 0px;
+        background-repeat: no-repeat" onfocus="this.blur();">
+        数据加载中...</div>
+        
+        
+    <div id="divRightBottom" class="list-bottom">
+        <div class="list-bottom-right">
+            <div id="divRightObjectPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    
+    <div class="list-title" id="divRightListTitle">
+        <div class="list-title-left">
+        B设备对象列表
+        </div>
+        <div class="list-title-right">
+        </div>
+    </div>
+    <!-- 左右间隔条 -->
+    <div id="leftSplitRight" style="text-align: center;margin-top:5px;">
+		<input type="button" value="连接" class="button" onclick="addP2p()" />
+	</div>
+	<!-- 底部连接信息列表 -->
+	<div id="divP2pTop" class="list-search" style="margin-bottom:3px">
+    	<table width="490px" cellspacing="0" cellpadding="0"  class="table-info" style="padding: 1px">
+           <tr>
+              <td>
+                  <input type="button" value="查找" onclick="searchP2pObject();" class="button" />
+              </td>
+           </tr>  	
+      </table>
+    </div>
+   
+    <div id="divP2pObjectList" class="webfx-columnlist" style="background: #fff; border: 0px;
+        background-repeat: no-repeat" onfocus="this.blur();">
+        </div>
+        
+        
+    <div id="divP2pBottom" class="list-bottom">
+    	<div class="list-bottom-left">
+    		<input type="button" class="button" value="删除" onclick="deleteP2p()">
+    	</div>
+        <div class="list-bottom-right">
+            <div id="divP2pObjectPage" class="text_style">
+            </div>
+        </div>
+    </div>
+    
+    <div class="list-title" id="divP2pListTitle">
+        <div class="list-title-P2p">
+        端口连接列表
+        </div>
+        <div class="list-title-right">
+        </div>
+    </div>
+</body>
+</html>

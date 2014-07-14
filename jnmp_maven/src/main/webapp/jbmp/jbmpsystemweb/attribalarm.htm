@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<title>报警关联</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/checkbox.js"></script>
+		<script type="text/javascript" src="javascript/attribalarm.js"></script>
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div class="list-title" id="divListTitle" style="margin-left: 3px;">
+			<div class="list-title-left">
+                 指标列表
+            </div>
+		</div>
+		<div id="divObjAttribAlarmList" style="border: 0px; background: #fff; margin-left: 3px">
+				数据加载中...
+		</div>
+		<div id="divBottom" class="list-bottom" style="margin-left: 3px;">
+			<div class="list-bottom-left" style="padding-top: 4px">
+				<input type="button" value="报警关联" onclick="bindObjAttrib2Alarm();"
+					class="button4" />
+				<input type="button" value="解除关联" onclick="bindNoAlarm(null, null, true);"
+					class="button4" />
+				<input type="button" value="采集间隔" onclick="setCollTime();"
+					class="button4" />
+			</div>
+			<div class="list-bottom-right">
+				<div id="divAttribListPage" class="text_style">
+				</div>
+			</div>
+		</div>
+		<!--  
+		<div id="divObjAttrib2Alarm" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr style="height: 30px">
+					<td width="16">
+					</td>
+					<td colspan="2">
+						关联报警：
+						<select id="cbo_Alarm" onchange="alarmChanged();">
+						</select>
+						<span style="color: Red">*</span>
+					</td>
+					<td colspan="3" id="tdBindNo" align="right">
+						<input id="hid_OBJATTR_ID" type="hidden" />
+					</td>
+				</tr>
+				<tr style="height: 30px">
+					<td width="16">
+					</td>
+					<td width="77">
+						<strong>报警设置</strong>
+					</td>
+				</tr>
+				<tr style="height: 20px">
+					<td>
+					</td>
+					<td colspan="3" align="left">
+						报警描述：
+						<label id="lblDesc"></label>
+					</td>
+				</tr>
+				<tr style="height: 20px">
+					<td width="16">
+					</td>
+					<td align="left" width="180">
+						检查次数：
+						<label id="lblCheckNum"></label>
+					</td>
+					<td align="left" width="180">
+						越限次数：
+						<label id="lblOverNum"></label>
+					</td>
+					<td width="180" align="left">
+						报警间隔(秒)：
+						<label id="lblCheckSpan">
+						</label>
+					</td>
+				</tr>
+				<tr style="height: 30px">
+					<td width="16">
+					</td>
+					<td width="73">
+						<strong>阀值设置</strong>
+					</td>
+				</tr>
+			</table>
+			<div
+				style="border: 0px; background-repeat: no-repeat; overflow: auto; height: 140px;">
+				<div id="divAlarmLevel" class="webfx-columnlist"
+					style="border: 1px; width: 90%; margin-left: 16px;">
+					数据加载中...
+				</div>
+				<div id="divAlarmLevelPage" class="text_style"
+					style="margin-left: 16px;">
+					.
+				</div>
+			</div>
+		</div>
+-->
+ 		<div id="divObjAttrib2Alarm" style="display:none; position: relative;margin-top:-2px;margin-bottom:-5px">
+		    <div id="divObjAttrib2Alarm1">
+		        <div id="divAlarmListContent">
+					<div id="divAlarmList" class="webfx-columnlist" style="border: 1px; ">
+						数据加载中...
+					</div>
+				</div>			
+						
+				<div id="divAlarmDetail">
+				    <table width="100%" border="0" cellpadding="0" cellspacing="1" style="overflow: right;">
+						<tr style="height: 30px">
+							<td width="77">
+								<strong>报警设置</strong>
+							</td>
+						</tr>
+						<tr style="height: 20px">
+							<td align="left" width="180">
+								检查次数：
+								<label id="lblCheckNum"></label>
+							</td>
+							<td align="left">
+								越限次数：
+								<label id="lblOverNum"></label>
+							</td>
+							<!--  
+							<td width="123" align="left">
+								报警间隔(秒)：
+								<label id="lblCheckSpan">
+								</label>
+							</td>
+							-->
+						</tr>
+						<tr style="height: 30px">
+							<td width="73">
+								<strong>阀值设置</strong>
+							</td>
+						</tr>
+					</table>
+					<div style="border: 0px; background-repeat: no-repeat; overflow: auto;">
+						<div id="divAlarmLevel" class="webfx-columnlist"
+							style="height: 175px; border: 1px; ">
+						</div>
+					</div>
+				</div>
+		    </div>
+		</div>
+		
+
+		<div id="divObject" class="webfx-columnlist"
+			style="border: 0px; overflow: hidden;margin-right:3px" onfocus="this.blur();">
+			数据加载中...
+		</div>
+		<div id="divSearchObject" style="overflow: hidden; display: none; margin-right: 3px; padding: 3px"
+			class="list-search">
+			对象类别：
+					<select id="cboObjectType" onchange="selectOption();" style="width: 150px" onkeydown="JetsenWeb.keyEvent(selectOption)">
+						<option value="-1">请选择</option>
+					</select>
+			<br />
+			属性类别：
+					<select id="cboAttribType" onchange="selectOption()" style="width: 150px" onkeydown="JetsenWeb.keyEvent(selectOption)">
+						<option value="-1">请选择</option>
+						<option value="102">监测指标</option>
+						<option value="103">性能指标</option>
+						<option value="104">Trap属性</option>
+						<option value="105">信号属性</option>
+                        <option value="107">Syslog属性</option>
+					</select>
+			<br />
+			属性名称：
+			<input id="txtObject" class="input" style="width: 145px" onkeydown="JetsenWeb.keyEvent(selectOption)"/>
+			<div align="right" style="margin-right: 8px;">
+				<input id="btnSearchObject" type="button" value="查找"
+				onclick="selectOption()" class="button" />
+			</div>
+		</div>
+		<div id="divCollTimeSapn" style="display: none">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1"
+				class="table-info" >
+				<tr>
+					<td class="field-head">
+						采集间隔：
+					</td>
+					<td>
+						<select id="txt_colltime">
+							<option value="300">5分钟</option>
+	                        <option value="10">10 秒</option>
+	                        <option value="20">20 秒</option>
+	                        <option value="30">30 秒</option>
+	                        <option value="60">1分钟</option>
+	                        <option value="120">2分钟</option>
+	                        <option value="180">3分钟</option>
+	                        <option value="600">10分钟</option>
+						</select>
+					
+					<!-- 	<input type="text" id="txt_colltime" validatetype="NotEmpty,Integer"/>秒
+						<span style="color: Red">*</span> -->
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+	</body>
+</html>

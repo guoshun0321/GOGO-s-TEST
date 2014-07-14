@@ -6,6 +6,7 @@ import java.util.Date;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
+
 /**
  * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
  */
@@ -25,6 +26,16 @@ public class Pgm2PgmEntity implements Serializable
 	private String relDesc;
 
 	private static final long serialVersionUID = 1L;
+
+	public Pgm2PgmEntity()
+	{
+	}
+
+	public Pgm2PgmEntity(int pgmId, String relDesc)
+	{
+		this.pgmId = pgmId;
+		this.relDesc = relDesc;
+	}
 
 	public int getPgmId()
 	{

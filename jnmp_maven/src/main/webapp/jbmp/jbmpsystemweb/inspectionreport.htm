@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<script type="text/javascript"
+			src="../../jetsenclient/javascript/js_base.js"></script>
+		<script type="text/javascript" src="javascript/base.js"></script>
+		<script type="text/javascript" src="javascript/select.js"></script>
+		<script type="text/javascript" src="javascript/checkbox.js"></script>
+		<script type="text/javascript" src="javascript/function.js"></script>
+		<script type="text/javascript" src="javascript/report_comm.js"></script>
+		<script type="text/javascript" src="javascript/inspectionreport.js"></script>
+		<title>巡检报表</title>
+		
+	</head>
+	<body onload="pageInit();" scroll="no">
+		<div id="divTop" class="list-search" style="margin-bottom:3px;">
+			<table width="835" cellspacing="0" cellpadding="0"
+				class="table-info" style="padding: 3px">
+				<tr>
+					<td align="left" width="450" style="height: 23px">
+						所属系统：
+						<select id="cbo_ObjGroup" style="width: 105px"
+							onkeydown="JetsenWeb.keyEvent(exportData)" onchange="objectInit();">
+						</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						对象名称：
+						<select id="cbo_Object"  style="width: 170px;height: 22px;" onkeydown="JetsenWeb.keyEvent(exportData)">
+						</select>
+					</td>
+					<td align="left" style="height: 23px">
+						时间间隔(单位：分钟)：
+						<input type="text" id="cbo_TimeInterval" onkeydown="JetsenWeb.keyEvent(exportData)" class="input" onKeypress="debugger;return (/[\d]/.test(String.fromCharCode(event.keyCode?event.keyCode:event.which)))" style="ime-mode:disabled" value=5>
+					</td>
+				</tr>
+				<tr>
+					<td align="left" width="450" style="height: 23px">
+						查询时间：
+						<input type="text" id="txtSDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtSTime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							validatetype="NotEmpty" />
+						-
+						<input type="text" id="txtEDate"
+							onclick="JetsenWeb.UI.DatePicker.popCalendar(this)" class="selectdate" readonly />
+						<input type="text" id="txtETime" style="width: 70px;"
+							onfocus="new JetsenWeb.UI.TimeEditor(this,3)"
+							validatetype="NotEmpty" />
+					</td>
+					<td align="left" style="height: 23px">
+						<input type="button" value="查找" onclick="exportData()" class="button" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="divInspectReportList" class="webfx-columnlist" style="border: 0px"
+			onfocus="this.blur();">
+			<iframe id="frmTableInfo"
+				style="width: 100%; height: 100%; border-width: 0px; position: absolute;"
+				frameborder="0" border="0"></iframe>
+		</div>
+		<div class="page-frame" id="divPageFrame" />
+		<div class="list-title" id="divListTitle">
+			<div class="list-title-left">
+				巡检报表
+			</div>
+		</div>
+	</body>
+</html>

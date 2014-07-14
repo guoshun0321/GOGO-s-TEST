@@ -1,61 +1,45 @@
 package jetsennet.jsmp.nav.service.a7;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
-import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
+import javax.xml.ws.spi.Invoker;
+
 import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
-import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
-import jetsennet.jsmp.nav.entity.PgmBaseEntity;
-import jetsennet.jsmp.nav.entity.PlaybillEntity;
+import jetsennet.jsmp.nav.entity.FileItemEntity;
+import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
-import jetsennet.jsmp.nav.monitor.MonitorMsg;
 import jetsennet.jsmp.nav.monitor.MethodInvokeMMsg;
+import jetsennet.jsmp.nav.monitor.Monitor;
 import jetsennet.jsmp.nav.monitor.MonitorServlet;
-import jetsennet.jsmp.nav.service.a7.entity.A7Constants;
+import jetsennet.jsmp.nav.service.a7.entity.ChannelSelectionStartRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetChannelsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetFolderContentsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetItemDataRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetProgramRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetRootContentsRequest;
-import jetsennet.jsmp.nav.service.a7.entity.SelectionStartRequest;
 import jetsennet.jsmp.nav.service.a7.entity.RequestEntityUtil;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntity;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntityUtil;
-import jetsennet.jsmp.nav.syn.CachedKeyUtil;
-import jetsennet.jsmp.nav.syn.cache.DataSynCache;
-import jetsennet.jsmp.nav.syn.cache.DataSynCacheColumn;
-import jetsennet.jsmp.nav.util.DateUtil;
+import jetsennet.jsmp.nav.service.a7.entity.SelectionStartRequest;
+import jetsennet.jsmp.nav.util.ArrayUtil;
+import jetsennet.jsmp.nav.util.DataMockUtil;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
-import jetsennet.util.IOUtil;
-import static jetsennet.jsmp.nav.syn.CachedKeyUtil.*;
 
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NavBusiness
 {
 
-	/**
-	 * 缓存操作
-	 */
-	private DataCacheOp cache = DataCacheOp.getInstance();
 	/**
 	 * 方法映射map
 	 */
@@ -75,7 +59,7 @@ public class NavBusiness
 			{
 				if (method.isAnnotationPresent(IdentAnnocation.class))
 				{
-					methodMap.put(method.getName(), method);
+					methodMap.put(method.getAnnotation(IdentAnnocation.class).value(), method);
 				}
 			}
 		}
@@ -86,7 +70,7 @@ public class NavBusiness
 		}
 	}
 
-	public String invoke(String method, Map<String, String> map) throws Exception
+	public String invoke(String method, Map<String, String> map) throws Throwable
 	{
 		String retval = null;
 		Method m = methodMap.get(method);
@@ -99,25 +83,44 @@ public class NavBusiness
 			{
 				retval = (String) m.invoke(this, new Object[] { map });
 			}
-			catch (Exception ex)
+			catch (InvocationTargetException ex)
 			{
 				msg.setException(true);
-				throw ex;
+				throw ex.getTargetException();
 			}
 			msg.setEndTime(System.currentTimeMillis());
-			MonitorServlet.put(msg);
+			Monitor.getInstance().put(msg);
 		}
 		else
 		{
-			logger.error("不正确的方法，不存在方法：" + method);
+			logger.error("不存在方法：" + method);
+			throw new UncheckedNavException("不存在方法：" + method);
 		}
 		return retval;
+	}
+
+	@IdentAnnocation("GetUpdateInfo")
+	public String GetUpdateInfo(Map<String, String> map)
+	{
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("UpdateInfo");
+		resp.addAttr("appName", "appName");
+		resp.addAttr("appType", "appType");
+		resp.addAttr("versionName", "versionName");
+		resp.addAttr("versionCode", "versionCode");
+		resp.addAttr("appUrl", "appUrl");
+		resp.addAttr("flag", "flag");
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("NavCheck")
 	public String navCheck(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("NavCheck");
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("NavCheckResult");
+		resp.addAttr("account", "test_account");
+		resp.addAttr("customerGroup", "group_1");
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("GetFolderContents")
@@ -127,8 +130,8 @@ public class NavBusiness
 
 		ResponseEntity retval = new ResponseEntity("FolderContents");
 
-		// 栏目自身信息
-		ColumnEntity column = cache.get(columnKey(cache.getInt(columnAssetKey(entity.getAssetId()))));
+		// 栏目自身信息FolderFrame
+		ColumnEntity column = NavBusinessDal.getColumnByAssetId(entity.getAssetId());
 		if (entity.getIncludeFolderProperties())
 		{
 			ResponseEntity temp = new ResponseEntity("FolderFrame");
@@ -139,72 +142,56 @@ public class NavBusiness
 			}
 			temp.addAttr("displayName", column.getColumnName());
 			temp.addAttr("folderType", Integer.toString(column.getColumnType()));
+			retval.addChild(temp);
 		}
 
-		int[] pageInfo = null;
-		if (entity.getStartAt().isEmpty())
-		{
-			pageInfo = new int[] { 10, 1, 10, 1 };
-		}
-		else
-		{
-			pageInfo = A7Util.columnAndMoviePageInfo(entity.getStartAt());
-		}
-
-		int[] retPageInfo = new int[] { pageInfo[0], -1, pageInfo[2], -1 };
-		int total = 0;
-		int selTotal = 0;
-		// 子栏目
+		// 子栏目ChildFolder
 		if (entity.getIncludeSubFolder())
 		{
-			int start = (pageInfo[3] - 1) * pageInfo[2];
-			int end = start + pageInfo[2];
-			List<Integer> subIds = cache.getListInt(CachedKeyUtil.columnPgm(column.getColumnId()));
-			int totalSizeSub = subIds.size();
-			total += totalSizeSub;
-			subIds = subIds.subList(start, end);
-			if (totalSizeSub > end)
+			List<Integer> subIds = NavBusinessDal.subColumnIds(column);
+			List<ColumnEntity> cols = NavBusinessDal.getColumns(subIds);
+			for (ColumnEntity col : cols)
 			{
-				retPageInfo[3] = end;
-			}
-			List<String> tempKeys = columnKey(subIds);
-			selTotal += tempKeys.size();
-			Map<String, Object> subMap = cache.gets(tempKeys);
-			for (String tempKey : tempKeys)
-			{
-				ColumnEntity temp = (ColumnEntity) subMap.get(tempKey);
-				ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(temp, "ChildFolder", null);
+				ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(col, "ChildFolder", null);
 				tempResp.addAttr("selectableltemSortby", column.getSortRule());
 				tempResp.addAttr("selectableltemSortDirection", Integer.toString(column.getSortDirection()));
+				retval.addChild(tempResp);
 			}
 		}
 
-		// 影片
+		// 节目信息ContentItem
+		int retStart = -1;
+		int retTotal = 0;
+		int retSelTotal = 0;
 		if (entity.getIncludeSelectableItem())
 		{
-			int start = (pageInfo[3] - 1) * pageInfo[2];
-			int end = start + pageInfo[2];
-			List<Integer> programIds = cache.getListInt(CachedKeyUtil.columnPgm(column.getColumnId()));
-			int totalSizePgm = programIds.size();
-			total += totalSizePgm;
-			programIds = programIds.subList(start, end);
-			if (totalSizePgm > end)
+			List<Integer> programIds = NavBusinessDal.columnProgramIds(column.getColumnId());
+			if (programIds != null && !programIds.isEmpty())
 			{
-				retPageInfo[1] = end;
-			}
-			List<String> tempKeys = programKeys(programIds);
-			selTotal += tempKeys.size();
-			Map<String, Object> pgmMap = cache.gets(tempKeys);
-			for (String tempKey : tempKeys)
-			{
-				ProgramEntity pgm = (ProgramEntity) pgmMap.get(tempKey);
-				retval.addChild(A7Util.getItemInfo(pgm));
+				// 分页信息
+				int start = entity.getStartAt();
+				int end = start + entity.getMaxItems();
+				retTotal = programIds.size();
+				if (retTotal > end)
+				{
+					retStart = end;
+				}
+
+				// 填充ContentItem数据
+				List<ProgramEntity> pgms = NavBusinessDal.getPrograms(ArrayUtil.subList(programIds, start, end));
+				for (ProgramEntity pgm : pgms)
+				{
+					retval.addChild(A7Util.getContent(pgm, column));
+				}
 			}
 		}
 
-		retval.addAttr("restartAtToken", A7Util.genColumnAndMoviePageInfo(retPageInfo));
-		retval.addAttr("currentResults", Integer.toString(selTotal));
-		retval.addAttr("totalResults", Integer.toString(total));
+		if (retStart > 0)
+		{
+			retval.addAttr("restartAtToken", retStart);
+		}
+		retval.addAttr("currentResults", retSelTotal);
+		retval.addAttr("totalResults", retTotal);
 		return retval.toXml(null).toString();
 	}
 
@@ -212,9 +199,8 @@ public class NavBusiness
 	public String getRootContents(Map<String, String> map)
 	{
 		GetRootContentsRequest entity = RequestEntityUtil.map2Obj(GetRootContentsRequest.class, map);
-		List<Integer> topKeys = cache.getListInt(CachedKeyUtil.topColumn());
-		List<String> topKeyStrs = CachedKeyUtil.columnKey(topKeys);
-		Map<String, Object> objMap = cache.gets(topKeyStrs);
+
+		List<ColumnEntity> topColumns = NavBusinessDal.getTopColumns();
 
 		ResponseEntity resp = new ResponseEntity("RootContents");
 		// 分页处理
@@ -223,31 +209,28 @@ public class NavBusiness
 		// 最后一个的后一位
 		int end = begin + entity.getMaxItems();
 		int lastPos = -1;
-		for (int i = 0, j = -1; i < topKeyStrs.size(); i++)
+
+		int j = -1;
+		for (ColumnEntity column : topColumns)
 		{
-			String topKeyStr = topKeyStrs.get(i);
-			Object obj = (Object) objMap.get(topKeyStr);
-			if (obj != null)
+			if (column.getLanguageCode().equals(entity.getLanguageCode()) && column.getRegionCode().equals(entity.getRegionCode()))
 			{
-				ColumnEntity column = (ColumnEntity) obj;
-				if (column.getLanguageCode().equals(entity.getLanguageCode()) && column.getRegionCode().equals(entity.getRegionCode()))
+				j++;
+				if (j >= begin)
 				{
-					j++;
-					if (j >= begin)
+					if (j == end)
 					{
-						if (j == end)
-						{
-							lastPos = j;
-							break;
-						}
-						else
-						{
-							ResponseEntity child = ResponseEntityUtil.obj2Resp(obj, "ChildFolder", null);
-							resp.addChild(child);
-						}
+						lastPos = j;
+						break;
+					}
+					else
+					{
+						ResponseEntity child = ResponseEntityUtil.obj2Resp(column, "ChildFolder", null);
+						resp.addChild(child);
 					}
 				}
 			}
+
 		}
 		resp.addAttr("totalResults", Integer.toString(resp.getChildSize()));
 		if (lastPos > 0)
@@ -266,51 +249,98 @@ public class NavBusiness
 	@IdentAnnocation("GetSavedPrograms")
 	public String getSavedPrograms(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("GetSavedPrograms");
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("SavedPrograms");
+		resp.addAttr("totalResults", "10");
+		resp.addAttr("restartAtToken", "-1");
+		ResponseEntity temp = DataMockUtil.gen();
+		for (int i = 0; i < 10; i++)
+		{
+			resp.addChild(temp);
+		}
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("GetBookmarks")
 	public String getBookmarks(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("GetBookmarks");
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("Bookmarks");
+		resp.addAttr("totalResults", "10");
+		resp.addAttr("restartAtToken", "-1");
+		for (int i = 0; i < 10; i++)
+		{
+			ResponseEntity temp = new ResponseEntity("BookmarkedItem");
+			temp.addAttr("bookmarkedId", i);
+			temp.addAttr("markDateTime", "19881122112233");
+			temp.addAttr("custom", "custom" + i);
+			temp.addAttr("endDateTime", "19881222112233");
+			ResponseEntity temp1 = DataMockUtil.gen();
+			for (int j = 0; j < 2; j++)
+			{
+				temp.addChild(temp1);
+			}
+			resp.addChild(temp);
+		}
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("GetItemData")
 	public String getItemData(Map<String, String> map)
 	{
 		GetItemDataRequest req = RequestEntityUtil.map2Obj(GetItemDataRequest.class, map);
-		ProgramEntity prog = cache.get(CachedKeyUtil.programAsset(req.getTitleAssetId()));
-		return A7Util.getItemInfo(prog).toXml(null).toString();
+		return A7Util.getContentItem(NavBusinessDal.getProgramByAssetId(req.getTitleAssetId()), null).toXml(null).toString();
 	}
 
 	@IdentAnnocation("GetEntitlement")
 	public String getEntitlement(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("GetEntitlement");
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("Entitlements");
+		for (int i = 0; i < 10; i++)
+		{
+			ResponseEntity temp = new ResponseEntity("ServiceId");
+			temp.addAttr("origin", "SVOD");
+			temp.addAttr("name", "name" + i);
+			resp.addChild(temp);
+		}
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("AddBookmark")
 	public String addBookmark(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("AddBookmark");
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("AddBookmarkResult");
+		resp.addAttr("bookmarkedId", "bookmarkedId1");
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("DeleteBookmark")
 	public String deleteBookmark(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("DeleteBookmark");
+		// TODO test
+		return "";
 	}
 
 	@IdentAnnocation("DeleteSavedProgram")
 	public String deleteSavedProgram(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("DeleteSavedProgram");
+		// TODO test
+		return "";
 	}
 
 	@IdentAnnocation("SearchValidate")
 	public String searchValidate(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("SearchValidate");
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("ValidateTitles");
+		ResponseEntity temp = DataMockUtil.gen();
+		for (int i = 0; i < 10; i++)
+		{
+			resp.addChild(temp);
+		}
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("SelectionStart")
@@ -319,54 +349,93 @@ public class NavBusiness
 		SelectionStartRequest req = RequestEntityUtil.map2Obj(SelectionStartRequest.class, map);
 
 		// 获取数据
-		ProgramEntity prog = cache.get(CachedKeyUtil.programAsset(req.getTitleAssetId()));
+		FileItemEntity item = NavBusinessDal.getFileItemByAssetId(req.getFileAssetId());
 
-		// 生成token
-		String token = UUID.randomUUID().toString();
-		String key = CachedKeyUtil.selectionStartKey(token);
-		cache.putTimeout(key, null, Config.SM_TIMEOUT);
+		String retval = null;
+		if (SelectionStartRequest.OTT.equals(req.getServiceCode()))
+		{
+			retval = item.getPlayUrl();
+		}
+		else
+		{
+			// 生成token
+			String token = NavBusinessDal.addSMKey(item.getPlayUrl());
+			retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
+		}
 
 		// 返回结果
 		ResponseEntity tempResp = new ResponseEntity("StartResponse");
-		tempResp.addAttr("purchaseToken", token);
-		tempResp.addAttr("previewAssetId", token);
+		tempResp.addAttr("purchaseToken", retval);
+		//		tempResp.addAttr("previewAssetId", token);
 		return tempResp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("ChannelSelectionStart")
 	public String channelSelectionStart(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("ChannelSelectionStart");
+		ChannelSelectionStartRequest req = RequestEntityUtil.map2Obj(ChannelSelectionStartRequest.class, map);
+
+		// 获取数据
+		PlaybillItemEntity item = NavBusinessDal.getPlayBillItemByAssetId(req.getAssetId());
+
+		String retval = null;
+		if (SelectionStartRequest.OTT.equals(req.getServiceCode()))
+		{
+			retval = item.getPlayUrl();
+		}
+		else
+		{
+			// 生成token
+			String token = NavBusinessDal.addSMKey(item.getPlayUrl());
+			retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
+		}
+
+		// 返回结果
+		ResponseEntity tempResp = new ResponseEntity("ChannelSelectionStartResponse");
+		tempResp.addAttr("purchaseToken", retval);
+		return tempResp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("SelectionResume")
 	public String selectionResume(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("SelectionResume");
+		// TODO test
+		return "";
 	}
 
 	@IdentAnnocation("ValidatePlayEligibility")
 	public String validatePlayEligibility(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("ValidatePlayEligibility");
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("PlayEligibility");
+		resp.addAttr("price", "10");
+		resp.addAttr("orderFlag", "Y");
+		resp.addAttr("rentalExpiration", "20131122445533");
+		resp.addAttr("previewAssetId", "previewAssetId1");
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("AddSavedProgram")
 	public String addSavedProgram(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("AddSavedProgram");
+		return "";
 	}
 
 	@IdentAnnocation("SetResumePoint")
 	public String setResumePoint(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("SetResumePoint");
+		return "";
 	}
 
 	@IdentAnnocation("GetUpsellOffer")
 	public String getUpsellOffer(Map<String, String> map)
 	{
-		throw new UnsupportedOperationException("GetUpsellOffer");
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("GetUpsellOffer");
+		resp.addAttr("serviceId", "serviceId1");
+		resp.addAttr("title", "test_title_test");
+		resp.addAttr("displayPrice", "分");
+		return resp.toXml(null).toString();
 	}
 
 	@IdentAnnocation("GetChannels")
@@ -375,25 +444,33 @@ public class NavBusiness
 		GetChannelsRequest req = RequestEntityUtil.map2Obj(GetChannelsRequest.class, map);
 
 		ResponseEntity retval = new ResponseEntity("Channels");
-		int start = req.getStartAt();
-		start = start >= 0 ? start : 0;
+
+		List<Integer> chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
+		if (chIds == null)
+		{
+			throw new UncheckedNavException("获取频道列表失败！");
+		}
+		int start = req.getStartAt() >= 0 ? req.getStartAt() : 0;
 		int max = req.getMaxItems();
 		int end = start + max;
-		int i = 0;
-		List<Integer> chIds = cache.getListInt(channelIndex(req.getRegionCode(), req.getLanguageCode()));
-		for (Integer chId : chIds)
+		if (end < chIds.size())
 		{
-			if (i >= start)
+			retval.addAttr("restartAtToken", end);
+		}
+		chIds = ArrayUtil.subList(chIds, start, end);
+		if (chIds != null)
+		{
+			List<ChannelEntity> channels = NavBusinessDal.getChannels(chIds);
+
+			for (ChannelEntity chl : channels)
 			{
-				if (i == end)
+				ResponseEntity chlResp = ResponseEntityUtil.obj2Resp(chl, "Channel", null);
+				retval.addChild(chlResp);
+
+				List<PhysicalChannelEntity> phys = NavBusinessDal.getPhysicalChannels(chl.getChlId());
+				for (PhysicalChannelEntity phy : phys)
 				{
-					retval.addAttr("restartAtToken", Integer.toString(i));
-					break;
-				}
-				else
-				{
-					ChannelEntity chl = cache.get(channelKey(chId));
-					retval.addChild(ResponseEntityUtil.obj2Resp(chl, "Channel", null));
+					chlResp.addChild(ResponseEntityUtil.obj2Resp(phy, "Parameter", null));
 				}
 			}
 		}
@@ -410,7 +487,7 @@ public class NavBusiness
 		List<Integer> chIds = null;
 		if (channelIdS.isEmpty())
 		{
-			chIds = cache.getListInt(channelIndex(req.getRegionCode(), req.getLanguageCode()));
+			chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
 		}
 		else
 		{
@@ -423,29 +500,7 @@ public class NavBusiness
 		}
 
 		// 日期信息
-		int days = req.getDays();
-		List<Long> dayLst = null;
-		Date now = new Date();
-		int keepedDays = 7;
-		if (days == 0)
-		{
-			dayLst = new ArrayList<Long>(1);
-			dayLst.add(DateUtil.getPreTimeOfDay(now, 0));
-		}
-		else if (days > 0)
-		{
-			days = days > keepedDays ? keepedDays : days;
-			dayLst = new ArrayList<Long>(days + 1);
-			for (int i = 0; i <= days; i++)
-			{
-				dayLst.add(DateUtil.getPreTimeOfDay(now, i));
-			}
-		}
-		else
-		{
-			dayLst = new ArrayList<Long>(1);
-			dayLst.add(DateUtil.getPreTimeOfDay(now, Math.abs(days)));
-		}
+		List<Long> dayLst = A7Util.calPlayListTime(req);
 
 		// 分页
 		ResponseEntity retval = new ResponseEntity("Programs");
@@ -458,33 +513,29 @@ public class NavBusiness
 		{
 			for (Long day : dayLst)
 			{
-				PlaybillEntity chl = cache.get(CachedKeyUtil.channelPlaybill(chId, day), true);
-				if (chl != null)
+				List<Integer> itemIds = NavBusinessDal.getPlayBillItemIds(chId, day);
+				for (Integer itemId : itemIds)
 				{
-					List<Integer> itemIds = cache.getListInt(CachedKeyUtil.playbillItemList(chl.getPbId()));
-					for (Integer itemId : itemIds)
+					if (i >= start)
 					{
-						if (i >= start)
+						if (i == end)
 						{
-							if (i == end)
-							{
-								retval.addAttr("restartAtToken", Integer.toString(i));
-								break;
-							}
-							else
-							{
-								PlaybillItemEntity item = cache.get(CachedKeyUtil.playbillItemKey(itemId));
-								ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(item, "Program", null);
-								itemResp.addAttr("channelId", chId.toString());
-								long startTime = day + item.getStartTime();
-								long endTime = startTime + item.getDuration() * 1000;
-								itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
-								itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
-								retval.addChild(itemResp);
-							}
+							retval.addAttr("restartAtToken", Integer.toString(i));
+							break;
 						}
-						i++;
+						else
+						{
+							PlaybillItemEntity item = NavBusinessDal.getPalyBillItem(itemId);
+							ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(item, "Program", null);
+							itemResp.addAttr("channelId", chId.toString());
+							long startTime = day + item.getStartTime();
+							long endTime = startTime + item.getDuration() * 1000;
+							itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
+							itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
+							retval.addChild(itemResp);
+						}
 					}
+					i++;
 				}
 			}
 		}
@@ -496,5 +547,38 @@ public class NavBusiness
 	public String getAssociatedPrograms(Map<String, String> map)
 	{
 		throw new UnsupportedOperationException("GetAssociatedPrograms");
+	}
+
+	@IdentAnnocation("SearchContentInfo")
+	public String searchContentInfo(Map<String, String> map)
+	{
+		// TODO test
+		ResponseEntity resp = new ResponseEntity("ContentInfos");
+		resp.addAttr("totalResults", 10);
+		resp.addAttr("restartAtToken", -1);
+		for (int i = 0; i < 10; i++)
+		{
+			ResponseEntity temp = new ResponseEntity("Content");
+			temp.addAttr("providerld", "providerld");
+			temp.addAttr("assetld", "assetld" + i);
+			temp.addAttr("contentName", "contentName" + i);
+			temp.addAttr("contentType", "9");
+			temp.addAttr("sortIndex", "1");
+			temp.addAttr("actorsDisplay", "player1 player2 player3");
+			temp.addAttr("imageLocation", "imageLocation");
+			
+			ResponseEntity temp1 = new ResponseEntity("Director", "director1");
+			ResponseEntity temp2 = new ResponseEntity("Director", "director2");
+			temp.addChild(temp1);
+			temp.addChild(temp2);
+			
+			ResponseEntity temp3 = new ResponseEntity("Producter", "productor1");
+			ResponseEntity temp4 = new ResponseEntity("Producter", "productor2");
+			temp.addChild(temp3);
+			temp.addChild(temp4);
+			
+			resp.addChild(temp);
+		}
+		return resp.toXml(null).toString();
 	}
 }

@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<head>
+    <title>报表查看</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="../../jetsenclient/javascript/js_base.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/report_comm.js"></script>
+    <script type="text/javascript" src="javascript/reportmanage.js"></script>
+
+</head>
+<body onload="pageInit();" scroll="no">
+	<div class="list-title" style="border: none;margin-right:3px" id="divLeftTitle">
+	        <div class="list-title-left">
+	            报表树
+	        </div>
+	        <div class="list-title-right">
+	        </div>
+    </div>
+    <div id="divReportTreeContent" style="overflow: auto;">
+    </div>
+    <div id="divReportInfoContent" style="overflow: auto;margin-top: -3px;margin-right: -3px;margin-bottom: -3px">
+		<!--<textarea id="txt_TABLEINFO" style="width: expression(window.screen.width / 1.5 - 10); height: expression(window.screen.height / 1.55); border-width: 0px;" readonly></textarea>-->
+		<iframe id="frmTableInfo" style="width: 100%; height: 100%; border-width: 0px; position: absolute;" frameborder="0"></iframe>
+	</div>
+	<div class="page-frame" id="divPageFrame" />
+</body>
+</html>
