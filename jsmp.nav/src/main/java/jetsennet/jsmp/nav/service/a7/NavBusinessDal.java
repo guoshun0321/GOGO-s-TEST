@@ -283,7 +283,7 @@ public class NavBusinessDal
 
 		Set<String> keys = tempMap.keySet();
 		retval = new ArrayList<ColumnEntity>(keys.size());
-		for (String key : keys)
+		for (String key : topKeyStrs)
 		{
 			Object obj = tempMap.get(key);
 			if (obj != null && obj instanceof ColumnEntity)

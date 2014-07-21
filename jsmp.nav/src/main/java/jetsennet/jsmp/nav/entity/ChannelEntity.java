@@ -30,6 +30,7 @@ public class ChannelEntity implements Serializable
 	 * 唯一资产ID
 	 */
 	@Column("ASSET_ID")
+	@IdentAnnocation("assetId")
 	private String assetId;
 	/**
 	 * 频道状态：0(默认)，不可用；1：可用

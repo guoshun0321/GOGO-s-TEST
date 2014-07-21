@@ -1,10 +1,13 @@
 package jetsennet.jsmp.nav.service.a7;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.ws.spi.Invoker;
 
 import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
@@ -56,7 +59,7 @@ public class NavBusiness
 			{
 				if (method.isAnnotationPresent(IdentAnnocation.class))
 				{
-					methodMap.put(method.getName(), method);
+					methodMap.put(method.getAnnotation(IdentAnnocation.class).value(), method);
 				}
 			}
 		}
@@ -67,7 +70,7 @@ public class NavBusiness
 		}
 	}
 
-	public String invoke(String method, Map<String, String> map) throws Exception
+	public String invoke(String method, Map<String, String> map) throws Throwable
 	{
 		String retval = null;
 		Method m = methodMap.get(method);
@@ -80,17 +83,18 @@ public class NavBusiness
 			{
 				retval = (String) m.invoke(this, new Object[] { map });
 			}
-			catch (Exception ex)
+			catch (InvocationTargetException ex)
 			{
 				msg.setException(true);
-				throw ex;
+				throw ex.getTargetException();
 			}
 			msg.setEndTime(System.currentTimeMillis());
 			Monitor.getInstance().put(msg);
 		}
 		else
 		{
-			logger.error("不正确的方法，不存在方法：" + method);
+			logger.error("不存在方法：" + method);
+			throw new UncheckedNavException("不存在方法：" + method);
 		}
 		return retval;
 	}
@@ -177,7 +181,7 @@ public class NavBusiness
 				List<ProgramEntity> pgms = NavBusinessDal.getPrograms(ArrayUtil.subList(programIds, start, end));
 				for (ProgramEntity pgm : pgms)
 				{
-					retval.addChild(A7Util.getContentItem(pgm, column));
+					retval.addChild(A7Util.getContent(pgm, column));
 				}
 			}
 		}

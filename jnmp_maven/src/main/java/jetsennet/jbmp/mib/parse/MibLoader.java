@@ -156,7 +156,5 @@ public final class MibLoader
         files.add(new File("E:/JNMP/JnmpMibUtil/MIBS/RX1290/TTVTYPES.mib"));
         MibLoader loader = new MibLoader();
         loader.update(loader.load(files.toArray(new File[0])), 6);
-        System.gc();
-        TimeUnit.MINUTES.sleep(2);
     }
 }

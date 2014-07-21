@@ -1,13 +1,7 @@
 package jetsennet.jsmp.nav.service.a7;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -18,10 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import jetsennet.jsmp.nav.util.ServletUtil;
 import jetsennet.util.IOUtil;
 
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +28,7 @@ public class NavServicePost extends HttpServlet
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
 		logger.error("NavServicePost不支持GET操作！");
-		ErrorHandle.illegalRequest(resp);
+		ErrorHandle.illegalRequest(resp, "NavServicePost不支持GET操作！");
 	}
 
 	@Override
@@ -61,16 +51,17 @@ public class NavServicePost extends HttpServlet
 					out.write(str.getBytes("UTF-8"));
 					out.flush();
 				}
-				catch (Exception ex)
+				catch (Throwable ex)
 				{
 					logger.error("", ex);
-					ErrorHandle.illegalRequest(resp);
+					ErrorHandle.illegalRequest(resp, ex, null);
 				}
 			}
 			else
 			{
-				logger.error("不合法的方法名称：" + method);
-				ErrorHandle.illegalRequest(resp);
+				String msg = "不合法的方法名称：" + method;
+				logger.error(msg);
+				ErrorHandle.illegalRequest(resp, msg);
 			}
 		}
 		finally

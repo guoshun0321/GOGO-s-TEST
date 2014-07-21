@@ -160,6 +160,44 @@ public class A7Util
 	}
 
 	/**
+	 * 获取节目基本信息
+	 * 
+	 * @param prog
+	 * @param column
+	 * @return
+	 */
+	public static final ResponseEntity getContent(ProgramEntity prog, ColumnEntity column)
+	{
+		ResponseEntity retval = new ResponseEntity("Content");
+		if (prog == null)
+		{
+			return retval;
+		}
+
+		retval.addAttr("assetld", prog.getAssetId());
+		if (column != null)
+		{
+			retval.addAttr("folderAssetId", column.getAssetId());
+		}
+		retval.addAttr("contentName", prog.getPgmName());
+		retval.addAttr("contentType", prog.getContentType());
+		retval.addAttr("sortIndex", prog.getSeqNo());
+		// 添加导演/制片/演员信息
+		addCreatorInfo(prog, retval);
+
+		// 添加图片信息
+		List<PictureEntity> pics = NavBusinessDal.getPgmPictures(prog.getPgmId());
+		for (PictureEntity pic : pics)
+		{
+			if (pic != null)
+			{
+				retval.addChild(ResponseEntityUtil.obj2Resp(pic, "Image", null));
+			}
+		}
+		return retval;
+	}
+
+	/**
 	 * 获取节目详细信息
 	 * 
 	 * @param tempProg
