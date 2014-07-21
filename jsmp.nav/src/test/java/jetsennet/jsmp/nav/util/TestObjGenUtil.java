@@ -142,9 +142,18 @@ public class TestObjGenUtil
 			DataCacheOp.getInstance().deleteAll();
 
 			// top column
-			List<ColumnEntity> level1Chs = new ArrayList<ColumnEntity>(baseColumn);
+			List<ColumnEntity> level1Chs = new ArrayList<ColumnEntity>(baseColumn * 2);
+			
 			Map<String, Object> special = new HashMap<String, Object>();
+			// 一级栏目，一般
 			clearMap(special);
+			special.put("COLUMN_TYPE", 1);
+			special.put("PARENT_ID", 0);
+			special.put("PARENT_ASSETID", "");
+			level1Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, baseColumn, special, columnId));
+			// 一级栏目，频道
+			clearMap(special);
+			special.put("COLUMN_TYPE", 10);
 			special.put("PARENT_ID", 0);
 			special.put("PARENT_ASSETID", "");
 			level1Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, baseColumn, special, columnId));
@@ -271,7 +280,7 @@ public class TestObjGenUtil
 			multiInsert(files);
 
 			List<ChannelEntity> chls = new ArrayList<ChannelEntity>(prog4Chls.size());
-			List<PhysicalChannelEntity> phys = new ArrayList<PhysicalChannelEntity>(prog4Chls.size() * 15);
+			List<PhysicalChannelEntity> phys = new ArrayList<PhysicalChannelEntity>(prog4Chls.size() * 2);
 			for (ProgramEntity prog : prog4Chls)
 			{
 				clearMap(special);
@@ -281,7 +290,200 @@ public class TestObjGenUtil
 
 				clearMap(special);
 				special.put("CHL_ID", ch.getChlId());
-				phys.addAll(TestObjGenUtil.genObj(PhysicalChannelEntity.class, 15, special, pchannelId));
+				phys.addAll(TestObjGenUtil.genObj(PhysicalChannelEntity.class, 2, special, pchannelId));
+			}
+			multiInsert(chls);
+			multiInsert(phys);
+
+			// playbill
+			Date date = SafeDateFormater.parse("1987-11-22 11:22:33");
+			Date now = new Date();
+			List<PlaybillEntity> bills = new ArrayList<PlaybillEntity>(chls.size() * 2);
+			for (ChannelEntity channel : chls)
+			{
+				clearMap(special);
+				special.put("CHL_ID", channel.getChlId());
+				special.put("PLAY_DATE", now);
+				bills.addAll(TestObjGenUtil.genObj(PlaybillEntity.class, 1, special, pbId));
+
+				clearMap(special);
+				special.put("CHL_ID", channel.getChlId());
+				special.put("PLAY_DATE", DateUtil.preDate(now, 1));
+				special.put("ASSET_ID", "UUID");
+				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
+				bills.addAll(TestObjGenUtil.genObj(PlaybillEntity.class, 1, special, pbId));
+			}
+			multiInsert(bills);
+
+			List<PlaybillItemEntity> items = new ArrayList<PlaybillItemEntity>(bills.size() * 105);
+			for (PlaybillEntity bill : bills)
+			{
+				special = new HashMap<String, Object>();
+				special.put("PB_ID", bill.getPbId());
+				special.put("ASSET_ID", "UUID");
+				special.put("LANGUAGE_CODE", "zh_CN");
+				special.put("REGION_CODE", "");
+				items.addAll(TestObjGenUtil.genObj(PlaybillItemEntity.class, 105, special, pbiId));
+			}
+			multiInsert(items);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		DataCacheOp.getInstance().shutdown();
+	}
+	
+	public static void builderCacheLevel2(int baseColumn) throws Exception
+	{
+
+		try
+		{
+			// clean
+			DataCacheOp.getInstance().deleteAll();
+
+			// top column
+			List<ColumnEntity> level1Chs = new ArrayList<ColumnEntity>(baseColumn * 2);
+			
+			Map<String, Object> special = new HashMap<String, Object>();
+			// 一级栏目，一般
+			clearMap(special);
+			special.put("COLUMN_TYPE", 1);
+			special.put("PARENT_ID", 0);
+			special.put("PARENT_ASSETID", "");
+			level1Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, baseColumn, special, columnId));
+			// 一级栏目，频道
+			clearMap(special);
+			special.put("COLUMN_TYPE", 10);
+			special.put("PARENT_ID", 0);
+			special.put("PARENT_ASSETID", "");
+			level1Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, baseColumn, special, columnId));
+			multiInsert(level1Chs);
+
+			List<ColumnEntity> level2Chs = new ArrayList<ColumnEntity>(baseColumn * 10);
+			clearMap(special);
+			for (ColumnEntity level1Ch : level1Chs)
+			{
+				special.put("COLUMN_TYPE", level1Ch.getColumnType());
+				special.put("PARENT_ID", level1Ch.getColumnId());
+				special.put("PARENT_ASSETID", level1Ch.getAssetId());
+				level2Chs.addAll(TestObjGenUtil.genObj(ColumnEntity.class, 10, special, columnId));
+			}
+			multiInsert(level2Chs);
+
+			List<ProgramEntity> progs = new ArrayList<ProgramEntity>(baseColumn * 500);
+			List<ProgramEntity> prog4Chls = new ArrayList<ProgramEntity>(baseColumn * 500);
+			clearMap(special);
+			for (ColumnEntity level3Ch : level2Chs)
+			{
+				special.put("CONTENT_TYPE", 11); // 综艺
+				special.put("COLUMN_ID", level3Ch.getColumnId());
+				special.put("COLUMN_ASSETID", level3Ch.getAssetId());
+				progs.addAll(TestObjGenUtil.genObj(ProgramEntity.class, 5, special, pgmId));
+
+				special.put("CONTENT_TYPE", 16); // 频道
+				prog4Chls.addAll(TestObjGenUtil.genObj(ProgramEntity.class, 5, special, pgmId));
+			}
+			multiInsert(progs);
+			multiInsert(prog4Chls);
+
+			List<ProgramEntity> prog2prog = new ArrayList<ProgramEntity>(baseColumn * 250);
+			List<Pgm2PgmEntity> pgm2pgm = new ArrayList<Pgm2PgmEntity>(baseColumn * 50);
+			clearMap(special);
+			for (ProgramEntity prog : progs)
+			{
+				special.put("CONTENT_TYPE", 11); // 综艺
+				special.put("COLUMN_ID", prog.getColumnId());
+				special.put("COLUMN_ASSETID", prog.getAssetId());
+				List<ProgramEntity> tempProgs = TestObjGenUtil.genObj(ProgramEntity.class, 5, special, pgmId);
+				prog2prog.addAll(tempProgs);
+
+				StringBuilder sb = new StringBuilder();
+				int rel = 0;
+				for (ProgramEntity tempProg : tempProgs)
+				{
+					sb.append(tempProg.getPgmId()).append(",").append(rel).append(";");
+					rel++;
+					if (rel == 4)
+					{
+						rel = 10;
+					}
+				}
+				sb.deleteCharAt(sb.length() - 1);
+				pgm2pgm.add(new Pgm2PgmEntity(prog.getPgmId(), sb.toString()));
+			}
+			multiInsert(prog2prog);
+			multiInsert(pgm2pgm);
+
+			List<ProgramEntity> allProgs = new ArrayList<ProgramEntity>(baseColumn * 350);
+			allProgs.addAll(progs);
+			allProgs.addAll(prog4Chls);
+			allProgs.addAll(prog2prog);
+
+			int progSize = allProgs.size();
+			List<PgmBaseEntity> pgmBases = new ArrayList<PgmBaseEntity>(progSize);
+			List<DescauthorizeEntity> authors = new ArrayList<DescauthorizeEntity>(progSize);
+			List<CreatorEntity> creators = new ArrayList<CreatorEntity>(progSize * 8);
+			List<PictureEntity> pics = new ArrayList<PictureEntity>(progSize * 3);
+			List<FileItemEntity> files = new ArrayList<FileItemEntity>(progSize * 4);
+			for (ProgramEntity prog : allProgs)
+			{
+				clearMap(special);
+				special.put("PGM_ID", prog.getPgmId());
+				special.put("PGM_ASSETID", prog.getAssetId());
+				pgmBases.addAll(TestObjGenUtil.genObj(PgmBaseEntity.class, 1, special, pgmBaseId));
+
+				clearMap(special);
+				special.put("ROLE_MODE", "43");
+				special.put("PGM_ID", prog.getPgmId());
+				creators.addAll(TestObjGenUtil.genObj(CreatorEntity.class, 1, special, creatorId));
+				special.put("ROLE_MODE", "44");
+				creators.addAll(TestObjGenUtil.genObj(CreatorEntity.class, 1, special, creatorId));
+				special.put("ROLE_MODE", "45");
+				creators.addAll(TestObjGenUtil.genObj(CreatorEntity.class, 1, special, creatorId));
+				special.put("ROLE_MODE", "46");
+				creators.addAll(TestObjGenUtil.genObj(CreatorEntity.class, 1, special, creatorId));
+				special.put("ROLE_MODE", "42");
+				creators.addAll(TestObjGenUtil.genObj(CreatorEntity.class, 2, special, creatorId));
+				special.put("ROLE_MODE", "48");
+				creators.addAll(TestObjGenUtil.genObj(CreatorEntity.class, 2, special, creatorId));
+
+				clearMap(special);
+				special.put("PGM_ID", prog.getPgmId());
+				authors.addAll(TestObjGenUtil.genObj(DescauthorizeEntity.class, 1, special, authId));
+
+				clearMap(special);
+				special.put("PGM_ID", prog.getPgmId());
+				special.put("PGM_ASSETID", prog.getAssetId());
+				pics.addAll(TestObjGenUtil.genObj(PictureEntity.class, 3, special, picId));
+
+				clearMap(special);
+				special.put("PGM_ID", prog.getPgmId());
+				special.put("PGM_ASSETID", prog.getAssetId());
+				special.put("VIDEO_QUALITY", 2);
+				special.put("ASPECT_RATIO", "Widescreen");
+				files.addAll(TestObjGenUtil.genObj(FileItemEntity.class, 4, special, fileId));
+
+			}
+			multiInsert(pgmBases);
+			multiInsert(creators);
+			multiInsert(authors);
+			multiInsert(pics);
+			multiInsert(files);
+
+			List<ChannelEntity> chls = new ArrayList<ChannelEntity>(prog4Chls.size());
+			List<PhysicalChannelEntity> phys = new ArrayList<PhysicalChannelEntity>(prog4Chls.size() * 2);
+			for (ProgramEntity prog : prog4Chls)
+			{
+				clearMap(special);
+				special.put("ASSET_ID", prog.getAssetId());
+				ChannelEntity ch = TestObjGenUtil.genObj(ChannelEntity.class, 1, special, channelId).get(0);
+				chls.add(ch);
+
+				clearMap(special);
+				special.put("CHL_ID", ch.getChlId());
+				phys.addAll(TestObjGenUtil.genObj(PhysicalChannelEntity.class, 2, special, pchannelId));
 			}
 			multiInsert(chls);
 			multiInsert(phys);
@@ -381,6 +583,7 @@ public class TestObjGenUtil
 
 	public static void main(String[] args) throws Exception
 	{
-		TestObjGenUtil.builderCache(1);
+//		TestObjGenUtil.builderCache(1);
+		TestObjGenUtil.builderCacheLevel2(10);
 	}
 }
