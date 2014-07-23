@@ -102,15 +102,6 @@ public class DataHandleUtil
 		}
 		factory.openSession().insert(sqls);
 
-		//		for (Object obj : objs)
-		//		{
-		//			DataSynContentEntity content = new DataSynContentEntity();
-		//			content.setObj(obj);
-		//			content.setOpFlag(DataSynContentEntity.OP_FLAG_MOD);
-		//			entity.addContent(content);
-		//		}
-		//		handleData(entity, null);
-
 	}
 
 }

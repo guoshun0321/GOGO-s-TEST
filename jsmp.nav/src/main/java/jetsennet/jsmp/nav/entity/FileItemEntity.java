@@ -18,7 +18,7 @@ public class FileItemEntity implements Serializable
 	 * 文件条目ID
 	 */
 	@Id
-	@Column("ID")
+	@Column("FILE_ID")
 	private String id;
 	/**
 	 * 文件媒资唯一ID

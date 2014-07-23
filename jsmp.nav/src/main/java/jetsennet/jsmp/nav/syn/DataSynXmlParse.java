@@ -186,7 +186,7 @@ public class DataSynXmlParse
 			FieldInfo fieldInfo = table.getFieldInfo(key);
 			if (fieldInfo != null)
 			{
-				fieldInfo.set(retval, value);
+				setValue(fieldInfo, retval, value);
 			}
 			else
 			{
@@ -197,6 +197,20 @@ public class DataSynXmlParse
 			}
 		}
 		return retval;
+	}
+
+	private static void setValue(FieldInfo field, Object obj, String value)
+	{
+		Class<?> fieldClass = field.getCls();
+		if (value.equalsIgnoreCase("null")
+			&& (fieldClass == int.class || fieldClass == long.class || fieldClass == double.class || fieldClass == short.class || fieldClass == char.class))
+		{
+			field.set(obj, 0);
+		}
+		else
+		{
+			field.set(obj, value);
+		}
 	}
 
 	private static int getAttrInt(Element ele, String name)

@@ -96,6 +96,7 @@ public class DataSynchronizedJms
 					session.close();
 				}
 				logger.info("关闭JMS同步模块成功！");
+				this.isStart = false;
 			}
 			else
 			{
