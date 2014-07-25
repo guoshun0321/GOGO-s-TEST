@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+	debug="false">
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
+		<param name="Target" value="System.out" />
+		<param name="Threshold" value="DEBUG" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-4r %-5p [%t] %37c %3x - %m%n" />
+		</layout>
+	</appender>
+	<appender name="FILE"
+		class="org.apache.log4j.JetsenDailyRollingFileAppender">
+		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
+		<param name="File" value="d:/log/jbmp.log" />
+		<param name="Append" value="true" />
+		<param name="Threshold" value="DEBUG" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="10" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-4r %-5p [%-20t] %37c %3x - %m%n" />
+		</layout>
+	</appender>
+	<appender name="EVENT"
+		class="org.apache.log4j.JetsenDailyRollingFileAppender">
+		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
+		<param name="File" value="d:/log/event.log" />
+		<param name="Append" value="true" />
+		<param name="Threshold" value="DEBUG" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="10" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-4r %-5p [%-20t] %8c %3x - %m%n" />
+		</layout>
+	</appender>
+	<appender name="CLUSTER"
+		class="org.apache.log4j.JetsenDailyRollingFileAppender">
+		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
+		<param name="File" value="d:/log/cluster.log" />
+		<param name="Append" value="true" />
+		<param name="Threshold" value="DEBUG" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="10" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-4r %-5p [%-20t] %8c %3x - %m%n" />
+		</layout>
+	</appender>
+	<appender name="PANEL1" class="jetsennet.jbmp.ui.log.Log4UI">
+		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
+		<param name="RegSwingName" value="Test" />
+		<param name="Threshold" value="INFO" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-4r %-5p [%t] %37c %3x - %m%n" />
+		</layout>
+	</appender>
+
+	<root>
+		<priority value="DEBUG" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+</log4j:configuration>
