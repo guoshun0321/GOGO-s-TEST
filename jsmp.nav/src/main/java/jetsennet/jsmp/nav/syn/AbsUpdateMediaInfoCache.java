@@ -19,13 +19,22 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 	 */
 	protected void add2CachedSet(String cachedKey, int addition)
 	{
+		List<Integer> valueLst = null;
 		Object cachedValue = cache.get(cachedKey, true);
 		if (cachedValue == null || !(cachedValue instanceof List))
 		{
-			cachedValue = new ArrayList<Integer>();
+			valueLst = new ArrayList<Integer>();
 		}
-		((List<Integer>) cachedValue).add(addition);
-		cache.put(cachedKey, cachedValue);
+		else
+		{
+			valueLst = (List<Integer>) cachedValue;
+		}
+
+		if (!valueLst.contains(addition))
+		{
+			valueLst.add(addition);
+		}
+		cache.put(cachedKey, valueLst);
 	}
 
 	/**
@@ -39,6 +48,8 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 		if (cachedValue != null && (cachedValue instanceof List))
 		{
 			((List<Integer>) cachedValue).remove(discard);
+		} else {
+			cachedValue = new ArrayList<>();
 		}
 		cache.put(cachedKey, cachedValue);
 	}
@@ -51,13 +62,22 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 	 */
 	protected void add2CachedSet(String cachedKey, String addition)
 	{
+		List<String> valueLst = null;
 		Object cachedValue = cache.get(cachedKey, true);
 		if (cachedValue == null || !(cachedValue instanceof List))
 		{
-			cachedValue = new ArrayList<String>();
+			valueLst = new ArrayList<String>();
 		}
-		((List<String>) cachedValue).add(addition);
-		cache.put(cachedKey, cachedValue);
+		else
+		{
+			valueLst = (List<String>) cachedValue;
+		}
+
+		if (!valueLst.contains(addition))
+		{
+			valueLst.add(addition);
+		}
+		cache.put(cachedKey, valueLst);
 	}
 
 	/**

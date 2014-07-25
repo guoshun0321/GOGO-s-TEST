@@ -21,6 +21,10 @@ public class DataSynTest extends TestCase
 
 		DataSynEntity synData = DataSynXmlParse.parseXml(xml);
 		DataHandleUtil.handleData(synData, xml);
+		
+		xml = "<copPortalMsg><header><messageID>1406182961785</messageID><sendID>JCOP</sendID><recvID>Portal</recvID><opCode>COP_PORTAL_META_PUB</opCode><time>1406182961785</time><responseUrl>null</responseUrl><msgType>REQUEST</msgType></header><body><programTable opFlag=\"1\"><NS_PROGRAM><PGM_ID>582</PGM_ID></NS_PROGRAM></programTable><baseTable opFlag=\"1\"><NS_PGMBASE><ID>582</ID></NS_PGMBASE></baseTable><copyRightTable opFlag=\"1\"><NS_DESCAUTHORIZE><ID>A1BE96DE-6D09-4D35-AFFE-2D483F942049_582</ID></NS_DESCAUTHORIZE></copyRightTable></body></copPortalMsg>";
+		synData = DataSynXmlParse.parseXml(xml);
+		DataHandleUtil.handleData(synData, xml);
 	}
 
 }

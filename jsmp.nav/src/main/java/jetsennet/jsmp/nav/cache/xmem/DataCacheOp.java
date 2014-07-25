@@ -18,6 +18,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.code.yanf4j.core.impl.StandardSocketOption;
 
+/**
+ * memcached操作。非线程安全
+ * 
+ * @author 郭祥
+ */
 public class DataCacheOp
 {
 
@@ -48,6 +53,10 @@ public class DataCacheOp
 			//			builder.setConnectionPoolSize(Config.CACHE_POOLSIZE);
 			builder.setSocketOption(StandardSocketOption.TCP_NODELAY, false);
 			client = builder.build();
+			if (Config.ISDEBUG)
+			{
+				logger.debug("初始化缓存");
+			}
 		}
 		catch (Exception ex)
 		{
@@ -65,6 +74,10 @@ public class DataCacheOp
 	{
 		try
 		{
+			if (Config.ISDEBUG)
+			{
+				logger.debug("清空缓存");
+			}
 			client.flushAll();
 		}
 		catch (Exception ex)
@@ -89,6 +102,10 @@ public class DataCacheOp
 	{
 		try
 		{
+			if (Config.ISDEBUG)
+			{
+				logger.debug(String.format("向缓存添加数据: %s , [%s], %s", key, value, timeout));
+			}
 			client.set(key, timeout, value);
 		}
 		catch (Exception ex)
@@ -99,28 +116,29 @@ public class DataCacheOp
 
 	public <T> T get(String key)
 	{
-		if (key == null)
-		{
-			return null;
-		}
 		return this.get(key, false);
 	}
 
-	public int getInt(String key)
-	{
-		if (key == null)
-		{
-			return -1;
-		}
-		return (int) this.get(key, false);
-	}
-
+	/**
+	 * 从缓存获取数据
+	 * 
+	 * @param key 数据key
+	 * @param isNullable 为null时是否抛出异常
+	 * @return
+	 */
 	public <T> T get(String key, boolean isNullable)
 	{
 		Object retval = null;
 		try
 		{
-			retval = client.get(key, Config.CACHE_TIMEOUT);
+			if (Config.ISDEBUG)
+			{
+				logger.debug(String.format("从缓存获取数据: %s", key));
+			}
+			if (key != null)
+			{
+				retval = client.get(key, Config.CACHE_TIMEOUT);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -143,57 +161,26 @@ public class DataCacheOp
 		}
 	}
 
-	public List<Integer> getListInt(String key)
-	{
-		List<Integer> retval = null;
-		try
-		{
-			retval = client.get(key, Config.CACHE_TIMEOUT);
-		}
-		catch (Exception ex)
-		{
-			this.exceptionHandle(ex);
-		}
-		return retval;
-	}
-
-	public List<String> getListString(String key)
-	{
-		List<String> retval = null;
-		try
-		{
-			retval = client.get(key, Config.CACHE_TIMEOUT);
-		}
-		catch (Exception ex)
-		{
-			this.exceptionHandle(ex);
-		}
-		return retval;
-	}
-
-	public <T> List<T> getList(String key)
-	{
-		List<T> retval = null;
-		try
-		{
-			retval = client.get(key, Config.CACHE_TIMEOUT);
-		}
-		catch (Exception ex)
-		{
-			this.exceptionHandle(ex);
-		}
-		return retval;
-	}
-
+	/**
+	 * 从缓存批量获取数据
+	 * 
+	 * @param key 数据key
+	 * @param isNullable 为null时是否抛出异常
+	 * @return
+	 */
 	public Map<String, Object> gets(List<String> keys)
 	{
-		if (keys == null)
+		if (keys == null || keys.isEmpty())
 		{
 			return new HashMap<String, Object>(0);
 		}
 		Map<String, Object> retval = null;
 		try
 		{
+			if (Config.ISDEBUG)
+			{
+				logger.debug(String.format("从缓存获取数据: %s", keys));
+			}
 			retval = client.get(keys, Config.CACHE_TIMEOUT);
 		}
 		catch (Exception ex)
@@ -203,11 +190,21 @@ public class DataCacheOp
 		return retval;
 	}
 
+	/**
+	 * 从缓存中删除数据
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public Object del(String key)
 	{
 		Object retval = null;
 		try
 		{
+			if (Config.ISDEBUG)
+			{
+				logger.debug(String.format("从缓存删除数据: %s", key));
+			}
 			retval = client.delete(key);
 		}
 		catch (Exception ex)
@@ -215,6 +212,31 @@ public class DataCacheOp
 			this.exceptionHandle(ex);
 		}
 		return retval;
+	}
+
+	public int getInt(String key)
+	{
+		if (key == null)
+		{
+			return -1;
+		}
+		return (int) this.get(key, false);
+	}
+
+	public List<Integer> getListInt(String key)
+	{
+		return this.get(key, true);
+	}
+
+	public List<String> getListString(String key)
+	{
+		return this.get(key, true);
+
+	}
+
+	public <T> List<T> getList(String key)
+	{
+		return this.get(key, true);
 	}
 
 	/**
@@ -226,6 +248,10 @@ public class DataCacheOp
 		{
 			if (this.client != null)
 			{
+				if (Config.ISDEBUG)
+				{
+					logger.debug("开启缓存");
+				}
 				this.client = builder.build();
 			}
 		}
@@ -247,6 +273,10 @@ public class DataCacheOp
 	{
 		try
 		{
+			if (Config.ISDEBUG)
+			{
+				logger.debug("关闭缓存");
+			}
 			this.client.shutdown();
 		}
 		catch (Exception ex)
@@ -260,6 +290,11 @@ public class DataCacheOp
 		}
 	}
 
+	/**
+	 * 异常处理
+	 * 
+	 * @param ex
+	 */
 	private void exceptionHandle(Exception ex)
 	{
 		if (ex instanceof MemcachedException)
@@ -277,5 +312,14 @@ public class DataCacheOp
 			logger.error("", ex);
 			throw new CacheException(ex);
 		}
+	}
+
+	/**
+	 * 获取原生client
+	 * @return
+	 */
+	public MemcachedClient getClient()
+	{
+		return this.client;
 	}
 }
