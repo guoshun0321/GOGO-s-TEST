@@ -5,15 +5,15 @@
 	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
 		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
 		<param name="Target" value="System.out" />
-		<param name="Threshold" value="INFO" />
+		<param name="Threshold" value="DEBUG" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d %-4r %-5p [%t] %37c %3x - %m%n" />
 		</layout>
 	</appender>
 	<appender name="FILE"
-		class="org.apache.log4j.JetsenDailyRollingFileAppender">
+		class="org.apache.log4j.DailyRollingFileAppender">
 		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
-		<param name="File" value="d:/log/jbmp.log" />
+		<param name="File" value="/tmp/jsmp.nav.log/test/jsmp.nav.log" />
 		<param name="Append" value="true" />
 		<param name="Threshold" value="DEBUG" />
 		<param name="MaxFileSize" value="100MB" />
@@ -32,10 +32,20 @@
 		</layout>
 	</appender>
 
-	<root>
+	<category name="jetsennet" additivity="false">
 		<priority value="DEBUG" />
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="PANEL1" />
+		<appender-ref ref="FILE" />
+	</category>
+
+	<category name="com.google" additivity="false">
+		<priority value="DEBUG" />
+		<appender-ref ref="FILE1" />
+	</category>
+
+	<root>
+		<priority value="DEBUG" />
 	</root>
 
 </log4j:configuration>

@@ -202,10 +202,25 @@ public class DataSynXmlParse
 	private static void setValue(FieldInfo field, Object obj, String value)
 	{
 		Class<?> fieldClass = field.getCls();
-		if (value.equalsIgnoreCase("null")
-			&& (fieldClass == int.class || fieldClass == long.class || fieldClass == double.class || fieldClass == short.class || fieldClass == char.class))
+		if (value.equalsIgnoreCase("null"))
 		{
-			field.set(obj, 0);
+			logger.info("null debug:" + field.getName());
+			if (fieldClass == int.class
+				|| fieldClass == long.class
+				|| fieldClass == double.class
+				|| fieldClass == short.class
+				|| fieldClass == char.class)
+			{
+				field.set(obj, 0);
+			}
+			else if (fieldClass == String.class)
+			{
+				field.set(obj, "");
+			}
+			else
+			{
+				field.set(obj, value);
+			}
 		}
 		else
 		{

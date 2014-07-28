@@ -1,10 +1,12 @@
 package jetsennet.jsmp.nav.syn.db;
 
 import jetsennet.orm.executor.resultset.ResultSetHandleFactory;
+import jetsennet.orm.executor.resultset.ResultSetHandlePojo;
 import jetsennet.orm.session.Session;
 import jetsennet.orm.session.SqlSessionFactory;
 import jetsennet.orm.sql.ISql;
 import jetsennet.orm.sql.Sql;
+import jetsennet.orm.sql.SqlTypeEnum;
 import jetsennet.orm.tableinfo.FieldInfo;
 import jetsennet.orm.tableinfo.TableInfo;
 
@@ -110,7 +112,14 @@ public class DataSynDb
 	public static DataSynDbResult delete(Object obj)
 	{
 		Session session = factory.openSession();
-		int num = session.deleteByObj(obj);
+		TableInfo info = factory.getTableInfo(obj.getClass());
+		ISql sql = Sql.select("*").from(info.getTableName()).where(info.genFilterFromObject(obj));
+		obj = session.query(sql, new ResultSetHandlePojo<>(obj.getClass(), info));
+		int num = 0;
+		if (obj != null)
+		{
+			num = session.deleteByObj(obj);
+		}
 		return new DataSynDbResult(DataSynDbResult.TYPE_DELETE, obj, num);
 	}
 }
