@@ -96,7 +96,7 @@ public abstract class AbsUpdateMediaInfoCache<T> implements IDataSynCache<T>
 	}
 
 	/**
-	 * 将字符数据添加到cache
+	 * 将对象数据添加到cache
 	 * 
 	 * @param cachedKey
 	 * @param addition

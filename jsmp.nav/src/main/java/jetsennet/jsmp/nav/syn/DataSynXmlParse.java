@@ -136,13 +136,19 @@ public class DataSynXmlParse
 			List<Element> children = bodyEle.getChildren();
 			for (Element child : children)
 			{
-				DataSynContentEntity content = new DataSynContentEntity();
-				content.setOpFlag(getAttrInt(child, "opFlag"));
+				int opFlag = getAttrInt(child, "opFlag");
 
-				Element contentChild = (Element) child.getChildren().get(0);
-				content.setObj(content2Entity(contentChild));
-
-				entity.addContent(content);
+				List<Element> contentChildren = child.getChildren();
+				if (contentChildren != null && !contentChildren.isEmpty())
+				{
+					for (Element contentChild : contentChildren)
+					{
+						DataSynContentEntity content = new DataSynContentEntity();
+						content.setOpFlag(opFlag);
+						content.setObj(content2Entity(contentChild));
+						entity.addContent(content);
+					}
+				}
 			}
 		}
 		catch (Exception ex)
@@ -179,10 +185,10 @@ public class DataSynXmlParse
 		{
 			String key = child.getName();
 			String value = child.getText();
-			if (Config.ISDEBUG)
-			{
-				logger.debug(String.format("处理参数：%s, %s", key, value));
-			}
+			//			if (Config.ISDEBUG)
+			//			{
+			//				logger.debug(String.format("处理参数：%s, %s", key, value));
+			//			}
 			FieldInfo fieldInfo = table.getFieldInfo(key);
 			if (fieldInfo != null)
 			{
@@ -204,7 +210,6 @@ public class DataSynXmlParse
 		Class<?> fieldClass = field.getCls();
 		if (value.equalsIgnoreCase("null"))
 		{
-			logger.info("null debug:" + field.getName());
 			if (fieldClass == int.class
 				|| fieldClass == long.class
 				|| fieldClass == double.class

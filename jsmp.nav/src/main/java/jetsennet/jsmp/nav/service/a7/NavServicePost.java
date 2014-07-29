@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.util.ServletUtil;
 import jetsennet.util.IOUtil;
 
@@ -39,13 +40,22 @@ public class NavServicePost extends HttpServlet
 		try
 		{
 			String method = req.getRequestURI();
+			if (Config.ISDEBUG)
+			{
+				logger.debug("POST : " + method);
+			}
 			int pos = method.lastIndexOf("/");
 			if (pos > 0 && pos != (method.length() - 1))
 			{
 				method = method.substring(pos + 1);
 				try
 				{
-					Map<String, String> map = A7Util.requestXml2Map(ServletUtil.getStream(req));
+					String content = ServletUtil.getStream(req);
+					if (Config.ISDEBUG)
+					{
+						logger.debug("POST CONTENT : " + content);
+					}
+					Map<String, String> map = A7Util.requestXml2Map(content);
 					String str = busi.invoke(method, map);
 					resp.setHeader("Content-type", "text/html;charset=UTF-8");
 					out.write(str.getBytes("UTF-8"));

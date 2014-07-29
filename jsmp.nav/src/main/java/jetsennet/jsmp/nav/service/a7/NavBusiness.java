@@ -78,6 +78,10 @@ public class NavBusiness
 			msg.setMethodName(m.getName());
 			try
 			{
+				if (Config.ISDEBUG)
+				{
+					logger.debug("调用方法：" + m.getName());
+				}
 				retval = (String) m.invoke(this, new Object[] { map });
 			}
 			catch (InvocationTargetException ex)
@@ -563,17 +567,17 @@ public class NavBusiness
 			temp.addAttr("sortIndex", "1");
 			temp.addAttr("actorsDisplay", "player1 player2 player3");
 			temp.addAttr("imageLocation", "imageLocation");
-			
+
 			ResponseEntity temp1 = new ResponseEntity("Director", "director1");
 			ResponseEntity temp2 = new ResponseEntity("Director", "director2");
 			temp.addChild(temp1);
 			temp.addChild(temp2);
-			
+
 			ResponseEntity temp3 = new ResponseEntity("Producter", "productor1");
 			ResponseEntity temp4 = new ResponseEntity("Producter", "productor2");
 			temp.addChild(temp3);
 			temp.addChild(temp4);
-			
+
 			resp.addChild(temp);
 		}
 		return resp.toXml(null).toString();

@@ -44,6 +44,16 @@
 			<param name="ConversionPattern" value="%d %-4r %-5p [%t] %37c %3x - %m%n" />
 		</layout>
 	</appender>
+	
+	<category name="jetsennet.jsmp.nav.service.a7.NavServiceGet" additivity="false">
+		<priority value="DEBUG" />
+		<appender-ref ref="FILE" />
+	</category>
+	
+	<category name="jetsennet.jsmp.nav.service.a7.NavServicePost" additivity="false">
+		<priority value="DEBUG" />
+		<appender-ref ref="FILE" />
+	</category>
 
 	<category name="jetsennet" additivity="false">
 		<priority value="DEBUG" />

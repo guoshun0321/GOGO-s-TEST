@@ -1,5 +1,6 @@
 package jetsennet.jsmp.nav.syn.cache;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,7 +19,29 @@ public class DataSynCachePicture extends DataSynCache<PictureEntity>
 	@Override
 	public void insert(PictureEntity obj)
 	{
-		add2CachedSet(genKey(obj), obj);
+		String key = genKey(obj);
+		Object cachedValue = cache.get(key, true);
+
+		if (cachedValue != null && cachedValue instanceof List)
+		{
+			// 从集合中移除key
+			List<PictureEntity> lst = (List<PictureEntity>) cachedValue;
+			Iterator<PictureEntity> it = lst.iterator();
+			while (it.hasNext())
+			{
+				PictureEntity pic = it.next();
+				if (pic.getPicId().equals(obj.getPicId()))
+				{
+					it.remove();
+				}
+			}
+		}
+		else
+		{
+			cachedValue = new ArrayList<>();
+		}
+		((List<PictureEntity>) cachedValue).add(obj);
+		cache.put(key, cachedValue);
 	}
 
 	@Override
@@ -33,11 +56,8 @@ public class DataSynCachePicture extends DataSynCache<PictureEntity>
 	{
 		String key = genKey(obj);
 		Object cachedValue = cache.get(key, true);
-		if (cachedValue == null || !(cachedValue instanceof List))
-		{
-			cachedValue = null;
-		}
-		else
+
+		if (cachedValue != null && cachedValue instanceof List)
 		{
 			List<PictureEntity> lst = (List<PictureEntity>) cachedValue;
 			Iterator<PictureEntity> it = lst.iterator();
@@ -49,8 +69,24 @@ public class DataSynCachePicture extends DataSynCache<PictureEntity>
 					it.remove();
 				}
 			}
+			if (lst.isEmpty())
+			{
+				cachedValue = null;
+			}
 		}
-		add2CachedSet(key, obj);
+		else
+		{
+			cachedValue = null;
+		}
+
+		if (cachedValue != null)
+		{
+			cache.put(key, cachedValue);
+		}
+		else
+		{
+			cache.del(key);
+		}
 	}
 
 }

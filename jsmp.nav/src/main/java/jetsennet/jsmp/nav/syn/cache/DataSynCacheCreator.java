@@ -1,5 +1,6 @@
 package jetsennet.jsmp.nav.syn.cache;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,7 +19,29 @@ public class DataSynCacheCreator extends DataSynCache<CreatorEntity>
 	@Override
 	public void insert(CreatorEntity obj)
 	{
-		add2CachedSet(genKey(obj), obj);
+		String key = genKey(obj);
+		Object cachedValue = cache.get(key, true);
+
+		if (cachedValue != null && cachedValue instanceof List)
+		{
+			// 从集合中移除key
+			List<CreatorEntity> lst = (List<CreatorEntity>) cachedValue;
+			Iterator<CreatorEntity> it = lst.iterator();
+			while (it.hasNext())
+			{
+				CreatorEntity creator = it.next();
+				if (creator.getId().equals(obj.getId()))
+				{
+					it.remove();
+				}
+			}
+		}
+		else
+		{
+			cachedValue = new ArrayList<>();
+		}
+		((List<CreatorEntity>) cachedValue).add(obj);
+		cache.put(key, cachedValue);
 	}
 
 	@Override
@@ -33,12 +56,10 @@ public class DataSynCacheCreator extends DataSynCache<CreatorEntity>
 	{
 		String key = genKey(obj);
 		Object cachedValue = cache.get(key, true);
-		if (cachedValue == null || !(cachedValue instanceof List))
+
+		if (cachedValue != null && cachedValue instanceof List)
 		{
-			cachedValue = null;
-		}
-		else
-		{
+			// 从集合中移除key
 			List<CreatorEntity> lst = (List<CreatorEntity>) cachedValue;
 			Iterator<CreatorEntity> it = lst.iterator();
 			while (it.hasNext())
@@ -49,8 +70,24 @@ public class DataSynCacheCreator extends DataSynCache<CreatorEntity>
 					it.remove();
 				}
 			}
+			if (lst.isEmpty())
+			{
+				cachedValue = null;
+			}
 		}
-		add2CachedSet(key, obj);
+		else
+		{
+			cachedValue = null;
+		}
+
+		if (cachedValue != null)
+		{
+			cache.put(key, cachedValue);
+		}
+		else
+		{
+			cache.del(key);
+		}
 	}
 
 }

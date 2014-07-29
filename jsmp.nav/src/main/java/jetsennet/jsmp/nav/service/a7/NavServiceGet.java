@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jetsennet.jsmp.nav.config.Config;
 import jetsennet.util.IOUtil;
 
 public class NavServiceGet extends HttpServlet
@@ -31,6 +32,10 @@ public class NavServiceGet extends HttpServlet
 		OutputStream out = resp.getOutputStream();
 		try
 		{
+			if (Config.ISDEBUG)
+			{
+				logger.debug("GET : " + req.getContextPath() + "?" + req.getQueryString());
+			}
 			String method = req.getParameter("method");
 			if (method != null)
 			{
@@ -67,10 +72,12 @@ public class NavServiceGet extends HttpServlet
 		Map<String, String[]> map = req.getParameterMap();
 		Map<String, String> retval = new HashMap<String, String>(map.size());
 		Set<String> keys = map.keySet();
-		for(String key : keys) {
+		for (String key : keys)
+		{
 			String[] values = map.get(key);
-			if(values != null && values.length > 0) {
-			retval.put(key, values[0]);
+			if (values != null && values.length > 0)
+			{
+				retval.put(key, values[0]);
 			}
 		}
 		return retval;

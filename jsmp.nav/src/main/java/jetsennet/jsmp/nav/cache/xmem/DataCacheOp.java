@@ -131,13 +131,13 @@ public class DataCacheOp
 		Object retval = null;
 		try
 		{
-			if (Config.ISDEBUG)
-			{
-				logger.debug(String.format("从缓存获取数据: %s", key));
-			}
 			if (key != null)
 			{
 				retval = client.get(key, Config.CACHE_TIMEOUT);
+			}
+			if (Config.ISDEBUG)
+			{
+				logger.debug(String.format("从缓存获取数据: %s, %s", key, retval));
 			}
 		}
 		catch (Exception ex)
@@ -179,7 +179,7 @@ public class DataCacheOp
 		{
 			if (Config.ISDEBUG)
 			{
-				logger.debug(String.format("从缓存获取数据: %s", keys));
+				logger.debug(String.format("从缓存批量获取数据: %s", keys));
 			}
 			retval = client.get(keys, Config.CACHE_TIMEOUT);
 		}

@@ -328,7 +328,7 @@ public class BDBFileParse
 	{
 		BDBFileParse reader = new BDBFileParse();
 		//        reader.parseXmlFile("F:\\JSMP\\JSMP\\trunk\\DB\\JPortal\\数据库脚本new\\dbscript\\scheme\\NS_PGM2PGM.ax");
-		reader.parseFolder("./dbscript/scheme");
+		reader.parseFolder("/tmp/share/dbscript/scheme");
 	}
 
 }
