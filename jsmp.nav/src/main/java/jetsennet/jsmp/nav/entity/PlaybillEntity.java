@@ -152,7 +152,7 @@ public class PlaybillEntity implements Serializable
 		return updateTime;
 	}
 
-	public void setUpdateTime(int updateTime)
+	public void setUpdateTime(long updateTime)
 	{
 		this.updateTime = updateTime;
 	}

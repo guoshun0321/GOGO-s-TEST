@@ -58,7 +58,7 @@ public class PlaybillItemEntity implements Serializable
 	 * 开始时间，毫秒为单位，播出开始绝对时间，从0点开始。
 	 */
 	@Column("START_TIME")
-	private int startTime;
+	private long startTime;
 	/**
 	 * 节目描述
 	 */
@@ -147,12 +147,12 @@ public class PlaybillItemEntity implements Serializable
 		this.duration = duration;
 	}
 
-	public int getStartTime()
+	public long getStartTime()
 	{
 		return startTime;
 	}
 
-	public void setStartTime(int startTime)
+	public void setStartTime(long startTime)
 	{
 		this.startTime = startTime;
 	}

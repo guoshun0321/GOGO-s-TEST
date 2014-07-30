@@ -1,12 +1,9 @@
 package jetsennet.jsmp.nav.syn.db;
 
-import jetsennet.orm.executor.resultset.ResultSetHandleFactory;
-import jetsennet.orm.executor.resultset.ResultSetHandlePojo;
 import jetsennet.orm.session.Session;
 import jetsennet.orm.session.SqlSessionFactory;
 import jetsennet.orm.sql.ISql;
 import jetsennet.orm.sql.Sql;
-import jetsennet.orm.sql.SqlTypeEnum;
 import jetsennet.orm.tableinfo.FieldInfo;
 import jetsennet.orm.tableinfo.TableInfo;
 
@@ -57,7 +54,9 @@ public class DataSynDb
 				// 表存在更新时间
 				TableInfo table = factory.getTableInfo(obj.getClass());
 				ISql sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(obj));
-				Object temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(obj.getClass(), table));
+
+				Object temp = session.query(factory.getTransform().trans(sql), obj.getClass());
+
 				if (temp == null)
 				{
 					// 不存在旧数据时，新增数据
@@ -114,7 +113,7 @@ public class DataSynDb
 		Session session = factory.openSession();
 		TableInfo info = factory.getTableInfo(obj.getClass());
 		ISql sql = Sql.select("*").from(info.getTableName()).where(info.genFilterFromObject(obj));
-		obj = session.query(sql, new ResultSetHandlePojo<>(obj.getClass(), info));
+		obj = session.query(factory.getTransform().trans(sql), obj.getClass());
 		int num = 0;
 		if (obj != null)
 		{

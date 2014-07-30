@@ -57,8 +57,8 @@
 		</dependency>
 		<dependency>
 			<groupId>jetsennet</groupId>
-			<artifactId>jetsennet-lib</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
+			<artifactId>jetsennet-orm</artifactId>
+			<version>2.1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>

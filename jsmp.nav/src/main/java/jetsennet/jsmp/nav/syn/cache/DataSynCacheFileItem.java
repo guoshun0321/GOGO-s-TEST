@@ -31,7 +31,7 @@ public class DataSynCacheFileItem extends DataSynCache<FileItemEntity>
 			while (it.hasNext())
 			{
 				FileItemEntity file = it.next();
-				if (file.getId().equals(obj.getId()))
+				if (file.getFileId().equals(obj.getFileId()))
 				{
 					it.remove();
 				}

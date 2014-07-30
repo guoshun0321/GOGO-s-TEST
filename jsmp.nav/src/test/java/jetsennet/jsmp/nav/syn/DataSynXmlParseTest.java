@@ -44,7 +44,7 @@ public class DataSynXmlParseTest extends TestCase
 		content = new DataSynContentEntity();
 		FileItemEntity item = new FileItemEntity();
 		content.setObj(item);
-		item.setId("item_id");
+//		item.setId("item_id");
 		item.setAssetId("item_asset");
 		item.setPgmId(1);
 		item.setPgmAssetid("pgm_asset");
@@ -60,7 +60,7 @@ public class DataSynXmlParseTest extends TestCase
 		item.setAspectRatio("800x600");
 		item.setBrowseHeight(600);
 		item.setBrowseWidth(800);
-		item.setComplexRate(21);
+//		item.setComplexRate(21);
 		item.setChannelNum(20);
 		item.setAucodingFormat("aucoding format");
 		item.setVicodingFormat("vicoding format");

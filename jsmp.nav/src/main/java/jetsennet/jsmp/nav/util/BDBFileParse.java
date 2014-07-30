@@ -30,6 +30,7 @@ public class BDBFileParse
 	{
 
 		File file = new File(path);
+		System.out.println("path : " + file.getAbsolutePath());
 		if (file.isDirectory())
 		{
 			// 删除文件
@@ -58,28 +59,28 @@ public class BDBFileParse
 			}
 
 			// 更新数据库
-			//			System.out.println("数据库初始化开始！");
-			//			MySqlDdl ddl = new MySqlDdl(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
-			//			for (TableInfo tbl : tblInfoLst)
-			//			{
-			//				System.out.println("初始化表：" + tbl.getTableName());
-			//				ddl.delete(tbl.getTableName());
-			//				ddl.create(tbl);
-			//				System.out.println("");
-			//			}
-
-			// 生成文件
+			System.out.println("数据库初始化开始！");
+			MySqlDdl ddl = new MySqlDdl(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
 			for (TableInfo tbl : tblInfoLst)
 			{
-				String fileName = tbl.getTableName();
-				fileName = this.dbName2EntityName(fileName);
-				OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "/" + fileName + "Entity.java"));
-				String javaFile = this.genJavaFile(tbl);
-				out.write(javaFile.getBytes());
-				out.flush();
-				out.close();
-				out = null;
+				System.out.println("初始化表：" + tbl.getTableName());
+				ddl.delete(tbl.getTableName());
+				ddl.create(tbl);
+				System.out.println("");
 			}
+
+			// 生成文件
+			//			for (TableInfo tbl : tblInfoLst)
+			//			{
+			//				String fileName = tbl.getTableName();
+			//				fileName = this.dbName2EntityName(fileName);
+			//				OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "/" + fileName + "Entity.java"));
+			//				String javaFile = this.genJavaFile(tbl);
+			//				out.write(javaFile.getBytes());
+			//				out.flush();
+			//				out.close();
+			//				out = null;
+			//			}
 		}
 		System.out.println(path);
 		System.out.println("数据库初始化完成！");
@@ -118,7 +119,9 @@ public class BDBFileParse
 			else if (type.equalsIgnoreCase("long") || type.equalsIgnoreCase("BIGINT"))
 			{
 				type = "long";
-			} else {
+			}
+			else
+			{
 				throw new UncheckedNavException(String.format("列：%s，未知类型：%s", aName, type));
 			}
 			int length = Integer.valueOf(e.getAttributeValue("LENGTH"));
@@ -331,7 +334,7 @@ public class BDBFileParse
 	{
 		BDBFileParse reader = new BDBFileParse();
 		//        reader.parseXmlFile("F:\\JSMP\\JSMP\\trunk\\DB\\JPortal\\数据库脚本new\\dbscript\\scheme\\NS_PGM2PGM.ax");
-		reader.parseFolder("/tmp/share/dbscript/scheme");
+		reader.parseFolder("src/main/resources/dbscript/scheme");
 	}
 
 }

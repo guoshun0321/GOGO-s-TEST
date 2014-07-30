@@ -42,12 +42,12 @@ public class ProductEntity implements Serializable
 	 * 有效开始时间，单位：毫秒
 	 */
 	@Column("LICENSING_START")
-	private int licensingStart;
+	private long licensingStart;
 	/**
 	 * 有效结束时间，单位：毫秒
 	 */
 	@Column("LICENSING_END")
-	private int licensingEnd;
+	private long licensingEnd;
 	/**
 	 * 描述
 	 */
@@ -111,22 +111,22 @@ public class ProductEntity implements Serializable
 		this.productState = productState;
 	}
 
-	public int getLicensingStart()
+	public long getLicensingStart()
 	{
 		return licensingStart;
 	}
 
-	public void setLicensingStart(int licensingStart)
+	public void setLicensingStart(long licensingStart)
 	{
 		this.licensingStart = licensingStart;
 	}
 
-	public int getLicensingEnd()
+	public long getLicensingEnd()
 	{
 		return licensingEnd;
 	}
 
-	public void setLicensingEnd(int licensingEnd)
+	public void setLicensingEnd(long licensingEnd)
 	{
 		this.licensingEnd = licensingEnd;
 	}

@@ -63,6 +63,86 @@ public class DescauthorizeEntity implements Serializable
 	 */
 	@Column("UPDATE_TIME")
 	private long updateTime;
+	/**
+	 * 
+	 */
+	@Column("AUTHOR_NAME")
+	private String authorName;
+	/**
+	 * 
+	 */
+	@Column("AUTHOR_TYPE")
+	private String authorType;
+	/**
+	 * 
+	 */
+	@Column("AUTHOR_CONTENTTYPE")
+	private String authorContenttype;
+	/**
+	 * 
+	 */
+	@Column("AUTHOR_NOTE")
+	private String authorNote;
+	/**
+	 * 
+	 */
+	@Column("DOC_NUMBER")
+	private String docNumber;
+	/**
+	 * 
+	 */
+	@Column("AUTHOR_UNIT")
+	private String authorUnit;
+	/**
+	 * 
+	 */
+	@Column("IMPORT_DOCNUM")
+	private String importDocnum;
+	/**
+	 * 
+	 */
+	@Column("SERIAL_NUMBER")
+	private String serialNumber;
+	/**
+	 * 
+	 */
+	@Column("BOOK_NUMBER")
+	private String bookNumber;
+	/**
+	 * 
+	 */
+	@Column("LICENSE_NUMBER")
+	private String licenseNumber;
+	/**
+	 * 
+	 */
+	@Column("PUBLISH_DATE")
+	private String publishDate;
+	/**
+	 * 
+	 */
+	@Column("TURN_CPUSER")
+	private String turnCpuser;
+	/**
+	 * 
+	 */
+	@Column("REAUTHORIZATION")
+	private String reauthorization;
+	/**
+	 * 
+	 */
+	@Column("ARTICLE_NUMBER")
+	private String articleNumber;
+	/**
+	 * 
+	 */
+	@Column("TYPE_CLASS")
+	private String typeClass;
+	/**
+	 * 
+	 */
+	@Column("FIRST_CATEGORY")
+	private String firstCategory;
 
 	private static final long serialVersionUID = 1L;
 
@@ -164,6 +244,166 @@ public class DescauthorizeEntity implements Serializable
 	public void setUpdateTime(long updateTime)
 	{
 		this.updateTime = updateTime;
+	}
+
+	public String getAuthorName()
+	{
+		return authorName;
+	}
+
+	public void setAuthorName(String authorName)
+	{
+		this.authorName = authorName;
+	}
+
+	public String getAuthorType()
+	{
+		return authorType;
+	}
+
+	public void setAuthorType(String authorType)
+	{
+		this.authorType = authorType;
+	}
+
+	public String getAuthorContenttype()
+	{
+		return authorContenttype;
+	}
+
+	public void setAuthorContenttype(String authorContenttype)
+	{
+		this.authorContenttype = authorContenttype;
+	}
+
+	public String getAuthorNote()
+	{
+		return authorNote;
+	}
+
+	public void setAuthorNote(String authorNote)
+	{
+		this.authorNote = authorNote;
+	}
+
+	public String getDocNumber()
+	{
+		return docNumber;
+	}
+
+	public void setDocNumber(String docNumber)
+	{
+		this.docNumber = docNumber;
+	}
+
+	public String getAuthorUnit()
+	{
+		return authorUnit;
+	}
+
+	public void setAuthorUnit(String authorUnit)
+	{
+		this.authorUnit = authorUnit;
+	}
+
+	public String getImportDocnum()
+	{
+		return importDocnum;
+	}
+
+	public void setImportDocnum(String importDocnum)
+	{
+		this.importDocnum = importDocnum;
+	}
+
+	public String getSerialNumber()
+	{
+		return serialNumber;
+	}
+
+	public void setSerialNumber(String serialNumber)
+	{
+		this.serialNumber = serialNumber;
+	}
+
+	public String getBookNumber()
+	{
+		return bookNumber;
+	}
+
+	public void setBookNumber(String bookNumber)
+	{
+		this.bookNumber = bookNumber;
+	}
+
+	public String getLicenseNumber()
+	{
+		return licenseNumber;
+	}
+
+	public void setLicenseNumber(String licenseNumber)
+	{
+		this.licenseNumber = licenseNumber;
+	}
+
+	public String getPublishDate()
+	{
+		return publishDate;
+	}
+
+	public void setPublishDate(String publishDate)
+	{
+		this.publishDate = publishDate;
+	}
+
+	public String getTurnCpuser()
+	{
+		return turnCpuser;
+	}
+
+	public void setTurnCpuser(String turnCpuser)
+	{
+		this.turnCpuser = turnCpuser;
+	}
+
+	public String getReauthorization()
+	{
+		return reauthorization;
+	}
+
+	public void setReauthorization(String reauthorization)
+	{
+		this.reauthorization = reauthorization;
+	}
+
+	public String getArticleNumber()
+	{
+		return articleNumber;
+	}
+
+	public void setArticleNumber(String articleNumber)
+	{
+		this.articleNumber = articleNumber;
+	}
+
+	public String getTypeClass()
+	{
+		return typeClass;
+	}
+
+	public void setTypeClass(String typeClass)
+	{
+		this.typeClass = typeClass;
+	}
+
+	public String getFirstCategory()
+	{
+		return firstCategory;
+	}
+
+	public void setFirstCategory(String firstCategory)
+	{
+		this.firstCategory = firstCategory;
 	}
 
 }

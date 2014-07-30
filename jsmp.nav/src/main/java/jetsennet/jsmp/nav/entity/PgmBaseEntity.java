@@ -119,7 +119,7 @@ public class PgmBaseEntity implements Serializable
 	 * 票房
 	 */
 	@Column("BOX")
-	private int box;
+	private long box;
 	/**
 	 * 精彩对白
 	 */
@@ -358,12 +358,12 @@ public class PgmBaseEntity implements Serializable
 		this.releaseDate = releaseDate;
 	}
 
-	public int getBox()
+	public long getBox()
 	{
 		return box;
 	}
 
-	public void setBox(int box)
+	public void setBox(long box)
 	{
 		this.box = box;
 	}

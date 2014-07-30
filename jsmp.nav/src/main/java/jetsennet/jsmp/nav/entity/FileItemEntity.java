@@ -7,9 +7,8 @@ import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
-
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
+ * 
  */
 @Table("NS_FILEITEM")
 public class FileItemEntity implements Serializable
@@ -19,7 +18,7 @@ public class FileItemEntity implements Serializable
 	 */
 	@Id
 	@Column("FILE_ID")
-	private String id;
+	private String fileId;
 	/**
 	 * 文件媒资唯一ID
 	 */
@@ -37,7 +36,7 @@ public class FileItemEntity implements Serializable
 	@Column("PGM_ASSETID")
 	private String pgmAssetid;
 	/**
-	 * 文件类型
+	 * 文件类型。小于100为音视频， 0：VIDEO+ADVIO；1：VIDEO；2：ADVIO；10：字幕工程文件；201~299为图片类型，关联受控词的图片类型。
 	 */
 	@Column("FILE_TYPE")
 	private int fileType;
@@ -55,7 +54,7 @@ public class FileItemEntity implements Serializable
 	 * 文件大小(字节数)
 	 */
 	@Column("FILE_SIZE")
-	private int fileSize;
+	private long fileSize;
 	/**
 	 * 文件验证码
 	 */
@@ -72,10 +71,15 @@ public class FileItemEntity implements Serializable
 	@Column("FILE_DURATION")
 	private int fileDuration;
 	/**
-	 * 是否3D。0：2D；1：3D；2：伪3D；
+	 * 文件宽度，如图片宽度。
 	 */
-	@Column("IF_3D")
-	private int if3d;
+	@Column("FILE_WIDTH")
+	private int fileWidth;
+	/**
+	 * 文件高度，如图片高度
+	 */
+	@Column("FILE_HEIGHT")
+	private int fileHeight;
 	/**
 	 * 画面质量。1：标清，2：高清，3：超清
 	 */
@@ -89,20 +93,15 @@ public class FileItemEntity implements Serializable
 	@IdentAnnocation("screenShape")
 	private String aspectRatio;
 	/**
-	 * 分辨率高
-	 */
-	@Column("BROWSE_HEIGHT")
-	private int browseHeight;
-	/**
 	 * 分辨率宽
 	 */
 	@Column("BROWSE_WIDTH")
 	private int browseWidth;
 	/**
-	 * 复合码率
+	 * 分辨率高
 	 */
-	@Column("COMPLEX_RATE")
-	private int complexRate;
+	@Column("BROWSE_HEIGHT")
+	private int browseHeight;
 	/**
 	 * 帧率
 	 */
@@ -160,21 +159,96 @@ public class FileItemEntity implements Serializable
 	@Column("UPDATE_TIME")
 	private long updateTime;
 	/**
-	 * 播放路径
+	 * 播放地址
 	 */
 	@Column("PLAY_URL")
 	private String playUrl;
+	/**
+	 * 视频流GOP长度，对MPEG系列格式有效
+	 */
+	@Column("GOP_SIZE")
+	private int gopSize;
+	/**
+	 * 图像显示位深，单位：bit
+	 */
+	@Column("DEPTH")
+	private int depth;
+	/**
+	 * 视频流比例
+	 */
+	@Column("SCALE")
+	private int scale;
+	/**
+	 * 视频码率控制模式。CBR或VBR。
+	 */
+	@Column("VIDEO_BITRATE_MODE")
+	private String videoBitrateMode;
+	/**
+	 * 视频色差格式。主要有4:2:0、4:1:1、4:2:2、4:4:4。
+	 */
+	@Column("CHROMA_FMT")
+	private String chromaFmt;
+	/**
+	 * 视频扫描方式。主要有interlaced-topFirst、interlaced-bottomFirst、progress
+	 */
+	@Column("SCAN_TYPE")
+	private String scanType;
+	/**
+	 * 对MXF有效
+	 */
+	@Column("AFD")
+	private int afd;
+	/**
+	 * 对MPEG2,H264有效
+	 */
+	@Column("PROFILE")
+	private String profile;
+	/**
+	 * 对MPEG2,H264有效
+	 */
+	@Column("LEVEL")
+	private String level;
+	/**
+	 * 音频采样率。单位：HZ
+	 */
+	@Column("FREQ")
+	private int freq;
+	/**
+	 * 音频采样总数
+	 */
+	@Column("SAMPLES")
+	private int samples;
+	/**
+	 * 音频采样精度。单位：bit
+	 */
+	@Column("BIE_PER_SAMPLE")
+	private int biePerSample;
+	/**
+	 * 音频码率控制模式。CBR或VBR。
+	 */
+	@Column("AUDIO_BITRATE_MODE")
+	private String audioBitrateMode;
+	/**
+	 * 是否3D。0：2D；1：3D；2：伪3D；
+	 */
+	@Column("IF_3D")
+	private int if3d;
+	/**
+	 * 语言代码
+	 */
+	@Column("LANGUAGE")
+	private String language;
 
 	private static final long serialVersionUID = 1L;
 
-	public String getId()
+	public String getFileId()
 	{
-		return id;
+		return fileId;
 	}
 
-	public void setId(String id)
+	public void setFileId(String fileId)
 	{
-		this.id = id;
+		this.fileId = fileId;
 	}
 
 	public String getAssetId()
@@ -237,12 +311,12 @@ public class FileItemEntity implements Serializable
 		this.destFilename = destFilename;
 	}
 
-	public int getFileSize()
+	public long getFileSize()
 	{
 		return fileSize;
 	}
 
-	public void setFileSize(int fileSize)
+	public void setFileSize(long fileSize)
 	{
 		this.fileSize = fileSize;
 	}
@@ -277,14 +351,24 @@ public class FileItemEntity implements Serializable
 		this.fileDuration = fileDuration;
 	}
 
-	public int getIf3d()
+	public int getFileWidth()
 	{
-		return if3d;
+		return fileWidth;
 	}
 
-	public void setIf3d(int if3d)
+	public void setFileWidth(int fileWidth)
 	{
-		this.if3d = if3d;
+		this.fileWidth = fileWidth;
+	}
+
+	public int getFileHeight()
+	{
+		return fileHeight;
+	}
+
+	public void setFileHeight(int fileHeight)
+	{
+		this.fileHeight = fileHeight;
 	}
 
 	public int getVideoQuality()
@@ -307,16 +391,6 @@ public class FileItemEntity implements Serializable
 		this.aspectRatio = aspectRatio;
 	}
 
-	public int getBrowseHeight()
-	{
-		return browseHeight;
-	}
-
-	public void setBrowseHeight(int browseHeight)
-	{
-		this.browseHeight = browseHeight;
-	}
-
 	public int getBrowseWidth()
 	{
 		return browseWidth;
@@ -327,14 +401,14 @@ public class FileItemEntity implements Serializable
 		this.browseWidth = browseWidth;
 	}
 
-	public int getComplexRate()
+	public int getBrowseHeight()
 	{
-		return complexRate;
+		return browseHeight;
 	}
 
-	public void setComplexRate(int complexRate)
+	public void setBrowseHeight(int browseHeight)
 	{
-		this.complexRate = complexRate;
+		this.browseHeight = browseHeight;
 	}
 
 	public int getFrameRate()
@@ -455,6 +529,156 @@ public class FileItemEntity implements Serializable
 	public void setPlayUrl(String playUrl)
 	{
 		this.playUrl = playUrl;
+	}
+
+	public int getGopSize()
+	{
+		return gopSize;
+	}
+
+	public void setGopSize(int gopSize)
+	{
+		this.gopSize = gopSize;
+	}
+
+	public int getDepth()
+	{
+		return depth;
+	}
+
+	public void setDepth(int depth)
+	{
+		this.depth = depth;
+	}
+
+	public int getScale()
+	{
+		return scale;
+	}
+
+	public void setScale(int scale)
+	{
+		this.scale = scale;
+	}
+
+	public String getVideoBitrateMode()
+	{
+		return videoBitrateMode;
+	}
+
+	public void setVideoBitrateMode(String videoBitrateMode)
+	{
+		this.videoBitrateMode = videoBitrateMode;
+	}
+
+	public String getChromaFmt()
+	{
+		return chromaFmt;
+	}
+
+	public void setChromaFmt(String chromaFmt)
+	{
+		this.chromaFmt = chromaFmt;
+	}
+
+	public String getScanType()
+	{
+		return scanType;
+	}
+
+	public void setScanType(String scanType)
+	{
+		this.scanType = scanType;
+	}
+
+	public int getAfd()
+	{
+		return afd;
+	}
+
+	public void setAfd(int afd)
+	{
+		this.afd = afd;
+	}
+
+	public String getProfile()
+	{
+		return profile;
+	}
+
+	public void setProfile(String profile)
+	{
+		this.profile = profile;
+	}
+
+	public String getLevel()
+	{
+		return level;
+	}
+
+	public void setLevel(String level)
+	{
+		this.level = level;
+	}
+
+	public int getFreq()
+	{
+		return freq;
+	}
+
+	public void setFreq(int freq)
+	{
+		this.freq = freq;
+	}
+
+	public int getSamples()
+	{
+		return samples;
+	}
+
+	public void setSamples(int samples)
+	{
+		this.samples = samples;
+	}
+
+	public int getBiePerSample()
+	{
+		return biePerSample;
+	}
+
+	public void setBiePerSample(int biePerSample)
+	{
+		this.biePerSample = biePerSample;
+	}
+
+	public String getAudioBitrateMode()
+	{
+		return audioBitrateMode;
+	}
+
+	public void setAudioBitrateMode(String audioBitrateMode)
+	{
+		this.audioBitrateMode = audioBitrateMode;
+	}
+
+	public int getIf3d()
+	{
+		return if3d;
+	}
+
+	public void setIf3d(int if3d)
+	{
+		this.if3d = if3d;
+	}
+
+	public String getLanguage()
+	{
+		return language;
+	}
+
+	public void setLanguage(String language)
+	{
+		this.language = language;
 	}
 
 }

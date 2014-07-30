@@ -3,13 +3,11 @@ package jetsennet.jsmp.nav.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
-
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
+ * 
  */
 @Table("NS_PICTURE")
 public class PictureEntity implements Serializable
@@ -31,15 +29,15 @@ public class PictureEntity implements Serializable
 	@Column("PIC_TYPE")
 	private int picType;
 	/**
-	 * 所属节目的ID,关联NS_PROGRAM表
+	 * 所属对象类型。1：站点；2：栏目；3：频道
 	 */
-	@Column("PGM_ID")
-	private int pgmId;
+	@Column("OBJ_TYPE")
+	private int objType;
 	/**
-	 * 所属节目的媒资唯一ID，关联NS_PROGRAM表
+	 * 所属对象ID
 	 */
-	@Column("PGM_ASSETID")
-	private String pgmAssetid;
+	@Column("OBJ_ID")
+	private String objId;
 	/**
 	 * 宽
 	 */
@@ -79,7 +77,6 @@ public class PictureEntity implements Serializable
 	 * 图片访问地址
 	 */
 	@Column("FILE_URL")
-	@IdentAnnocation("posterUrl")
 	private String fileUrl;
 	/**
 	 * 图片状态。
@@ -111,6 +108,11 @@ public class PictureEntity implements Serializable
 	 */
 	@Column("ASSET_ID")
 	private String assetId;
+	/**
+	 * 图片排序。默认为1。
+	 */
+	@Column("PIC_RANK")
+	private int picRank;
 
 	private static final long serialVersionUID = 1L;
 
@@ -144,24 +146,24 @@ public class PictureEntity implements Serializable
 		this.picType = picType;
 	}
 
-	public int getPgmId()
+	public int getObjType()
 	{
-		return pgmId;
+		return objType;
 	}
 
-	public void setPgmId(int pgmId)
+	public void setObjType(int objType)
 	{
-		this.pgmId = pgmId;
+		this.objType = objType;
 	}
 
-	public String getPgmAssetid()
+	public String getObjId()
 	{
-		return pgmAssetid;
+		return objId;
 	}
 
-	public void setPgmAssetid(String pgmAssetid)
+	public void setObjId(String objId)
 	{
-		this.pgmAssetid = pgmAssetid;
+		this.objId = objId;
 	}
 
 	public int getPicWidth()
@@ -302,6 +304,16 @@ public class PictureEntity implements Serializable
 	public void setAssetId(String assetId)
 	{
 		this.assetId = assetId;
+	}
+
+	public int getPicRank()
+	{
+		return picRank;
+	}
+
+	public void setPicRank(int picRank)
+	{
+		this.picRank = picRank;
 	}
 
 }

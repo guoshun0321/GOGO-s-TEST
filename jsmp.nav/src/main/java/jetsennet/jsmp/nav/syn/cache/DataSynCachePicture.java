@@ -13,7 +13,9 @@ public class DataSynCachePicture extends DataSynCache<PictureEntity>
 	@Override
 	protected String genKey(PictureEntity obj)
 	{
-		return CachedKeyUtil.pgmPictureKey(obj.getPgmId());
+		return null;
+		// TODO 图片处理
+		//		return CachedKeyUtil.pgmPictureKey(obj.getPgmId());
 	}
 
 	@Override

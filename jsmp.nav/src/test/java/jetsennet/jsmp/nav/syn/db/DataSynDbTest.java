@@ -1,19 +1,17 @@
 package jetsennet.jsmp.nav.syn.db;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.RelateColumnEntity;
-import jetsennet.jsmp.nav.syn.DataSynContentEntity;
 import jetsennet.jsmp.nav.util.ObjectUtil;
-import jetsennet.orm.executor.resultset.ResultSetHandleFactory;
 import jetsennet.orm.session.Session;
 import jetsennet.orm.session.SqlSessionFactory;
 import jetsennet.orm.sql.ISql;
 import jetsennet.orm.sql.Sql;
 import jetsennet.orm.tableinfo.TableInfo;
 import junit.framework.TestCase;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataSynDbTest extends TestCase
 {
@@ -73,7 +71,7 @@ public class DataSynDbTest extends TestCase
 		assertEquals(ret.num, 1);
 		TableInfo table = factory.getTableInfo(column.getClass());
 		ISql sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(column));
-		Object temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(column.getClass(), table));
+		Object temp = session.query(factory.getTransform().trans(sql), column.getClass());
 		assertTrue(ObjectUtil.compare(ColumnEntity.class, column, temp));
 
 		// update
@@ -83,7 +81,7 @@ public class DataSynDbTest extends TestCase
 		assertEquals(ret.num, 1);
 		table = factory.getTableInfo(column.getClass());
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(column));
-		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(column.getClass(), table));
+		temp = session.query(factory.getTransform().trans(sql), column.getClass());
 		assertTrue(ObjectUtil.compare(ColumnEntity.class, column, temp));
 
 		// not update
@@ -92,7 +90,7 @@ public class DataSynDbTest extends TestCase
 		assertNull(ret);
 		table = factory.getTableInfo(column.getClass());
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(column));
-		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(column.getClass(), table));
+		temp = session.query(factory.getTransform().trans(sql), column.getClass());
 		assertFalse(ObjectUtil.compare(ColumnEntity.class, column, temp));
 
 		// 不带UPDATE_TIME
@@ -107,7 +105,7 @@ public class DataSynDbTest extends TestCase
 		assertEquals(ret.num, 1);
 		table = factory.getTableInfo(RelateColumnEntity.class);
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(rc));
-		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(rc.getClass(), table));
+		temp = session.query(factory.getTransform().trans(sql), column.getClass());
 		assertTrue(ObjectUtil.compare(RelateColumnEntity.class, rc, temp));
 
 		// update
@@ -117,7 +115,7 @@ public class DataSynDbTest extends TestCase
 		assertEquals(ret.num, 1);
 		table = factory.getTableInfo(RelateColumnEntity.class);
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(rc));
-		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(rc.getClass(), table));
+		temp = session.query(factory.getTransform().trans(sql), column.getClass());
 		assertTrue(ObjectUtil.compare(RelateColumnEntity.class, rc, temp));
 	}
 
@@ -136,15 +134,15 @@ public class DataSynDbTest extends TestCase
 		assertEquals(ret.num, 1);
 		TableInfo table = factory.getTableInfo(RelateColumnEntity.class);
 		ISql sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(rc));
-		Object temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(rc.getClass(), table));
+		Object temp = session.query(factory.getTransform().trans(sql), rc.getClass());
 		assertTrue(ObjectUtil.compare(RelateColumnEntity.class, rc, temp));
-		
+
 		ret = db.delete(rc);
 		assertEquals(ret.type, DataSynDbResult.TYPE_DELETE);
 		assertEquals(ret.num, 1);
 		table = factory.getTableInfo(RelateColumnEntity.class);
 		sql = Sql.select("*").from(table.getTableName()).where(table.genFilterFromObject(rc));
-		temp = session.query(sql, ResultSetHandleFactory.getPojoSingleHandle(rc.getClass(), table));
+		temp = session.query(factory.getTransform().trans(sql), rc.getClass());
 		assertNull(temp);
 	}
 
