@@ -178,7 +178,6 @@ public class DataSynchronizedJms
 		{
 			try
 			{
-				logger.error("错误消息：" + msg);
 				msg.acknowledge();
 			}
 			catch (Exception ex)
