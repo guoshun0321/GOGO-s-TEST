@@ -51,36 +51,37 @@ public class BDBFileParse
 			{
 				if (f.isFile() && f.getName().endsWith(".ax"))
 				{
+					System.out.println("解析文件：" + f.getName());
 					TableInfo ti = this.genTableInfo(f.getAbsolutePath());
 					tblInfoLst.add(ti);
 				}
 			}
 
 			// 更新数据库
-			System.out.println("数据库初始化开始！");
-			MySqlDdl ddl = new MySqlDdl(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
-			for (TableInfo tbl : tblInfoLst)
-			{
-				System.out.println("初始化表：" + tbl.getTableName());
-				ddl.delete(tbl.getTableName());
-				ddl.create(tbl);
-				System.out.println("");
-			}
+			//			System.out.println("数据库初始化开始！");
+			//			MySqlDdl ddl = new MySqlDdl(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
+			//			for (TableInfo tbl : tblInfoLst)
+			//			{
+			//				System.out.println("初始化表：" + tbl.getTableName());
+			//				ddl.delete(tbl.getTableName());
+			//				ddl.create(tbl);
+			//				System.out.println("");
+			//			}
 
 			// 生成文件
-			//            for (TableInfo tbl : tblInfoLst)
-			//            {
-			//                String fileName = tbl.getTableName();
-			//                fileName = this.dbName2EntityName(fileName);
-			//                OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "\\" + fileName + "Entity.java"));
-			//                String javaFile = this.genJavaFile(tbl);
-			//                out.write(javaFile.getBytes());
-			//                out.flush();
-			//                out.close();
-			//                out = null;
-			//            }
+			for (TableInfo tbl : tblInfoLst)
+			{
+				String fileName = tbl.getTableName();
+				fileName = this.dbName2EntityName(fileName);
+				OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "/" + fileName + "Entity.java"));
+				String javaFile = this.genJavaFile(tbl);
+				out.write(javaFile.getBytes());
+				out.flush();
+				out.close();
+				out = null;
+			}
 		}
-		//        System.out.println(path);
+		System.out.println(path);
 		System.out.println("数据库初始化完成！");
 
 	}
@@ -117,6 +118,8 @@ public class BDBFileParse
 			else if (type.equalsIgnoreCase("long") || type.equalsIgnoreCase("BIGINT"))
 			{
 				type = "long";
+			} else {
+				throw new UncheckedNavException(String.format("列：%s，未知类型：%s", aName, type));
 			}
 			int length = Integer.valueOf(e.getAttributeValue("LENGTH"));
 			int index = Integer.valueOf(e.getAttributeValue("INDEX"));
@@ -180,7 +183,7 @@ public class BDBFileParse
 		sb.append("import jetsennet.orm.annotation.Id;\n");
 		sb.append("/**\n");
 		//        sb.append(" * 栏目实体\n");
-		sb.append(" * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成，最好不要手动修改！\n");
+		sb.append(" * \n");
 		sb.append(" */\n");
 
 		String dbName = info.getTableName();

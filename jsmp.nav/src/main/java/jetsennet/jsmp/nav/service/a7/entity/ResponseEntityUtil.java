@@ -153,12 +153,12 @@ public class ResponseEntityUtil
 
 	public static String dateFormat(Date date)
 	{
-		return SafeDateFormater.format(date, "YYYYMMDDHHmmss");
+		return SafeDateFormater.format(date, "YYYYMMddHHmmss");
 	}
 
 	public static String dateFormat(long dateL)
 	{
-		return SafeDateFormater.format(new Date(dateL), "YYYYMMDDHHmmss");
+		return SafeDateFormater.format(new Date(dateL), "YYYYMMddHHmmss");
 	}
 
 }

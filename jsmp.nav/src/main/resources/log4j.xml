@@ -16,8 +16,6 @@
 		<param name="File" value="/tmp/jsmp.log/jsmp.log" />
 		<param name="Append" value="true" />
 		<param name="Threshold" value="DEBUG" />
-		<param name="MaxFileSize" value="100MB" />
-		<param name="MaxBackupIndex" value="10" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d %-4r %-5p [%-20t] %37c %3x - %m%n" />
@@ -29,8 +27,6 @@
 		<param name="File" value="/tmp/jsmp.log/jsmp.yan4j.log" />
 		<param name="Append" value="true" />
 		<param name="Threshold" value="DEBUG" />
-		<param name="MaxFileSize" value="100MB" />
-		<param name="MaxBackupIndex" value="10" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d %-4r %-5p [%-20t] %37c %3x - %m%n" />
