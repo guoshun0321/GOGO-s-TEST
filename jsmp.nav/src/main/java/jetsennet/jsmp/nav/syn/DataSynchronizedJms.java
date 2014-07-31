@@ -186,12 +186,4 @@ public class DataSynchronizedJms
 			}
 		}
 	}
-
-	public static void main(String[] args) throws Exception
-	{
-		DataSynchronizedJms syn = new DataSynchronizedJms();
-		syn.start();
-		TimeUnit.SECONDS.sleep(500);
-		syn.stop();
-	}
 }

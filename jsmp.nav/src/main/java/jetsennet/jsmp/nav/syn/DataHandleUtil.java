@@ -4,13 +4,8 @@ import java.util.List;
 
 import jetsennet.jsmp.nav.syn.cache.DataSyn4Cache;
 import jetsennet.jsmp.nav.syn.cache.IDataSynCache;
-import jetsennet.jsmp.nav.syn.db.DataSourceManager;
 import jetsennet.jsmp.nav.syn.db.DataSynDb;
 import jetsennet.jsmp.nav.syn.db.DataSynDbResult;
-import jetsennet.orm.executor.Executors;
-import jetsennet.orm.session.SqlSessionFactory;
-import jetsennet.orm.sql.SqlTypeEnum;
-import jetsennet.orm.tableinfo.TableInfo;
 
 public class DataHandleUtil
 {
@@ -24,6 +19,7 @@ public class DataHandleUtil
 			int opFlag = content.getOpFlag();
 
 			// 更新数据库
+			// 如果是删除操作，那么会从数据库中取出改数据后，再做删除操作
 			DataSynDbResult dbResult = null;
 			if (opFlag == DataSynContentEntity.OP_FLAG_MOD)
 			{
@@ -80,28 +76,6 @@ public class DataHandleUtil
 				}
 			}
 		}
-	}
-
-	/**
-	 * 仅用于测试
-	 * 
-	 * @param objs
-	 */
-	public static void batchInsert(List objs)
-	{
-		DataSynEntity entity = new DataSynEntity();
-		SqlSessionFactory factory = DataSourceManager.MEDIA_FACTORY;
-
-		int size = objs.size();
-		TableInfo info = factory.getTableInfo(objs.get(0).getClass());
-		String[] sqls = new String[size];
-		for (int i = 0; i < objs.size(); i++)
-		{
-			String sql = factory.getTransform().trans(info.obj2Sql(objs.get(i), SqlTypeEnum.INSERT));
-			sqls[i] = sql;
-		}
-		factory.openSession().insert(sqls);
-
 	}
 
 }
