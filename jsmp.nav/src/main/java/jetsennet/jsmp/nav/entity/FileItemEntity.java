@@ -7,6 +7,7 @@ import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
+
 /**
  * 
  */
@@ -240,6 +241,11 @@ public class FileItemEntity implements Serializable
 	private String language;
 
 	private static final long serialVersionUID = 1L;
+
+	public boolean isPictrue()
+	{
+		return this.fileType >= 100;
+	}
 
 	public String getFileId()
 	{

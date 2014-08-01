@@ -1,4 +1,4 @@
-package jetsennet.jsmp.nav.syn.db;
+package jetsennet.jsmp.nav.media;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,12 @@ import jetsennet.jsmp.nav.entity.ColumnEntity;
  * 
  * @author 郭祥
  */
-public class DataSynDbColumn extends AbsDataSynDb
+public class ColumnDal extends AbsMediaDal
 {
 
 	private List<ColumnEntity> columns;
 
-	public DataSynDbColumn()
+	public ColumnDal()
 	{
 		this.columns = new ArrayList<>();
 	}

@@ -21,7 +21,7 @@ import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
 import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
-import jetsennet.jsmp.nav.entity.PgmBaseEntity;
+import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
@@ -168,7 +168,7 @@ public class NavBusinessDal
 	 * @param pgmId
 	 * @return
 	 */
-	public static final PgmBaseEntity getPgmBase(int pgmId)
+	public static final PgmBase9Entity getPgmBase(int pgmId)
 	{
 		return cache.get(pgmBaseKey(pgmId), true);
 	}

@@ -20,7 +20,7 @@ import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.DescauthorizeEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
 import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
-import jetsennet.jsmp.nav.entity.PgmBaseEntity;
+import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
@@ -229,7 +229,7 @@ public class TestObjGenUtil
 			allProgs.addAll(prog2prog);
 
 			int progSize = allProgs.size();
-			List<PgmBaseEntity> pgmBases = new ArrayList<PgmBaseEntity>(progSize);
+			List<PgmBase9Entity> pgmBases = new ArrayList<PgmBase9Entity>(progSize);
 			List<DescauthorizeEntity> authors = new ArrayList<DescauthorizeEntity>(progSize);
 			List<CreatorEntity> creators = new ArrayList<CreatorEntity>(progSize * 8);
 			List<PictureEntity> pics = new ArrayList<PictureEntity>(progSize * 3);
@@ -239,7 +239,7 @@ public class TestObjGenUtil
 				clearMap(special);
 				special.put("PGM_ID", prog.getPgmId());
 				special.put("PGM_ASSETID", prog.getAssetId());
-				pgmBases.addAll(TestObjGenUtil.genObj(PgmBaseEntity.class, 1, special, pgmBaseId));
+				pgmBases.addAll(TestObjGenUtil.genObj(PgmBase9Entity.class, 1, special, pgmBaseId));
 
 				clearMap(special);
 				special.put("ROLE_MODE", "43");
@@ -422,7 +422,7 @@ public class TestObjGenUtil
 			allProgs.addAll(prog2prog);
 
 			int progSize = allProgs.size();
-			List<PgmBaseEntity> pgmBases = new ArrayList<PgmBaseEntity>(progSize);
+			List<PgmBase9Entity> pgmBases = new ArrayList<PgmBase9Entity>(progSize);
 			List<DescauthorizeEntity> authors = new ArrayList<DescauthorizeEntity>(progSize);
 			List<CreatorEntity> creators = new ArrayList<CreatorEntity>(progSize * 8);
 			List<PictureEntity> pics = new ArrayList<PictureEntity>(progSize * 3);
@@ -432,7 +432,7 @@ public class TestObjGenUtil
 				clearMap(special);
 				special.put("PGM_ID", prog.getPgmId());
 				special.put("PGM_ASSETID", prog.getAssetId());
-				pgmBases.addAll(TestObjGenUtil.genObj(PgmBaseEntity.class, 1, special, pgmBaseId));
+				pgmBases.addAll(TestObjGenUtil.genObj(PgmBase9Entity.class, 1, special, pgmBaseId));
 
 				clearMap(special);
 				special.put("ROLE_MODE", "43");

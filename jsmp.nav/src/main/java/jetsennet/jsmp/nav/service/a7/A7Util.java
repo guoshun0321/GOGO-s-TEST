@@ -11,7 +11,7 @@ import java.util.Map;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
-import jetsennet.jsmp.nav.entity.PgmBaseEntity;
+import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.service.a7.entity.GetProgramRequest;
@@ -208,7 +208,7 @@ public class A7Util
 		ResponseEntity resp = ResponseEntityUtil.obj2Resp(tempProg, "Selectableltem", null);
 
 		int pgmId = tempProg.getPgmId();
-		PgmBaseEntity pgmBase = NavBusinessDal.getPgmBase(pgmId);
+		PgmBase9Entity pgmBase = NavBusinessDal.getPgmBase(pgmId);
 		if (pgmBase != null)
 		{
 			ResponseEntityUtil.obj2Resp(pgmBase, null, resp);

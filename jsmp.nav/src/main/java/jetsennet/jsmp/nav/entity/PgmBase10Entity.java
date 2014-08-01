@@ -1,17 +1,16 @@
 package jetsennet.jsmp.nav.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.orm.annotation.Column;
-import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
+import jetsennet.orm.annotation.Table;
+
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
  */
-@Table("NS_PGMBASE")
-public class PgmBaseEntity implements Serializable
+@Table("NS_PGMBASE10")
+public class PgmBase10Entity implements Serializable
 {
 	/**
 	 * ID

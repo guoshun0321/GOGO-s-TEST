@@ -142,6 +142,12 @@ public class ProgramEntity implements Serializable
 	@IdentAnnocation("folderAssetId")
 	private String columnAssetid;
 
+	public static final int CONTENT_TYPE_MOVIE = 9;
+
+	public static final int CONTENT_TYPE_TV = 10;
+
+	public static final int CONTENT_TYPE_VARITY = 11;
+
 	private static final long serialVersionUID = 1L;
 
 	public int getPgmId()

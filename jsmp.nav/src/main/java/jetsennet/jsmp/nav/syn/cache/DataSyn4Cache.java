@@ -16,7 +16,7 @@ import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProductEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
-import jetsennet.jsmp.nav.entity.PgmBaseEntity;
+import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 
 public class DataSyn4Cache
 {
@@ -88,7 +88,7 @@ public class DataSyn4Cache
 		{
 			return new DataSynCacheProgram();
 		}
-		else if (cls == PgmBaseEntity.class)
+		else if (cls == PgmBase9Entity.class)
 		{
 			return new DataSynCachePgmBase();
 		}
