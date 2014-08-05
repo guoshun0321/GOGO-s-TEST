@@ -6,6 +6,7 @@ import java.util.Date;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
+
 /**
  * 
  */
@@ -34,10 +35,15 @@ public class PictureEntity implements Serializable
 	@Column("OBJ_TYPE")
 	private int objType;
 	/**
-	 * 所属对象ID
+	 * 所属对象ID。
 	 */
 	@Column("OBJ_ID")
 	private String objId;
+	/**
+	 * 所属对象的assetId
+	 */
+	@Column("OBJ_ASSETID")
+	private String objAssetId;
 	/**
 	 * 宽
 	 */
@@ -314,6 +320,16 @@ public class PictureEntity implements Serializable
 	public void setPicRank(int picRank)
 	{
 		this.picRank = picRank;
+	}
+
+	public String getObjAssetId()
+	{
+		return objAssetId;
+	}
+
+	public void setObjAssetId(String objAssetId)
+	{
+		this.objAssetId = objAssetId;
 	}
 
 }

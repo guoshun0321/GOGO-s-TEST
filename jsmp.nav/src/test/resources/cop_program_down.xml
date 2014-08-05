@@ -1,0 +1,18 @@
+<copPortalMsg>
+	<header>
+		<messageID>1407149249041</messageID>
+		<sendID>JCOP</sendID>
+		<recvID>Portal</recvID>
+		<opCode>COP_PORTAL_META_PUB</opCode>
+		<time>1407149249041</time>
+		<responseUrl>null</responseUrl>
+		<msgType>REQUEST</msgType>
+	</header>
+	<body>
+		<programTable opFlag="1">
+			<NS_PROGRAM>
+				<PGM_ID>2</PGM_ID>
+			</NS_PROGRAM>
+		</programTable>
+	</body>
+</copPortalMsg>

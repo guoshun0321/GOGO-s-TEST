@@ -1,0 +1,45 @@
+<copPortalMsg>
+	<header>
+		<messageID>1407148592683</messageID>
+		<sendID>JCOP</sendID>
+		<recvID>Portal</recvID>
+		<opCode>COP_PORTAL_META_PUB</opCode>
+		<time>1407148592683</time>
+		<responseUrl>null</responseUrl>
+		<msgType>REQUEST</msgType>
+	</header>
+	<body>
+		<playbillTable opFlag="0">
+			<NS_PLAYBILL>
+				<PB_ID>2</PB_ID>
+				<PB_NAME>CCTV-1_2014-08-10</PB_NAME>
+				<ASSET_ID>null</ASSET_ID>
+				<CHL_ID>2</CHL_ID>
+				<CHL_ASSETID>JETSENae9c38ee-cf5b-484d-9449-aba2c11ac7c4CHL
+				</CHL_ASSETID>
+				<PB_TYPE>0</PB_TYPE>
+				<PB_STATE>100</PB_STATE>
+				<PLAY_DATE>2014-08-10</PLAY_DATE>
+				<START_TIME>36000000</START_TIME>
+				<PLAY_DURATION>10198000</PLAY_DURATION>
+				<UPDATE_TIME>1407148488000</UPDATE_TIME>
+				<MODIFY_TIME>2014-08-04 18:34:48</MODIFY_TIME>
+			</NS_PLAYBILL>
+		</playbillTable>
+		<playbillItemTable opFlag="0">
+			<NS_PLAYBILLITEM>
+				<PBI_ID>2</PBI_ID>
+				<PB_ID>2</PB_ID>
+				<ASSET_ID>JETSEN418d0bfe-6164-4c19-a62c-3e951487bd29ITEM
+				</ASSET_ID>
+				<PGM_NAME>新节目1</PGM_NAME>
+				<PGM_TYPE>0</PGM_TYPE>
+				<PGM_STATE>0</PGM_STATE>
+				<DURATION>8999000</DURATION>
+				<START_TIME>36000000</START_TIME>
+				<UPDATE_TIME>1407148488000</UPDATE_TIME>
+				<PLAY_URL>null</PLAY_URL>
+			</NS_PLAYBILLITEM>
+		</playbillItemTable>
+	</body>
+</copPortalMsg>

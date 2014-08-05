@@ -1,20 +1,19 @@
 package jetsennet.jsmp.nav.syn.ui;
 
+import jetsennet.jsmp.nav.media.db.SynFromDb;
+import jetsennet.jsmp.nav.media.syn.DataSynJms;
+import jetsennet.jsmp.nav.media.syn.DataSynPeriod;
+import jetsennet.jsmp.nav.monitor.Monitor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jetsennet.jsmp.nav.monitor.Monitor;
-import jetsennet.jsmp.nav.syn.DataSynchronizedJms;
-import jetsennet.jsmp.nav.syn.DataSynchronizedFromDb;
-import jetsennet.jsmp.nav.syn.DataSynchronizedTimer;
-import jetsennet.jsmp.nav.util.ThreadWaitFutrue;
 
 public class SetupThread
 {
 
 	private DataSynFrame frame;
 
-	private volatile boolean isStart = false;
+	private boolean isStart = false;
 
 	private static final Logger logger = LoggerFactory.getLogger(SetupThread.class);
 
@@ -29,17 +28,21 @@ public class SetupThread
 		{
 			try
 			{
+				logger.info("Setup模块准备启动！");
+
+				// 启动监控模块
+				Monitor.getInstance().start();
+
 				// 同步数据库数据
-				logger.info("从数据库同步数据开始！");
-				DataSynchronizedFromDb.synFromDb();
+				logger.info("开始从数据库同步数据！");
+				new SynFromDb().syn();
 				logger.info("从数据库同步数据结束！");
 
 				// 启动JMS同步模块
-				DataSynchronizedJms.getInstance().start();
-				// 启动监控模块
-				Monitor.getInstance().start();
-				// 启动数据核对模块
-				DataSynchronizedTimer.getInstance().start();
+				DataSynJms.getInstance().start();
+
+				// 启动周期性数据核对模块
+				DataSynPeriod.getInstance().start();
 
 				frame.startSyn();
 				this.isStart = true;
@@ -62,15 +65,17 @@ public class SetupThread
 		{
 			try
 			{
-				// 关闭数据核对模块
-				DataSynchronizedTimer.getInstance().stop();
+				// 关闭周期性数据核对模块
+				DataSynPeriod.getInstance().stop();
+
+				// 关闭JMS同步模块
+				DataSynJms.getInstance().stop();
+
 				// 关闭监控模块
 				Monitor.getInstance().stop();
-				// 关闭JMS同步模块
-				DataSynchronizedJms.getInstance().stop();
 
-				frame.stopSyn();
 				this.isStart = false;
+				frame.stopSyn();
 				logger.info("Setup模块关闭成功！");
 			}
 			catch (Exception ex)

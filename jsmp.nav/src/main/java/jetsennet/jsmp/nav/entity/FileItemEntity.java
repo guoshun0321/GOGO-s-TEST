@@ -1,12 +1,11 @@
 package jetsennet.jsmp.nav.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.orm.annotation.Column;
-import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
+import jetsennet.orm.annotation.Table;
 
 /**
  * 
@@ -207,7 +206,7 @@ public class FileItemEntity implements Serializable
 	/**
 	 * 对MPEG2,H264有效
 	 */
-	@Column("LEVEL")
+	@Column("VLEVEL")
 	private String level;
 	/**
 	 * 音频采样率。单位：HZ

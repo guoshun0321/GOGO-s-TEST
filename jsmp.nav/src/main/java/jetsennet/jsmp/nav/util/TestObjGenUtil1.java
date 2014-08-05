@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -26,9 +25,7 @@ import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
-import jetsennet.jsmp.nav.syn.DataSynchronizedFromDb;
-import jetsennet.jsmp.nav.syn.cache.DataSyn4Cache;
-import jetsennet.jsmp.nav.syn.db.DataSourceManager;
+import jetsennet.jsmp.nav.media.db.DataSourceManager;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.session.Session;
 import jetsennet.orm.session.SqlSessionFactory;
@@ -337,14 +334,14 @@ public class TestObjGenUtil1
 
 	public static void multiInsert(List objs)
 	{
-		for (Object obj : objs)
-		{
-			DataSyn4Cache.getHandle(obj).insert(obj);
-			if ((count++ % 100) == 0)
-			{
-				logger.info("count : " + count);
-			}
-		}
+//		for (Object obj : objs)
+//		{
+//			DataSyn4Cache.getHandle(obj).insert(obj);
+//			if ((count++ % 100) == 0)
+//			{
+//				logger.info("count : " + count);
+//			}
+//		}
 	}
 
 	/**

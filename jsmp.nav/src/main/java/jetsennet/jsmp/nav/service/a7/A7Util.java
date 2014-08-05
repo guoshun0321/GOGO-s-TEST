@@ -208,7 +208,7 @@ public class A7Util
 		ResponseEntity resp = ResponseEntityUtil.obj2Resp(tempProg, "Selectableltem", null);
 
 		int pgmId = tempProg.getPgmId();
-		PgmBase9Entity pgmBase = NavBusinessDal.getPgmBase(pgmId);
+		Object pgmBase = NavBusinessDal.getPgmBase(pgmId);
 		if (pgmBase != null)
 		{
 			ResponseEntityUtil.obj2Resp(pgmBase, null, resp);

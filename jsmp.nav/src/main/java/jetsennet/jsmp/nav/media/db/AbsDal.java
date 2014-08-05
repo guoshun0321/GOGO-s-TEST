@@ -1,8 +1,6 @@
 package jetsennet.jsmp.nav.media.db;
 
 import jetsennet.frame.dataaccess.BaseDaoNew;
-import jetsennet.jsmp.nav.syn.db.DataSourceManager;
-import jetsennet.orm.session.Session;
 import jetsennet.orm.session.SqlSessionFactory;
 
 public class AbsDal

@@ -149,8 +149,7 @@ public class NavBusiness
 		// 子栏目ChildFolder
 		if (entity.getIncludeSubFolder())
 		{
-			List<Integer> subIds = NavBusinessDal.subColumnIds(column);
-			List<ColumnEntity> cols = NavBusinessDal.getColumns(subIds);
+			List<ColumnEntity> cols = NavBusinessDal.subColumns(column);
 			for (ColumnEntity col : cols)
 			{
 				ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(col, "ChildFolder", null);
@@ -166,7 +165,7 @@ public class NavBusiness
 		int retSelTotal = 0;
 		if (entity.getIncludeSelectableItem())
 		{
-			List<Integer> programIds = NavBusinessDal.columnProgramIds(column.getColumnId());
+			List<String> programIds = NavBusinessDal.columnProgramIds(column.getAssetId());
 			if (programIds != null && !programIds.isEmpty())
 			{
 				// 分页信息
@@ -446,7 +445,7 @@ public class NavBusiness
 
 		ResponseEntity retval = new ResponseEntity("Channels");
 
-		List<Integer> chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
+		List<String> chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
 		if (chIds == null)
 		{
 			throw new UncheckedNavException("获取频道列表失败！");
@@ -468,7 +467,7 @@ public class NavBusiness
 				ResponseEntity chlResp = ResponseEntityUtil.obj2Resp(chl, "Channel", null);
 				retval.addChild(chlResp);
 
-				List<PhysicalChannelEntity> phys = NavBusinessDal.getPhysicalChannels(chl.getChlId());
+				List<PhysicalChannelEntity> phys = NavBusinessDal.getPhysicalChannels(chl.getAssetId());
 				for (PhysicalChannelEntity phy : phys)
 				{
 					chlResp.addChild(ResponseEntityUtil.obj2Resp(phy, "Parameter", null));
@@ -485,7 +484,7 @@ public class NavBusiness
 
 		// 频道信息
 		String channelIdS = req.getChannelIds().trim();
-		List<Integer> chIds = null;
+		List<String> chIds = null;
 		if (channelIdS.isEmpty())
 		{
 			chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
@@ -493,10 +492,10 @@ public class NavBusiness
 		else
 		{
 			String[] temp = channelIdS.split(",");
-			chIds = new ArrayList<Integer>(temp.length);
+			chIds = new ArrayList<String>(temp.length);
 			for (String t : temp)
 			{
-				chIds.add(Integer.valueOf(t));
+				chIds.add(t);
 			}
 		}
 
@@ -510,12 +509,12 @@ public class NavBusiness
 		int max = req.getMaxItems();
 		int end = start + max;
 		int i = 0;
-		for (Integer chId : chIds)
+		for (String chId : chIds)
 		{
 			for (Long day : dayLst)
 			{
-				List<Integer> itemIds = NavBusinessDal.getPlayBillItemIds(chId, day);
-				for (Integer itemId : itemIds)
+				List<String> itemIds = NavBusinessDal.getPlayBillItemIds(chId, day);
+				for (String itemId : itemIds)
 				{
 					if (i >= start)
 					{

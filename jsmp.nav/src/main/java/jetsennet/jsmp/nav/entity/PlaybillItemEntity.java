@@ -32,6 +32,8 @@ public class PlaybillItemEntity implements Serializable
 	 */
 	@Column("PB_ID")
 	private int pbId;
+
+	private String pbAssetId;
 	/**
 	 * 节目名称
 	 */
@@ -185,6 +187,16 @@ public class PlaybillItemEntity implements Serializable
 	public void setPlayUrl(String playUrl)
 	{
 		this.playUrl = playUrl;
+	}
+
+	public String getPbAssetId()
+	{
+		return pbAssetId;
+	}
+
+	public void setPbAssetId(String pbAssetId)
+	{
+		this.pbAssetId = pbAssetId;
 	}
 
 }

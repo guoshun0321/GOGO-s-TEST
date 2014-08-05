@@ -10,6 +10,11 @@ import jetsennet.jsmp.nav.entity.PgmBase10Entity;
 import jetsennet.jsmp.nav.entity.PgmBase11Entity;
 import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
+import jetsennet.jsmp.nav.util.UncheckedNavException;
+import jetsennet.sqlclient.SqlCondition;
+import jetsennet.sqlclient.SqlLogicType;
+import jetsennet.sqlclient.SqlParamType;
+import jetsennet.sqlclient.SqlRelationType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,5 +96,25 @@ public class ProgramDal extends AbsDal
 			logger.error("", ex);
 		}
 		return retval;
+	}
+
+	public void deleteProgram(int pgmId)
+	{
+		try
+		{
+			SqlCondition cond = new SqlCondition("PGM_ID", Integer.toString(pgmId), SqlLogicType.And, SqlRelationType.Equal, SqlParamType.Numeric);
+			dal.delete(ProgramEntity.class, cond);
+			dal.delete(PgmBase9Entity.class, cond);
+			dal.delete(PgmBase10Entity.class, cond);
+			dal.delete(PgmBase11Entity.class, cond);
+			dal.delete(CreatorEntity.class, cond);
+			dal.delete(DescauthorizeEntity.class, cond);
+			dal.delete(FileItemEntity.class, cond);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+			throw new UncheckedNavException(ex);
+		}
 	}
 }

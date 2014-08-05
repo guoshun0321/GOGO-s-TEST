@@ -12,12 +12,12 @@
 		<repository>
 			<id>jetsen-release</id>
 			<name>jetsen distribution repository</name>
-			<url>http://192.168.8.180:8080/nexus/content/repositories/thirdparty/</url>
+			<url>http://192.168.8.180:8080/nexus/content/groups/public/</url>
 		</repository>
 		<snapshotRepository>
 			<id>jetsen-snapshots</id>
 			<name>jetsen distribution snapshot repository</name>
-			<url>http://192.168.8.180:8080/nexus/content/repositories/thirdparty/</url>
+			<url>http://192.168.8.180:8080/nexus/content/groups/public/</url>
 		</snapshotRepository>
 		<site>
 			<id>www.jetsen.com</id>
@@ -63,10 +63,10 @@
 		</dependency>
 		<dependency>
 			<groupId>jetsennet</groupId>
-			<artifactId>jetsennet-lib</artifactId>
+			<artifactId>jetsennet-orm</artifactId>
 			<version>2.1.2-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

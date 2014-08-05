@@ -22,6 +22,10 @@ public class DataSynFrame extends BaseMgrFrm
 	 * 同步
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(DataSynFrame.class);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1L;
 
 	public DataSynFrame(String title)
 	{

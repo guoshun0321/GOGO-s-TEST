@@ -1,14 +1,14 @@
 package jetsennet.jsmp.nav.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.orm.annotation.Column;
-import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
+import jetsennet.orm.annotation.Table;
+
 /**
- * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
+ * 
  */
 @Table("NS_PHYSICALCHANNEL")
 public class PhysicalChannelEntity implements Serializable
@@ -29,6 +29,11 @@ public class PhysicalChannelEntity implements Serializable
 	 */
 	@Column("CHL_ID")
 	private int chlId;
+	/**
+	 * 所属频道的assetId
+	 */
+	@Column("CHL_ASSETID")
+	private String chlAssetId;
 	/**
 	 * 物理频道状态
 	 */
@@ -366,6 +371,16 @@ public class PhysicalChannelEntity implements Serializable
 	public void setRegion(String region)
 	{
 		this.region = region;
+	}
+
+	public String getChlAssetId()
+	{
+		return chlAssetId;
+	}
+
+	public void setChlAssetId(String chlAssetId)
+	{
+		this.chlAssetId = chlAssetId;
 	}
 
 }

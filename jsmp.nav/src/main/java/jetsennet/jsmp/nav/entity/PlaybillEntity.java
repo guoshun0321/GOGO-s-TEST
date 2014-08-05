@@ -29,6 +29,10 @@ public class PlaybillEntity implements Serializable
 	@Column("CHL_ID")
 	private int chlId;
 	/**
+	 * 频道的assetId
+	 */
+	private String chlAssetId;
+	/**
 	 * 播出单类型：0：缺省，播出单，10：播后单
 
 	 */
@@ -165,6 +169,16 @@ public class PlaybillEntity implements Serializable
 	public void setModifyTime(Date modifyTime)
 	{
 		this.modifyTime = modifyTime;
+	}
+
+	public String getChlAssetId()
+	{
+		return chlAssetId;
+	}
+
+	public void setChlAssetId(String chlAssetId)
+	{
+		this.chlAssetId = chlAssetId;
 	}
 
 }

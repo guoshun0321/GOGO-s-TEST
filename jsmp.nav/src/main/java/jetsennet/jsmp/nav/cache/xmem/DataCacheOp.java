@@ -104,7 +104,7 @@ public class DataCacheOp
 		{
 			if (Config.ISDEBUG)
 			{
-				logger.debug(String.format("向缓存添加数据: %s , [%s], %s", key, value, timeout));
+				logger.debug(String.format("向缓存添加数据: %s , %s, %s", key, value, timeout));
 			}
 			client.set(key, timeout, value);
 		}
@@ -117,6 +117,11 @@ public class DataCacheOp
 	public <T> T get(String key)
 	{
 		return this.get(key, false);
+	}
+	
+	public <T> T getT(String key)
+	{
+		return this.get(key, true);
 	}
 
 	/**
