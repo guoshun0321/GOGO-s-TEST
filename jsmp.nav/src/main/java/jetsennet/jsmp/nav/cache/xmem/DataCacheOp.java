@@ -118,7 +118,7 @@ public class DataCacheOp
 	{
 		return this.get(key, false);
 	}
-	
+
 	public <T> T getT(String key)
 	{
 		return this.get(key, true);
@@ -219,31 +219,6 @@ public class DataCacheOp
 		return retval;
 	}
 
-	public int getInt(String key)
-	{
-		if (key == null)
-		{
-			return -1;
-		}
-		return (int) this.get(key, false);
-	}
-
-	public List<Integer> getListInt(String key)
-	{
-		return this.get(key, true);
-	}
-
-	public List<String> getListString(String key)
-	{
-		return this.get(key, true);
-
-	}
-
-	public <T> List<T> getList(String key)
-	{
-		return this.get(key, true);
-	}
-
 	/**
 	 * 开启client。同步操作由调用者实现。
 	 */
@@ -263,11 +238,8 @@ public class DataCacheOp
 		catch (Exception ex)
 		{
 			logger.error("", ex);
-			throw new CacheException(ex);
-		}
-		finally
-		{
 			this.client = null;
+			throw new CacheException(ex);
 		}
 	}
 
@@ -278,11 +250,14 @@ public class DataCacheOp
 	{
 		try
 		{
-			if (Config.ISDEBUG)
+			if (this.client != null)
 			{
-				logger.debug("关闭缓存");
+				if (Config.ISDEBUG)
+				{
+					logger.debug("关闭缓存");
+				}
+				this.client.shutdown();
 			}
-			this.client.shutdown();
 		}
 		catch (Exception ex)
 		{

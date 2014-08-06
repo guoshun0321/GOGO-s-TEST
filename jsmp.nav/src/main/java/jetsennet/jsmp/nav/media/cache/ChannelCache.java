@@ -11,11 +11,6 @@ import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 public class ChannelCache extends AbsCache
 {
 
-	/**
-	 * 插入频道
-	 * 
-	 * @param channel
-	 */
 	public static void insert(ChannelEntity channel)
 	{
 		cache.put(channelKey(channel.getAssetId()), channel);
@@ -26,7 +21,7 @@ public class ChannelCache extends AbsCache
 		String assetId = channel.getAssetId();
 		cache.put(channelKey(assetId), channel);
 		String key = channelIndex(channel.getRegionCode(), channel.getLanguageCode());
-		List<String> lst = cache.get(key);
+		List<String> lst = cache.getT(key);
 		if (lst == null)
 		{
 			lst = new ArrayList<>();
@@ -104,6 +99,13 @@ public class ChannelCache extends AbsCache
 		return "CHL$" + assetId;
 	}
 
+	/**
+	 * 按地区和语言对频道进行分类，返回频道assetId集合
+	 * 
+	 * @param region
+	 * @param lang
+	 * @return
+	 */
 	public static final String channelIndex(String region, String lang)
 	{
 		return "CHLLIST$" + region + "$" + lang;

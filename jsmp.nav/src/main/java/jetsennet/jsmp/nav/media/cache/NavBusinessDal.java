@@ -1,4 +1,4 @@
-package jetsennet.jsmp.nav.service.a7;
+package jetsennet.jsmp.nav.media.cache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,6 @@ import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
-import jetsennet.jsmp.nav.media.cache.ChannelCache;
-import jetsennet.jsmp.nav.media.cache.ColumnCache;
-import jetsennet.jsmp.nav.media.cache.PlaybillCache;
-import jetsennet.jsmp.nav.media.cache.ProgramCache;
 
 public class NavBusinessDal
 {
@@ -72,6 +68,7 @@ public class NavBusinessDal
 
 	/**
 	 * 获取所有的子栏目
+	 * 
 	 * @param column
 	 * @return
 	 */
@@ -83,6 +80,18 @@ public class NavBusinessDal
 	}
 
 	/**
+	 * 获取栏目对应的图片
+	 * 
+	 * @param column
+	 * @return
+	 */
+	public static final List<PictureEntity> columnPicturs(ColumnEntity column)
+	{
+		String key = ColumnCache.columnPicKey(column.getAssetId());
+		return cache.getT(key);
+	}
+
+	/**
 	 * 根据assetId获取栏目信息
 	 * 
 	 * @param assetId
@@ -90,7 +99,7 @@ public class NavBusinessDal
 	 */
 	public static final ColumnEntity getColumnByAssetId(String assetId)
 	{
-		return cache.get(ColumnCache.columnKey(assetId));
+		return cache.getT(ColumnCache.columnKey(assetId));
 	}
 
 	/**
@@ -101,7 +110,7 @@ public class NavBusinessDal
 	 */
 	public static final List<String> columnProgramIds(String assetId)
 	{
-		return cache.get(ProgramCache.columnPgm(assetId));
+		return cache.getT(ProgramCache.columnPgm(assetId));
 	}
 
 	/**
@@ -185,7 +194,7 @@ public class NavBusinessDal
 				for (String key : keys)
 				{
 					Object obj = tempMap.get(key);
-					if (obj == null && obj instanceof ProgramEntity)
+					if (obj != null && obj instanceof ProgramEntity)
 					{
 						retval.add((ProgramEntity) obj);
 					}
@@ -210,10 +219,10 @@ public class NavBusinessDal
 	 * @param pgmId
 	 * @return
 	 */
-	public static final List<PictureEntity> getPgmPictures(int pgmId)
+	public static final List<FileItemEntity> getPgmPictures(int pgmId)
 	{
-		List<PictureEntity> retval = cache.getList(ProgramCache.pgmPictureKey(pgmId));
-		return retval == null ? new ArrayList<PictureEntity>(0) : retval;
+		List<FileItemEntity> retval = cache.getT(ProgramCache.pgmPictureKey(pgmId));
+		return retval == null ? new ArrayList<FileItemEntity>(0) : retval;
 	}
 
 	/**
@@ -224,7 +233,7 @@ public class NavBusinessDal
 	 */
 	public static final List<FileItemEntity> getPgmItems(int pgmId)
 	{
-		List<FileItemEntity> retval = cache.getList(ProgramCache.pgmFileItemKey(pgmId));
+		List<FileItemEntity> retval = cache.getT(ProgramCache.pgmFileItemKey(pgmId));
 		return retval == null ? new ArrayList<FileItemEntity>(0) : retval;
 	}
 
@@ -236,7 +245,7 @@ public class NavBusinessDal
 	 */
 	public static final List<CreatorEntity> getCreators(int pgmId)
 	{
-		return cache.getList(ProgramCache.pgmCreatorKey(pgmId));
+		return cache.getT(ProgramCache.pgmCreatorKey(pgmId));
 	}
 
 	/**
@@ -247,7 +256,7 @@ public class NavBusinessDal
 	 */
 	public static final FileItemEntity getFileItemByAssetId(String assetId)
 	{
-		return cache.get(ProgramCache.pgmFileItemAsset(assetId));
+		return cache.getT(ProgramCache.pgmFileItemAsset(assetId));
 	}
 
 	/**
@@ -258,7 +267,7 @@ public class NavBusinessDal
 	 */
 	public static final PlaybillItemEntity getPlayBillItemByAssetId(String assetId)
 	{
-		return cache.get(PlaybillCache.playbillItemKey(assetId));
+		return cache.getT(PlaybillCache.playbillItemKey(assetId));
 	}
 
 	/**
@@ -284,7 +293,7 @@ public class NavBusinessDal
 	public static final List<String> getChannelIds(String region, String lang)
 	{
 		String key = ChannelCache.channelIndex(region, lang);
-		List<String> retval = cache.get(key);
+		List<String> retval = cache.getT(key);
 		return retval == null ? new ArrayList<String>(0) : retval;
 	}
 
@@ -329,7 +338,7 @@ public class NavBusinessDal
 	 */
 	public static final List<PhysicalChannelEntity> getPhysicalChannels(String chlAssetId)
 	{
-		List<PhysicalChannelEntity> retval = cache.get(ChannelCache.physicalChannelKey(chlAssetId));
+		List<PhysicalChannelEntity> retval = cache.getT(ChannelCache.physicalChannelKey(chlAssetId));
 		return retval == null ? new ArrayList<PhysicalChannelEntity>(0) : retval;
 	}
 
@@ -344,10 +353,11 @@ public class NavBusinessDal
 	{
 		List<String> retval = null;
 
-		PlaybillEntity pb = cache.get(PlaybillCache.channelPlaybill(chlAssetId, day), true);
+		String pbAssetId = cache.get(PlaybillCache.channelPlaybill(chlAssetId, day), true);
+		PlaybillEntity pb = cache.get(PlaybillCache.playbillKey(pbAssetId));
 		if (pb != null)
 		{
-			retval = cache.get(PlaybillCache.playbillItemList(pb.getAssetId()));
+			retval = cache.getT(PlaybillCache.playbillItemList(pb.getAssetId()));
 		}
 		return retval == null ? new ArrayList<String>(0) : retval;
 	}
@@ -360,7 +370,7 @@ public class NavBusinessDal
 	 */
 	public static final PlaybillItemEntity getPalyBillItem(String itemId)
 	{
-		return cache.get(PlaybillCache.playbillItemKey(itemId));
+		return cache.getT(PlaybillCache.playbillItemKey(itemId));
 	}
 
 }

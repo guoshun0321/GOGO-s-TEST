@@ -26,8 +26,10 @@ public class SynDbPlaybill implements ISynDb
 				PlaybillEntity pb = pbdal.get(pbId);
 				if (pb != null)
 				{
+					// playbill
 					PlaybillCache.insertPlaybill(pb);
-					String key = PlaybillCache.channelPlaybill(pb.getChlAssetId(), pb.getPlayDate().getTime());
+					// playbill和频道之间的关系
+					String key = PlaybillCache.channelPlaybill(pb.getChlAssetId(), pb.getPlayDate());
 					pbMap.put(key, pb.getAssetId());
 
 					List<String> pbItemIds = new ArrayList<>();
@@ -45,6 +47,7 @@ public class SynDbPlaybill implements ISynDb
 			}
 		}
 		PlaybillCache.insertChlPb(pbMap);
+		PlaybillCache.insertPbItemMap(pbItemMap);
 	}
 
 }

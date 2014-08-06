@@ -6,6 +6,7 @@ import java.util.Date;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
+
 /**
  * 本文件由jetsennet.jsmp.nav.util.BDBFileParse生成
  */
@@ -31,10 +32,10 @@ public class PlaybillEntity implements Serializable
 	/**
 	 * 频道的assetId
 	 */
+	@Column("CHL_ASSETID")
 	private String chlAssetId;
 	/**
 	 * 播出单类型：0：缺省，播出单，10：播后单
-
 	 */
 	@Column("PB_TYPE")
 	private int pbType;

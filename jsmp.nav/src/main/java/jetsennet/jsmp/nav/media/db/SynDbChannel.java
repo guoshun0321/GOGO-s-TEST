@@ -16,6 +16,7 @@ public class SynDbChannel implements ISynDb
 	public void syn() throws Exception
 	{
 		List<ChannelEntity> channels = AbsDal.dal.queryAllBusinessObjs(ChannelEntity.class);
+		// 将所有频道按地区和语言进行分类
 		Map<String, List<String>> channelMap = new LinkedHashMap<>();
 		for (ChannelEntity channel : channels)
 		{
@@ -31,6 +32,7 @@ public class SynDbChannel implements ISynDb
 		}
 		ChannelCache.insertChannelList(channelMap);
 
+		// 处理物理频道
 		List<PhysicalChannelEntity> pchannels = AbsDal.dal.queryAllBusinessObjs(PhysicalChannelEntity.class);
 		Map<String, List<PhysicalChannelEntity>> pchlMap = new LinkedHashMap<>();
 		for (PhysicalChannelEntity pchannel : pchannels)

@@ -45,7 +45,7 @@ public class DataSynPeriod
 		{
 			ses = Executors.newScheduledThreadPool(1);
 			long startTime = getStartTime();
-			logger.info("初次访问延迟：" + startTime / 1000 / 60 + "分钟");
+			logger.info("初次同步时间为：" + startTime / 1000 / 60 + "分钟之后");
 			ses.scheduleAtFixedRate(new DataCheckRunnable(), startTime, TIME_DAY, TimeUnit.MILLISECONDS);
 			logger.info("数据核对模块模块启动。");
 			this.isStart = true;

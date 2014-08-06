@@ -8,6 +8,11 @@ import jetsennet.jsmp.nav.entity.DescauthorizeEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
 import jetsennet.jsmp.nav.entity.PgmBase10Entity;
 import jetsennet.jsmp.nav.entity.PgmBase11Entity;
+import jetsennet.jsmp.nav.entity.PgmBase12Entity;
+import jetsennet.jsmp.nav.entity.PgmBase13Entity;
+import jetsennet.jsmp.nav.entity.PgmBase14Entity;
+import jetsennet.jsmp.nav.entity.PgmBase15Entity;
+import jetsennet.jsmp.nav.entity.PgmBase16Entity;
 import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
@@ -65,10 +70,28 @@ public class ProgramDal extends AbsDal
 				case ProgramEntity.CONTENT_TYPE_VARITY:
 					temp = dal.queryForObject(PgmBase11Entity.class, sql);
 					break;
+				case ProgramEntity.CONTENT_TYPE_COM:
+					temp = dal.queryForObject(PgmBase12Entity.class, sql);
+					break;
+				case ProgramEntity.CONTENT_TYPE_DOC:
+					temp = dal.queryForObject(PgmBase13Entity.class, sql);
+					break;
+				case ProgramEntity.CONTENT_TYPE_MUSIC:
+					temp = dal.queryForObject(PgmBase14Entity.class, sql);
+					break;
+				case ProgramEntity.CONTENT_TYPE_TXT:
+					temp = dal.queryForObject(PgmBase15Entity.class, sql);
+					break;
+				case ProgramEntity.CONTENT_TYPE_CHL:
+					temp = dal.queryForObject(PgmBase16Entity.class, sql);
+					break;
 				default:
 					logger.info("未知类型：" + contentType);
 				}
-				retval.add(temp);
+				if (temp != null)
+				{
+					retval.add(temp);
+				}
 
 				// 版权信息
 				sql = "SELECT * FROM NS_DESCAUTHORIZE WHERE PGM_ID=" + pgmId;
@@ -107,6 +130,11 @@ public class ProgramDal extends AbsDal
 			dal.delete(PgmBase9Entity.class, cond);
 			dal.delete(PgmBase10Entity.class, cond);
 			dal.delete(PgmBase11Entity.class, cond);
+			dal.delete(PgmBase12Entity.class, cond);
+			dal.delete(PgmBase13Entity.class, cond);
+			dal.delete(PgmBase14Entity.class, cond);
+			dal.delete(PgmBase15Entity.class, cond);
+			dal.delete(PgmBase16Entity.class, cond);
 			dal.delete(CreatorEntity.class, cond);
 			dal.delete(DescauthorizeEntity.class, cond);
 			dal.delete(FileItemEntity.class, cond);

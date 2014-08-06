@@ -12,8 +12,10 @@ import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
 import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
+import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
+import jetsennet.jsmp.nav.media.cache.NavBusinessDal;
 import jetsennet.jsmp.nav.monitor.MethodInvokeMMsg;
 import jetsennet.jsmp.nav.monitor.Monitor;
 import jetsennet.jsmp.nav.service.a7.entity.ChannelSelectionStartRequest;
@@ -155,6 +157,17 @@ public class NavBusiness
 				ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(col, "ChildFolder", null);
 				tempResp.addAttr("selectableltemSortby", column.getSortRule());
 				tempResp.addAttr("selectableltemSortDirection", Integer.toString(column.getSortDirection()));
+
+				List<PictureEntity> pics = NavBusinessDal.columnPicturs(col);
+				if (pics != null && !pics.isEmpty())
+				{
+					for (PictureEntity pic : pics)
+					{
+						ResponseEntity picResp = ResponseEntityUtil.obj2Resp(pic, "Image", null);
+						tempResp.addChild(picResp);
+					}
+				}
+
 				retval.addChild(tempResp);
 			}
 		}
@@ -509,6 +522,7 @@ public class NavBusiness
 		int max = req.getMaxItems();
 		int end = start + max;
 		int i = 0;
+		boolean isEnd = false;
 		for (String chId : chIds)
 		{
 			for (Long day : dayLst)
@@ -521,6 +535,7 @@ public class NavBusiness
 						if (i == end)
 						{
 							retval.addAttr("restartAtToken", Integer.toString(i));
+							isEnd = true;
 							break;
 						}
 						else
@@ -537,6 +552,14 @@ public class NavBusiness
 					}
 					i++;
 				}
+				if (isEnd)
+				{
+					break;
+				}
+			}
+			if (isEnd)
+			{
+				break;
 			}
 		}
 		retval.addAttr("totalResults", retval.getChildSizeS());

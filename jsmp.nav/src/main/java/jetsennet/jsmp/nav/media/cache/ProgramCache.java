@@ -13,6 +13,11 @@ import jetsennet.jsmp.nav.entity.FileItemEntity;
 import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
 import jetsennet.jsmp.nav.entity.PgmBase10Entity;
 import jetsennet.jsmp.nav.entity.PgmBase11Entity;
+import jetsennet.jsmp.nav.entity.PgmBase12Entity;
+import jetsennet.jsmp.nav.entity.PgmBase13Entity;
+import jetsennet.jsmp.nav.entity.PgmBase14Entity;
+import jetsennet.jsmp.nav.entity.PgmBase15Entity;
+import jetsennet.jsmp.nav.entity.PgmBase16Entity;
 import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
@@ -33,6 +38,7 @@ public class ProgramCache extends AbsCache
 			if (obj instanceof ProgramEntity)
 			{
 				pgm = (ProgramEntity) obj;
+				delete(pgm);
 				cache.put(programKey(pgm.getPgmId()), pgm);
 				cache.put(programAsset(pgm.getAssetId()), pgm);
 				break;
@@ -75,6 +81,31 @@ public class ProgramCache extends AbsCache
 				PgmBase11Entity base = (PgmBase11Entity) obj;
 				cache.put(pgmBaseKey(pgmId), base);
 			}
+			else if (obj instanceof PgmBase12Entity)
+			{
+				PgmBase12Entity base = (PgmBase12Entity) obj;
+				cache.put(pgmBaseKey(pgmId), base);
+			}
+			else if (obj instanceof PgmBase13Entity)
+			{
+				PgmBase13Entity base = (PgmBase13Entity) obj;
+				cache.put(pgmBaseKey(pgmId), base);
+			}
+			else if (obj instanceof PgmBase14Entity)
+			{
+				PgmBase14Entity base = (PgmBase14Entity) obj;
+				cache.put(pgmBaseKey(pgmId), base);
+			}
+			else if (obj instanceof PgmBase15Entity)
+			{
+				PgmBase15Entity base = (PgmBase15Entity) obj;
+				cache.put(pgmBaseKey(pgmId), base);
+			}
+			else if (obj instanceof PgmBase16Entity)
+			{
+				PgmBase16Entity base = (PgmBase16Entity) obj;
+				cache.put(pgmBaseKey(pgmId), base);
+			}
 			else if (obj instanceof DescauthorizeEntity)
 			{
 				DescauthorizeEntity desc = (DescauthorizeEntity) obj;
@@ -115,23 +146,25 @@ public class ProgramCache extends AbsCache
 			cache.put(pgmCreatorKey(pgmId), creators);
 		}
 
-		// 节目和栏目的关系，节目和节目的关系
+		// 节目和栏目的关系
 		if (pgm != null)
 		{
 			int columnId = pgm.getColumnId();
+			String assetId = pgm.getAssetId();
 			String columnAssetId = pgm.getColumnAssetid();
-			if (columnId != 0)
+			if (columnId > 0)
 			{
-				List<Integer> columnPgmIds = cache.getT(columnPgm(columnAssetId));
+				String key = columnPgm(columnAssetId);
+				List<String> columnPgmIds = cache.getT(key);
 				if (columnPgmIds == null)
 				{
 					columnPgmIds = new ArrayList<>();
 				}
-				if (!columnPgmIds.contains(Integer.valueOf(pgmId)))
+				if (!columnPgmIds.contains(assetId))
 				{
-					columnPgmIds.add(pgmId);
+					columnPgmIds.add(assetId);
 				}
-				cache.put(columnPgm(columnAssetId), columnPgmIds);
+				cache.put(key, columnPgmIds);
 			}
 		}
 	}
@@ -147,16 +180,25 @@ public class ProgramCache extends AbsCache
 		cache.del(pgmPictureKey(pgmId));
 
 		int columnId = pgm.getColumnId();
+		String assetId = pgm.getAssetId();
 		String columnAssetId = pgm.getColumnAssetid();
 		if (columnId != 0)
 		{
-			List<Integer> columnPgmIds = cache.get(columnPgm(columnAssetId));
+			String key = columnPgm(columnAssetId);
+			List<String> columnPgmIds = cache.getT(key);
 			if (columnPgmIds == null)
 			{
 				columnPgmIds = new ArrayList<>();
 			}
-			columnPgmIds.remove(Integer.valueOf(pgmId));
-			cache.put(columnPgm(columnAssetId), columnPgmIds);
+			columnPgmIds.remove(assetId);
+			if (columnPgmIds.isEmpty())
+			{
+				cache.del(key);
+			}
+			else
+			{
+				cache.put(key, columnPgmIds);
+			}
 		}
 	}
 
@@ -186,6 +228,12 @@ public class ProgramCache extends AbsCache
 		return "PGM_ASSETID$" + assetId;
 	}
 
+	/**
+	 * 返回栏目对应的节目的assetId
+	 * 
+	 * @param assetId
+	 * @return
+	 */
 	public static final String columnPgm(String assetId)
 	{
 		return "COLUMN_PGM$" + assetId;

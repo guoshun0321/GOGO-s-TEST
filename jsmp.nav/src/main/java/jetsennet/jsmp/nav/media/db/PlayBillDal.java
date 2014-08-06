@@ -25,7 +25,7 @@ public class PlayBillDal extends AbsDal
 		{
 			// 获取两个星期的数据
 			long firstPlayDate = DateUtil.getPreTimeOfDay(new Date(), PRE_DATE);
-			String sql = "SELECT PB_ID FROM NS_PALYBILL WHERE PLAY_DATE >= " + firstPlayDate;
+			String sql = "SELECT PB_ID FROM NS_PLAYBILL WHERE PLAY_DATE >= " + firstPlayDate;
 			retval = dal.queryBusinessObjs(Integer.class, sql);
 		}
 		catch (Exception ex)
@@ -54,7 +54,7 @@ public class PlayBillDal extends AbsDal
 		List<PlaybillItemEntity> retval = null;
 		try
 		{
-			String sql = "SELECT * FROM NS_PALYBILLITEM WHERE PB_ID=" + pbId;
+			String sql = "SELECT * FROM NS_PLAYBILLITEM WHERE PB_ID=" + pbId;
 			retval = dal.queryBusinessObjs(PlaybillItemEntity.class, sql);
 		}
 		catch (Exception ex)

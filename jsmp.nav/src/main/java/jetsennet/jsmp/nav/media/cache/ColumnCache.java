@@ -10,23 +10,13 @@ public class ColumnCache extends AbsCache
 {
 
 	/**
-	 * 向缓存中插入column
-	 * 
-	 * @param column
-	 */
-	public static void insert(ColumnEntity column)
-	{
-		cache.put(columnKey(column.getAssetId()), column);
-	}
-
-	/**
 	 * 更新缓存中的column
 	 * 
 	 * @param column
 	 */
 	public static void update(ColumnEntity column)
 	{
-		insert(column);
+		cache.put(columnKey(column.getAssetId()), column);
 
 		String assetId = column.getAssetId();
 		String key = column.getParentId() == 0 ? topColumn() : subColumn(column.getParentAssetid(), column.getRegionCode());
@@ -51,9 +41,19 @@ public class ColumnCache extends AbsCache
 		cache.put(key, assetIds);
 	}
 
+	/**
+	 * 向缓存中插入column
+	 * 
+	 * @param column
+	 */
+	public static void insert(ColumnEntity column)
+	{
+		cache.put(columnKey(column.getAssetId()), column);
+	}
+
 	public static void insertPic(PictureEntity pic)
 	{
-		String key = columnPicKey(pic.getObjId());
+		String key = columnPicKey(pic.getObjAssetId());
 		List<PictureEntity> pics = cache.getT(key);
 		if (pics == null)
 		{
@@ -79,7 +79,7 @@ public class ColumnCache extends AbsCache
 
 	public static void deletePic(PictureEntity pic)
 	{
-		String key = columnPicKey(pic.getObjId());
+		String key = columnPicKey(pic.getObjAssetId());
 		List<PictureEntity> pics = cache.getT(key);
 		if (pics != null)
 		{

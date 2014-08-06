@@ -11,9 +11,8 @@ import java.util.Map;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
-import jetsennet.jsmp.nav.entity.PgmBase9Entity;
-import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
+import jetsennet.jsmp.nav.media.cache.NavBusinessDal;
 import jetsennet.jsmp.nav.service.a7.entity.GetProgramRequest;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntity;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntityUtil;
@@ -186,12 +185,14 @@ public class A7Util
 		addCreatorInfo(prog, retval);
 
 		// 添加图片信息
-		List<PictureEntity> pics = NavBusinessDal.getPgmPictures(prog.getPgmId());
-		for (PictureEntity pic : pics)
+		List<FileItemEntity> pics = NavBusinessDal.getPgmPictures(prog.getPgmId());
+		for (FileItemEntity pic : pics)
 		{
 			if (pic != null)
 			{
-				retval.addChild(ResponseEntityUtil.obj2Resp(pic, "Image", null));
+				ResponseEntity picResp = new ResponseEntity("Image");
+				picResp.addAttr("posterUrl", pic.getDestPath());
+				retval.addChild(picResp);
 			}
 		}
 		return retval;
@@ -214,12 +215,14 @@ public class A7Util
 			ResponseEntityUtil.obj2Resp(pgmBase, null, resp);
 		}
 
-		List<PictureEntity> pics = NavBusinessDal.getPgmPictures(pgmId);
-		for (PictureEntity pic : pics)
+		List<FileItemEntity> pics = NavBusinessDal.getPgmPictures(pgmId);
+		for (FileItemEntity pic : pics)
 		{
 			if (pic != null)
 			{
-				resp.addChild(ResponseEntityUtil.obj2Resp(pic, "Image", null));
+				ResponseEntity picResp = new ResponseEntity("Image");
+				picResp.addAttr("posterUrl", pic.getDestPath());
+				resp.addChild(picResp);
 			}
 		}
 
@@ -290,6 +293,11 @@ public class A7Util
 			dayLst.add(DateUtil.getPreTimeOfDay(now, Math.abs(days)));
 		}
 		return dayLst;
+	}
+	
+	public static void main(String[] args)
+	{
+		System.out.println(DateUtil.getPreTimeOfDay(new Date(), 0));
 	}
 
 }

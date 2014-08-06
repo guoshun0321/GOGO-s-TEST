@@ -3,6 +3,7 @@ package jetsennet.jsmp.nav.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.annotation.Id;
@@ -82,6 +83,7 @@ public class PictureEntity implements Serializable
 	/**
 	 * 图片访问地址
 	 */
+	@IdentAnnocation("posterUrl")
 	@Column("FILE_URL")
 	private String fileUrl;
 	/**
@@ -117,6 +119,7 @@ public class PictureEntity implements Serializable
 	/**
 	 * 图片排序。默认为1。
 	 */
+	@IdentAnnocation("rank")
 	@Column("PIC_RANK")
 	private int picRank;
 

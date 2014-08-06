@@ -88,7 +88,7 @@ public class Config
 			ISDEBUG = PropertiesUtil.getPropertiesBoolean(prop, "sys.isdebug", true);
 			
 			logger.info("memecached地址：" + CACHE_SERVERS);
-			logger.info("activeMQ地址：" + MQ_SERVERS);
+			logger.info("activeMQ地址：" + MQ_SERVERS + " : " + MQ_QUEUE);
 			logger.info("rtsp地址：" + SM_RTSP);
 		}
 		catch (Exception ex)

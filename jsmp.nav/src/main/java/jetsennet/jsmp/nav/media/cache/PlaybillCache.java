@@ -1,12 +1,14 @@
 package jetsennet.jsmp.nav.media.cache;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
+import jetsennet.jsmp.nav.util.DateUtil;
 
 public class PlaybillCache extends AbsCache
 {
@@ -18,15 +20,15 @@ public class PlaybillCache extends AbsCache
 
 	public static void updatePlaybill(PlaybillEntity pb)
 	{
-		insertPlaybill(pb);
-		String key = channelPlaybill(pb.getAssetId(), pb.getPlayDate().getTime());
+		cache.put(playbillKey(pb.getAssetId()), pb);
+		String key = channelPlaybill(pb.getChlAssetId(), pb.getPlayDate());
 		cache.put(key, pb.getAssetId());
 	}
 
 	public static void deletePlaybill(PlaybillEntity pb)
 	{
 		cache.del(playbillKey(pb.getAssetId()));
-		String key = channelPlaybill(pb.getAssetId(), pb.getPlayDate().getTime());
+		String key = channelPlaybill(pb.getChlAssetId(), pb.getPlayDate());
 		cache.del(key);
 	}
 
@@ -120,11 +122,29 @@ public class PlaybillCache extends AbsCache
 		return "PLAYBILITEM$" + assetId;
 	}
 
+	/**
+	 * 频道对应的节目单，按频道assetId和时间进行分类
+	 * 
+	 * @param chlAssetId
+	 * @param time
+	 * @return
+	 */
+	public static final String channelPlaybill(String chlAssetId, Date time)
+	{
+		return "CHL_PLAYBILL$" + chlAssetId + "$" + DateUtil.getPreTimeOfDay(time, 0);
+	}
+
 	public static final String channelPlaybill(String chlAssetId, long time)
 	{
 		return "CHL_PLAYBILL$" + chlAssetId + "$" + time;
 	}
 
+	/**
+	 * 返回playbillItem的assetId的集合
+	 * 
+	 * @param assetId
+	 * @return
+	 */
 	public static final String playbillItemList(String assetId)
 	{
 		return "PLAYBILITEMLIST$" + assetId;
