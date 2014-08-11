@@ -43,7 +43,9 @@ public class DbRebuilder
 
 	public static void main(String[] args)
 	{
-		DbRebuilder.rebuild();
+//		DbRebuilder.rebuild();
+		String str = null;
+		System.out.println(str);
 	}
 
 }
