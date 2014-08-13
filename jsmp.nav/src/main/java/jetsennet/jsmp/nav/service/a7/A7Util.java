@@ -139,7 +139,7 @@ public class A7Util
 		retval.addChild(contentFrameResp);
 
 		// 子节目
-		List<ProgramEntity> subProgs = NavBusinessDal.getSubPrograms(prog.getPgmId());
+		List<ProgramEntity> subProgs = NavBusinessDal.getSubPrograms(prog.getAssetId());
 		if (subProgs != null && subProgs.size() > 0)
 		{
 			// 如果存在子节目，添加子节目信息
@@ -294,7 +294,7 @@ public class A7Util
 		}
 		return dayLst;
 	}
-	
+
 	public static void main(String[] args)
 	{
 		System.out.println(DateUtil.getPreTimeOfDay(new Date(), 0));

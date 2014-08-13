@@ -125,6 +125,11 @@ public class PgmBase10Entity implements Serializable
 	@Column("IS_FINISHED")
 	private int isFinished;
 	/**
+	 * 是否已经出版完毕
+	 */
+	@Column("TOTAL_NUMBER")
+	private int totalNumber;
+	/**
 	 * 首播日期
 	 */
 	@Column("LAUNCH_DATE")
@@ -405,6 +410,16 @@ public class PgmBase10Entity implements Serializable
 	public void setPlayTime(int playTime)
 	{
 		this.playTime = playTime;
+	}
+
+	public int getTotalNumber()
+	{
+		return totalNumber;
+	}
+
+	public void setTotalNumber(int totalNumber)
+	{
+		this.totalNumber = totalNumber;
 	}
 
 }

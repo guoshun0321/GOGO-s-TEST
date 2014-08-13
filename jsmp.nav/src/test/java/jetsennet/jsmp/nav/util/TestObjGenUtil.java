@@ -18,7 +18,6 @@ import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.DescauthorizeEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
-import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
 import jetsennet.jsmp.nav.entity.PgmBase10Entity;
 import jetsennet.jsmp.nav.entity.PgmBase11Entity;
 import jetsennet.jsmp.nav.entity.PgmBase9Entity;
@@ -222,7 +221,7 @@ public class TestObjGenUtil
 
 			// 子节目
 			List<ProgramEntity> prog2prog = new ArrayList<ProgramEntity>(baseColumn * 250);
-			List<Pgm2PgmEntity> pgm2pgm = new ArrayList<Pgm2PgmEntity>(baseColumn * 50);
+			//			List<Pgm2PgmEntity> pgm2pgm = new ArrayList<Pgm2PgmEntity>(baseColumn * 50);
 			clearMap(special);
 			for (ProgramEntity prog : progs10)
 			{
@@ -244,10 +243,10 @@ public class TestObjGenUtil
 					}
 				}
 				sb.deleteCharAt(sb.length() - 1);
-				pgm2pgm.add(new Pgm2PgmEntity(prog.getPgmId(), sb.toString()));
+				//				pgm2pgm.add(new Pgm2PgmEntity(prog.getPgmId(), sb.toString()));
 			}
 			multiInsert(prog2prog);
-			multiInsert(pgm2pgm);
+			//			multiInsert(pgm2pgm);
 
 			// 节目详细信息
 			List<ProgramEntity> allProgs = new ArrayList<ProgramEntity>(baseColumn * 350);

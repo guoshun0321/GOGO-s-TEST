@@ -152,6 +152,12 @@ public class ProgramEntity implements Serializable
 	@IdentAnnocation("folderAssetId")
 	private String columnAssetid;
 
+	@Column("PARENT_ID")
+	private int parentId;
+
+	@Column("PARENT_ASSET_ID")
+	private String parentAssetId;
+
 	public static final int CONTENT_TYPE_MOVIE = 9;
 	public static final int CONTENT_TYPE_TV = 10;
 	public static final int CONTENT_TYPE_VARITY = 11;
@@ -411,6 +417,26 @@ public class ProgramEntity implements Serializable
 	public void setCategory(String category)
 	{
 		this.category = category;
+	}
+
+	public int getParentId()
+	{
+		return parentId;
+	}
+
+	public void setParentId(int parentId)
+	{
+		this.parentId = parentId;
+	}
+
+	public String getParentAssetId()
+	{
+		return parentAssetId;
+	}
+
+	public void setParentAssetId(String parentAssetId)
+	{
+		this.parentAssetId = parentAssetId;
 	}
 
 }

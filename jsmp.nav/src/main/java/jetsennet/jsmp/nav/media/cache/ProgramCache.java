@@ -3,14 +3,10 @@ package jetsennet.jsmp.nav.media.cache;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jetsennet.jsmp.nav.config.Config;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.DescauthorizeEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
-import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
 import jetsennet.jsmp.nav.entity.PgmBase10Entity;
 import jetsennet.jsmp.nav.entity.PgmBase11Entity;
 import jetsennet.jsmp.nav.entity.PgmBase12Entity;
@@ -21,6 +17,9 @@ import jetsennet.jsmp.nav.entity.PgmBase16Entity;
 import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProgramCache extends AbsCache
 {
@@ -147,10 +146,12 @@ public class ProgramCache extends AbsCache
 		}
 
 		// 节目和栏目的关系
-		if (pgm != null)
+		int parentId = pgm.getParentId();
+		String pAssetId = pgm.getParentAssetId();
+		String assetId = pgm.getAssetId();
+		if (parentId == 0)
 		{
 			int columnId = pgm.getColumnId();
-			String assetId = pgm.getAssetId();
 			String columnAssetId = pgm.getColumnAssetid();
 			if (columnId > 0)
 			{
@@ -167,6 +168,10 @@ public class ProgramCache extends AbsCache
 				cache.put(key, columnPgmIds);
 			}
 		}
+		else
+		{
+			insertSub(pAssetId, assetId);
+		}
 	}
 
 	public static void delete(ProgramEntity pgm)
@@ -181,9 +186,9 @@ public class ProgramCache extends AbsCache
 
 		int columnId = pgm.getColumnId();
 		String assetId = pgm.getAssetId();
-		String columnAssetId = pgm.getColumnAssetid();
-		if (columnId != 0)
+		if (columnId > 0)
 		{
+			String columnAssetId = pgm.getColumnAssetid();
 			String key = columnPgm(columnAssetId);
 			List<String> columnPgmIds = cache.getT(key);
 			if (columnPgmIds == null)
@@ -200,22 +205,44 @@ public class ProgramCache extends AbsCache
 				cache.put(key, columnPgmIds);
 			}
 		}
+		else
+		{
+			removeSub(pgm.getParentAssetId(), assetId);
+		}
 	}
 
-	public static void insertPgm2Pgm(Pgm2PgmEntity obj)
+	public static void insertSub(String pAssetId, String assetId)
 	{
-		cache.put(pgm2pgmKey(obj.getPgmId()), obj);
+		String key = subPgm(pAssetId);
+		List<String> assetLst = cache.getT(key);
+		if (assetLst == null)
+		{
+			assetLst = new ArrayList<>();
+		}
+		if (!assetLst.contains(assetId))
+		{
+			assetLst.add(key);
+		}
+		cache.put(key, assetLst);
 	}
 
-	public static void updatePgm2Pgm(Pgm2PgmEntity obj)
+	public static void removeSub(String pAssetId, String assetId)
 	{
-		cache.put(pgm2pgmKey(obj.getPgmId()), obj);
-
-	}
-
-	public static void deletePgm2Pgm(Pgm2PgmEntity obj)
-	{
-		cache.del(pgm2pgmKey(obj.getPgmId()));
+		String key = subPgm(pAssetId);
+		List<String> assetLst = cache.getT(key);
+		if (assetLst == null)
+		{
+			assetLst = new ArrayList<>();
+		}
+		assetLst.remove(assetId);
+		if (!assetLst.isEmpty())
+		{
+			cache.put(key, assetLst);
+		}
+		else
+		{
+			cache.del(key);
+		}
 	}
 
 	public static final String programKey(int pgmId)
@@ -284,9 +311,9 @@ public class ProgramCache extends AbsCache
 		return "PGM_CHL$" + pgmId;
 	}
 
-	public static final String pgm2pgmKey(int pgmId)
+	public static final String subPgm(String pAssetId)
 	{
-		return "PGM_REL$" + pgmId;
+		return "SUB_PGM$" + pAssetId;
 	}
 
 }

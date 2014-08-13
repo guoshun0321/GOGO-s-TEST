@@ -9,7 +9,7 @@ import jetsennet.orm.annotation.Table;
 
 /**
  */
-@Table("NS_PGMBASE14")
+@Table("NS_PGMBASE_14")
 public class PgmBase14Entity implements Serializable
 {
 	/**
