@@ -1,0 +1,100 @@
+bootstrap
+	设置catalina_home
+	设置catalina_base
+	初始化类加载器：common/server/shared
+	启动Catalina，并setParentClassLoader
+	调用Catalina.start()
+
+Catalina
+	根据server.xml，初始化Server
+Server(org.apache.catalina.core.StandardServer)
+	GlobalNamingResources(org.apache.catalina.deploy.NamingResources)
+	Listener
+	Service(org.apache.catalina.core.StandardService)
+		Listener
+		Executor(org.apache.catalina.core.StandardThreadExecutor)
+		Connector
+			Listener
+		Container  -->  Engine
+			Host
+				Cluster
+				Context
+					Wrapper
+
+
+LifeCycle生命周期
+ *            start()
+ *  -----------------------------
+ *  |                           |
+ *  | init()                    |
+ * NEW ->-- INITIALIZING        |
+ * | |           |              |     ------------------<-----------------------
+ * | |           |auto          |     |                                        |
+ * | |          \|/    start() \|/   \|/     auto          auto         stop() |
+ * | |      INITIALIZED -->-- STARTING_PREP -->- STARTING -->- STARTED -->---  |
+ * | |         |                                                  |         |  |
+ * | |         |                                                  |         |  |
+ * | |         |                                                  |         |  |
+ * | |destroy()|                                                  |         |  |
+ * | -->-----<--       auto                    auto               |         |  |
+ * |     |       ---------<----- MUST_STOP ---------------------<--         |  |
+ * |     |       |                                                          |  |
+ * |    \|/      ---------------------------<--------------------------------  ^
+ * |     |       |                                                             |
+ * |     |      \|/            auto                 auto              start()  |
+ * |     |  STOPPING_PREP ------>----- STOPPING ------>----- STOPPED ---->------
+ * |     |                                ^                  |  |  ^
+ * |     |               stop()           |                  |  |  |
+ * |     |       --------------------------                  |  |  |
+ * |     |       |                                  auto     |  |  |
+ * |     |       |                  MUST_DESTROY------<-------  |  |
+ * |     |       |                    |                         |  |
+ * |     |       |                    |auto                     |  |
+ * |     |       |    destroy()      \|/              destroy() |  |
+ * |     |    FAILED ---->------ DESTROYING ---<-----------------  |
+ * |     |                        ^     |                          |
+ * |     |     destroy()          |     |auto                      |
+ * |     -------->-----------------    \|/                         |
+ * |                                 DESTROYED                     |
+ * |                                                               |
+ * |                            stop()                             |
+ * --->------------------------------>------------------------------
+
+
+ Connector
+ 	ProtocolHandler
+ 	MapperListener
+
+ProtocolHandler
+	Http11Protocol
+		JIoEndpoint
+			ServerSocket
+			Acceptor
+Container  -->  Engine
+	pipeline of valves
+	Realm
+CoyoteAdapter 
+	连接相关的事务处理完成后转到该类 service
+	然后转移到相关的Contain(StandardEngine)来处理
+
+Context
+	Wrapper JspServletWrapper
+	WebappLoader
+
+Socket处理流程
+	JIoEndpoint.SocketProcessor.run()
+		AbstractProtocol.AbstractConnectionHandler.process()
+			AbstractHttp11Processor.process()
+				CoyoteAdapter.service()
+					StandardEngineValve.invoke(request, response)
+						StandardHostValve.invoke(request, response)
+
+启动流程：
+1、Bootstrap.main()，调用Catalina。Catalina构造Server -> Service -> 开始构造容器
+	Engine -> Host -> Context 这几步在Catalina中构造完成
+		Context -> Wrapper 在Context的startInternal中构造
+			Wrapper中会初始化一些资源
+		Context -> ApplicationContext
+		Context -> WebappLoader
+2、Service中包含Connector，消息通过CoyoteAdapter转发到Engine
+3、Engine中包含Pipeline，通过pipeline一层层处理
