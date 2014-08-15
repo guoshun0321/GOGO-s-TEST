@@ -13,7 +13,6 @@ import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
-import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
 import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
@@ -160,47 +159,32 @@ public class NavBusinessDal
 	 * @param pgmId
 	 * @return
 	 */
-	public static final List<ProgramEntity> getSubPrograms(int pgmId)
+	public static final List<ProgramEntity> getSubPrograms(String pAssetId)
 	{
 		List<ProgramEntity> retval = null;
 
-		Pgm2PgmEntity p2p = cache.getT(ProgramCache.pgm2pgmKey(pgmId));
-		if (p2p != null)
+		List<String> subAssetIds = cache.get(ProgramCache.subPgm(pAssetId));
+		List<String> subKeys = new ArrayList<>(subAssetIds.size());
+		for (String subAssetId : subAssetIds)
 		{
-			List<String> subKeys = null;
-			String p2pDesc = p2p.getRelDesc();
-			if (p2pDesc != null && !p2pDesc.isEmpty())
-			{
-				String[] subs = p2pDesc.split(";");
-				if (subs != null && subs.length > 0)
-				{
-					subKeys = new ArrayList<>(subs.length);
-					for (String sub : subs)
-					{
-						String[] temp = sub.split(",");
-						if (temp.length == 2)
-						{
-							subKeys.add(ProgramCache.programKey(Integer.valueOf(temp[0])));
-						}
-					}
-				}
-			}
+			subKeys.add(ProgramCache.programAsset(subAssetId));
+		}
 
-			if (subKeys != null)
+		if (subKeys != null)
+		{
+			Map<String, Object> tempMap = cache.gets(subKeys);
+			Set<String> keys = tempMap.keySet();
+			retval = new ArrayList<ProgramEntity>(keys.size());
+			for (String key : keys)
 			{
-				Map<String, Object> tempMap = cache.gets(subKeys);
-				Set<String> keys = tempMap.keySet();
-				retval = new ArrayList<ProgramEntity>(keys.size());
-				for (String key : keys)
+				Object obj = tempMap.get(key);
+				if (obj != null && obj instanceof ProgramEntity)
 				{
-					Object obj = tempMap.get(key);
-					if (obj != null && obj instanceof ProgramEntity)
-					{
-						retval.add((ProgramEntity) obj);
-					}
+					retval.add((ProgramEntity) obj);
 				}
 			}
 		}
+
 		return retval != null ? retval : new ArrayList<ProgramEntity>(0);
 	}
 

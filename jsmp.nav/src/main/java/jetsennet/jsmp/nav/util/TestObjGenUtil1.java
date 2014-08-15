@@ -18,7 +18,6 @@ import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.DescauthorizeEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
-import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
 import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PictureEntity;
@@ -184,7 +183,7 @@ public class TestObjGenUtil1
 			multiInsert(prog4Chls);
 
 			List<ProgramEntity> prog2prog = new ArrayList<ProgramEntity>(baseColumn * 250);
-			List<Pgm2PgmEntity> pgm2pgm = new ArrayList<Pgm2PgmEntity>(baseColumn * 50);
+//			List<Pgm2PgmEntity> pgm2pgm = new ArrayList<Pgm2PgmEntity>(baseColumn * 50);
 			clearMap(special);
 			for (ProgramEntity prog : progs)
 			{
@@ -206,10 +205,10 @@ public class TestObjGenUtil1
 					}
 				}
 				sb.deleteCharAt(sb.length() - 1);
-				pgm2pgm.add(new Pgm2PgmEntity(prog.getPgmId(), sb.toString()));
+//				pgm2pgm.add(new Pgm2PgmEntity(prog.getPgmId(), sb.toString()));
 			}
 			multiInsert(prog2prog);
-			multiInsert(pgm2pgm);
+//			multiInsert(pgm2pgm);
 
 			List<ProgramEntity> allProgs = new ArrayList<ProgramEntity>(baseColumn * 350);
 			allProgs.addAll(progs);

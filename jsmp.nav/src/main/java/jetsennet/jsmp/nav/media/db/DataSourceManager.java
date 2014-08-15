@@ -7,7 +7,6 @@ import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
 import jetsennet.jsmp.nav.entity.DescauthorizeEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
-import jetsennet.jsmp.nav.entity.Pgm2PgmEntity;
 import jetsennet.jsmp.nav.entity.Pgm2ProductEntity;
 import jetsennet.jsmp.nav.entity.PgmBase10Entity;
 import jetsennet.jsmp.nav.entity.PgmBase11Entity;
@@ -52,7 +51,6 @@ public class DataSourceManager
 		MEDIA_FACTORY.getTableInfo(CreatorEntity.class);
 		MEDIA_FACTORY.getTableInfo(DescauthorizeEntity.class);
 		MEDIA_FACTORY.getTableInfo(FileItemEntity.class);
-		MEDIA_FACTORY.getTableInfo(Pgm2PgmEntity.class);
 		MEDIA_FACTORY.getTableInfo(Pgm2ProductEntity.class);
 		MEDIA_FACTORY.getTableInfo(PgmBase9Entity.class);
 		MEDIA_FACTORY.getTableInfo(PgmBase10Entity.class);

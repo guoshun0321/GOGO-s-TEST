@@ -53,11 +53,11 @@ public class ProgramEntity implements Serializable
 	@Column("OBJ_TYPE")
 	private int objType;
 	/**
-	 * 节目时长，单位为秒；
+	 * 节目时长，格式为：00:00:00
 	 */
-	@Column("PGM_DURATION")
+	@Column("DURATION")
 	@IdentAnnocation("runtime")
-	private int pgmDuration;
+	private String pgmDuration;
 	/**
 	 * 搜索字符，一般为名称拼音首字母缩写。
 	 */
@@ -80,7 +80,7 @@ public class ProgramEntity implements Serializable
 	 */
 	@Column("EPISODES_NUMBER")
 	@IdentAnnocation("chapter")
-	private int episodesNumber;
+	private String episodesNumber;
 	/**
 	 * 有效期开始时间，毫秒数。
 	 */
@@ -98,6 +98,16 @@ public class ProgramEntity implements Serializable
 	 */
 	@Column("UPDATE_TIME")
 	private long updateTime;
+	/**
+	 * 看点
+	 */
+	@Column("WATCH_FOCUS")
+	private String watchFocus;
+	/**
+	 * 分类
+	 */
+	@Column("CATEGORY")
+	private String category;
 	/**
 	 * 栏目下排序号
 	 */
@@ -141,6 +151,12 @@ public class ProgramEntity implements Serializable
 	@Column("COLUMN_ASSETID")
 	@IdentAnnocation("folderAssetId")
 	private String columnAssetid;
+
+	@Column("PARENT_ID")
+	private int parentId;
+
+	@Column("PARENT_ASSET_ID")
+	private String parentAssetId;
 
 	public static final int CONTENT_TYPE_MOVIE = 9;
 	public static final int CONTENT_TYPE_TV = 10;
@@ -223,16 +239,6 @@ public class ProgramEntity implements Serializable
 		this.objType = objType;
 	}
 
-	public int getPgmDuration()
-	{
-		return pgmDuration;
-	}
-
-	public void setPgmDuration(int pgmDuration)
-	{
-		this.pgmDuration = pgmDuration;
-	}
-
 	public String getSearchLetter()
 	{
 		return searchLetter;
@@ -261,16 +267,6 @@ public class ProgramEntity implements Serializable
 	public void setContentInfo(String contentInfo)
 	{
 		this.contentInfo = contentInfo;
-	}
-
-	public int getEpisodesNumber()
-	{
-		return episodesNumber;
-	}
-
-	public void setEpisodesNumber(int episodesNumber)
-	{
-		this.episodesNumber = episodesNumber;
 	}
 
 	public long getLicensingStart()
@@ -381,6 +377,66 @@ public class ProgramEntity implements Serializable
 	public void setColumnAssetid(String columnAssetid)
 	{
 		this.columnAssetid = columnAssetid;
+	}
+
+	public String getPgmDuration()
+	{
+		return pgmDuration;
+	}
+
+	public void setPgmDuration(String pgmDuration)
+	{
+		this.pgmDuration = pgmDuration;
+	}
+
+	public String getEpisodesNumber()
+	{
+		return episodesNumber;
+	}
+
+	public void setEpisodesNumber(String episodesNumber)
+	{
+		this.episodesNumber = episodesNumber;
+	}
+
+	public String getWatchFocus()
+	{
+		return watchFocus;
+	}
+
+	public void setWatchFocus(String watchFocus)
+	{
+		this.watchFocus = watchFocus;
+	}
+
+	public String getCategory()
+	{
+		return category;
+	}
+
+	public void setCategory(String category)
+	{
+		this.category = category;
+	}
+
+	public int getParentId()
+	{
+		return parentId;
+	}
+
+	public void setParentId(int parentId)
+	{
+		this.parentId = parentId;
+	}
+
+	public String getParentAssetId()
+	{
+		return parentAssetId;
+	}
+
+	public void setParentAssetId(String parentAssetId)
+	{
+		this.parentAssetId = parentAssetId;
 	}
 
 }

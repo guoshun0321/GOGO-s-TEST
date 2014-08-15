@@ -9,7 +9,7 @@ import jetsennet.orm.annotation.Table;
 
 /**
  */
-@Table("NS_PGMBASE10")
+@Table("NS_PGMBASE_10")
 public class PgmBase10Entity implements Serializable
 {
 	/**
@@ -43,11 +43,6 @@ public class PgmBase10Entity implements Serializable
 	 */
 	@Column("COUNTRY")
 	private String country;
-	/**
-	 * 看点
-	 */
-	@Column("WATCH_FOCUS")
-	private String watchFocus;
 	/**
 	 * 出品公司
 	 */
@@ -110,11 +105,6 @@ public class PgmBase10Entity implements Serializable
 	@Column("CONTENT_PRIORITY")
 	private String contentPriority;
 	/**
-	 * 上映日期
-	 */
-	@Column("RELEASE_DATE")
-	private String releaseDate;
-	/**
 	 * 票房
 	 */
 	@Column("BOX")
@@ -130,30 +120,35 @@ public class PgmBase10Entity implements Serializable
 	@Column("CRITICS_LINK")
 	private String criticsLink;
 	/**
-	 * 已播集数
-	 */
-	@Column("BROADCAST_NUM")
-	private int broadcastNum;
-	/**
 	 * 是否已经出版完毕
 	 */
 	@Column("IS_FINISHED")
 	private int isFinished;
 	/**
-	 * 来源
+	 * 是否已经出版完毕
 	 */
-	@Column("SOURCE")
-	private String source;
+	@Column("TOTAL_NUMBER")
+	private int totalNumber;
 	/**
 	 * 首播日期
 	 */
 	@Column("LAUNCH_DATE")
 	private String launchDate;
 	/**
+	 * 播放地址
+	 */
+	@Column("PLAY_URL")
+	private String playUrl;
+	/**
+	 * 状态标识
+	 */
+	@Column("STATE_CODE")
+	private String stateCode;
+	/**
 	 * 播放周期
 	 */
-	@Column("PLAY_CYCLE")
-	private String playCycle;
+	@Column("PLAY_TIME")
+	private int playTime;
 
 	private static final long serialVersionUID = 1L;
 
@@ -215,16 +210,6 @@ public class PgmBase10Entity implements Serializable
 	public void setCountry(String country)
 	{
 		this.country = country;
-	}
-
-	public String getWatchFocus()
-	{
-		return watchFocus;
-	}
-
-	public void setWatchFocus(String watchFocus)
-	{
-		this.watchFocus = watchFocus;
 	}
 
 	public String getProductCompany()
@@ -347,16 +332,6 @@ public class PgmBase10Entity implements Serializable
 		this.contentPriority = contentPriority;
 	}
 
-	public String getReleaseDate()
-	{
-		return releaseDate;
-	}
-
-	public void setReleaseDate(String releaseDate)
-	{
-		this.releaseDate = releaseDate;
-	}
-
 	public long getBox()
 	{
 		return box;
@@ -387,16 +362,6 @@ public class PgmBase10Entity implements Serializable
 		this.criticsLink = criticsLink;
 	}
 
-	public int getBroadcastNum()
-	{
-		return broadcastNum;
-	}
-
-	public void setBroadcastNum(int broadcastNum)
-	{
-		this.broadcastNum = broadcastNum;
-	}
-
 	public int getIsFinished()
 	{
 		return isFinished;
@@ -405,16 +370,6 @@ public class PgmBase10Entity implements Serializable
 	public void setIsFinished(int isFinished)
 	{
 		this.isFinished = isFinished;
-	}
-
-	public String getSource()
-	{
-		return source;
-	}
-
-	public void setSource(String source)
-	{
-		this.source = source;
 	}
 
 	public String getLaunchDate()
@@ -427,14 +382,44 @@ public class PgmBase10Entity implements Serializable
 		this.launchDate = launchDate;
 	}
 
-	public String getPlayCycle()
+	public String getPlayUrl()
 	{
-		return playCycle;
+		return playUrl;
 	}
 
-	public void setPlayCycle(String playCycle)
+	public void setPlayUrl(String playUrl)
 	{
-		this.playCycle = playCycle;
+		this.playUrl = playUrl;
+	}
+
+	public String getStateCode()
+	{
+		return stateCode;
+	}
+
+	public void setStateCode(String stateCode)
+	{
+		this.stateCode = stateCode;
+	}
+
+	public int getPlayTime()
+	{
+		return playTime;
+	}
+
+	public void setPlayTime(int playTime)
+	{
+		this.playTime = playTime;
+	}
+
+	public int getTotalNumber()
+	{
+		return totalNumber;
+	}
+
+	public void setTotalNumber(int totalNumber)
+	{
+		this.totalNumber = totalNumber;
 	}
 
 }

@@ -9,7 +9,7 @@ import jetsennet.orm.annotation.Table;
 
 /**
  */
-@Table("NS_PGMBASE9")
+@Table("NS_PGMBASE_9")
 public class PgmBase9Entity implements Serializable
 {
 	/**
@@ -43,11 +43,6 @@ public class PgmBase9Entity implements Serializable
 	 */
 	@Column("COUNTRY")
 	private String country;
-	/**
-	 * 看点
-	 */
-	@Column("WATCH_FOCUS")
-	private String watchFocus;
 	/**
 	 * 出品公司
 	 */
@@ -130,30 +125,20 @@ public class PgmBase9Entity implements Serializable
 	@Column("CRITICS_LINK")
 	private String criticsLink;
 	/**
-	 * 已播集数
+	 * 播放地址
 	 */
-	@Column("BROADCAST_NUM")
-	private int broadcastNum;
+	@Column("PLAY_URL")
+	private String playUrl;
 	/**
-	 * 是否已经出版完毕
+	 * 状态标识
 	 */
-	@Column("IS_FINISHED")
-	private int isFinished;
-	/**
-	 * 来源
-	 */
-	@Column("SOURCE")
-	private String source;
-	/**
-	 * 首播日期
-	 */
-	@Column("LAUNCH_DATE")
-	private String launchDate;
+	@Column("STATE_CODE")
+	private String stateCode;
 	/**
 	 * 播放周期
 	 */
-	@Column("PLAY_CYCLE")
-	private String playCycle;
+	@Column("PLAY_TIME")
+	private int playTime;
 
 	private static final long serialVersionUID = 1L;
 
@@ -215,16 +200,6 @@ public class PgmBase9Entity implements Serializable
 	public void setCountry(String country)
 	{
 		this.country = country;
-	}
-
-	public String getWatchFocus()
-	{
-		return watchFocus;
-	}
-
-	public void setWatchFocus(String watchFocus)
-	{
-		this.watchFocus = watchFocus;
 	}
 
 	public String getProductCompany()
@@ -387,54 +362,34 @@ public class PgmBase9Entity implements Serializable
 		this.criticsLink = criticsLink;
 	}
 
-	public int getBroadcastNum()
+	public String getPlayUrl()
 	{
-		return broadcastNum;
+		return playUrl;
 	}
 
-	public void setBroadcastNum(int broadcastNum)
+	public void setPlayUrl(String playUrl)
 	{
-		this.broadcastNum = broadcastNum;
+		this.playUrl = playUrl;
 	}
 
-	public int getIsFinished()
+	public String getStateCode()
 	{
-		return isFinished;
+		return stateCode;
 	}
 
-	public void setIsFinished(int isFinished)
+	public void setStateCode(String stateCode)
 	{
-		this.isFinished = isFinished;
+		this.stateCode = stateCode;
 	}
 
-	public String getSource()
+	public int getPlayTime()
 	{
-		return source;
+		return playTime;
 	}
 
-	public void setSource(String source)
+	public void setPlayTime(int playTime)
 	{
-		this.source = source;
-	}
-
-	public String getLaunchDate()
-	{
-		return launchDate;
-	}
-
-	public void setLaunchDate(String launchDate)
-	{
-		this.launchDate = launchDate;
-	}
-
-	public String getPlayCycle()
-	{
-		return playCycle;
-	}
-
-	public void setPlayCycle(String playCycle)
-	{
-		this.playCycle = playCycle;
+		this.playTime = playTime;
 	}
 
 }
