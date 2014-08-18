@@ -540,7 +540,7 @@ public class NavBusiness
 						}
 						else
 						{
-							PlaybillItemEntity item = NavBusinessDal.getPalyBillItem(itemId);
+							PlaybillItemEntity item = NavBusinessDal.getPlayBillItemByAssetId(itemId);
 							ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(item, "Program", null);
 							itemResp.addAttr("channelId", chId.toString());
 							long startTime = day + item.getStartTime();

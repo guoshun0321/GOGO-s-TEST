@@ -32,4 +32,9 @@ public class DataSynDbResult
 		this.num = num;
 	}
 
+	public boolean isValidate()
+	{
+		return num > 0;
+	}
+
 }

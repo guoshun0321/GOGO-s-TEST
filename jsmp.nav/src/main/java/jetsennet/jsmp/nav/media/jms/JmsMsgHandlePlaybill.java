@@ -59,7 +59,7 @@ public class JmsMsgHandlePlaybill extends AbsJmsMsgHandle
 				{
 					if (pbItem.getUpdateTime() >= old.getUpdateTime())
 					{
-						AbsDal.dal.saveBusinessObjs(pbItem);
+						AbsDal.dal.updateBusinessObjs(false, pbItem);
 						PlaybillCache.updatePlaybillItem(pbItem);
 					}
 				}

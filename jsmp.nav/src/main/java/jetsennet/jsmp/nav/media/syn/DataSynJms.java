@@ -181,7 +181,10 @@ public class DataSynJms
 		{
 			try
 			{
-				logger.error("错误消息：" + msg);
+				if (Config.ISDEBUG)
+				{
+					logger.debug("ack:" + msg.getJMSMessageID());
+				}
 				msg.acknowledge();
 			}
 			catch (Exception ex)
@@ -189,13 +192,5 @@ public class DataSynJms
 				logger.error("", ex);
 			}
 		}
-	}
-
-	public static void main(String[] args) throws Exception
-	{
-		DataSynJms syn = new DataSynJms();
-		syn.start();
-		TimeUnit.SECONDS.sleep(500);
-		syn.stop();
 	}
 }

@@ -32,7 +32,10 @@ public class PlaybillItemEntity implements Serializable
 	 */
 	@Column("PB_ID")
 	private int pbId;
-
+	/**
+	 * 节目单AssetId
+	 */
+	@Column("PARENT_ASSET_ID")
 	private String pbAssetId;
 	/**
 	 * 节目名称

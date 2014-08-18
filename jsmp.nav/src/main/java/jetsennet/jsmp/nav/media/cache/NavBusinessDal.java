@@ -329,32 +329,23 @@ public class NavBusinessDal
 	/**
 	 * 获取PlayBillItem列表
 	 * 
-	 * @param chlAssetId
-	 * @param day
+	 * @param chlAssetId 频道ID
+	 * @param day 日期
 	 * @return
 	 */
 	public static final List<String> getPlayBillItemIds(String chlAssetId, long day)
 	{
 		List<String> retval = null;
-
 		String pbAssetId = cache.get(PlaybillCache.channelPlaybill(chlAssetId, day), true);
-		PlaybillEntity pb = cache.get(PlaybillCache.playbillKey(pbAssetId));
-		if (pb != null)
+		if (pbAssetId != null)
 		{
-			retval = cache.getT(PlaybillCache.playbillItemList(pb.getAssetId()));
+			PlaybillEntity pb = cache.get(PlaybillCache.playbillKey(pbAssetId));
+			if (pb != null)
+			{
+				retval = cache.getT(PlaybillCache.playbillItemList(pb.getAssetId()));
+			}
 		}
 		return retval == null ? new ArrayList<String>(0) : retval;
-	}
-
-	/**
-	 * 获取PlayBillItem
-	 * 
-	 * @param itemId
-	 * @return
-	 */
-	public static final PlaybillItemEntity getPalyBillItem(String itemId)
-	{
-		return cache.getT(PlaybillCache.playbillItemKey(itemId));
 	}
 
 }

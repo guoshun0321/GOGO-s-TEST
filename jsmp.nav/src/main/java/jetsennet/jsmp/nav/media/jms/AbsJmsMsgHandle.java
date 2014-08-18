@@ -6,6 +6,7 @@ import java.util.Map;
 import jetsennet.jsmp.nav.media.db.DataSynDbResult;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
+import jetsennet.orm.util.UncheckedOrmException;
 
 public abstract class AbsJmsMsgHandle implements IJmsMsgHandle
 {
@@ -18,6 +19,7 @@ public abstract class AbsJmsMsgHandle implements IJmsMsgHandle
 		registerHandle(new JmsMsgHandleProgram());
 		registerHandle(new JmsMsgHandleChannel());
 		registerHandle(new JmsMsgHandlePlaybill());
+		registerHandle(new JmsMsgHandleFile());
 	}
 
 	private static void registerHandle(IJmsMsgHandle handle)
@@ -45,6 +47,10 @@ public abstract class AbsJmsMsgHandle implements IJmsMsgHandle
 	{
 		String eleName = content.getEleName();
 		IJmsMsgHandle handle = ensureHandle(eleName);
+		if (handle == null)
+		{
+			throw new UncheckedOrmException("找不到对应的jms消息处理类：" + eleName);
+		}
 		int flag = content.getOpFlag();
 		try
 		{
