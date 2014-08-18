@@ -181,6 +181,7 @@ public class ProgramCache extends AbsCache
 		cache.del(programAsset(pgm.getAssetId()));
 		cache.del(pgmBaseKey(pgmId));
 		cache.del(pgmDescAuthorize(pgmId));
+		cache.del(pgmCreatorKey(pgmId));
 		cache.del(pgmFileItemKey(pgmId));
 		cache.del(pgmPictureKey(pgmId));
 

@@ -154,6 +154,10 @@ public class PgmBase16Entity implements Serializable
 	 */
 	@Column("PLAY_CYCLE")
 	private String playCycle;
+	
+	static {
+		System.out.println("tes 16");
+	}
 
 	private static final long serialVersionUID = 1L;
 

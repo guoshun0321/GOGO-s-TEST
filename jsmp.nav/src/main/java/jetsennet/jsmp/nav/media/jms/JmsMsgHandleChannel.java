@@ -12,7 +12,7 @@ import jetsennet.jsmp.nav.util.UncheckedNavException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@IdentAnnocation("channelTable")
+@IdentAnnocation("channelTable,phyChannelTable")
 public class JmsMsgHandleChannel extends AbsJmsMsgHandle
 {
 
