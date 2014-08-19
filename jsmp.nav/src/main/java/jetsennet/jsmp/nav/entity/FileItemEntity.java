@@ -84,7 +84,7 @@ public class FileItemEntity implements Serializable
 	 * 画面质量。1：标清，2：高清，3：超清
 	 */
 	@Column("VIDEO_QUALITY")
-	@IdentAnnocation(value = "format", enumValue = "1:标清,2:高清,3:超清")
+	@IdentAnnocation(value = "format", enumValue = "0,图片,1:标清,2:高清,3:超清")
 	private int videoQuality;
 	/**
 	 * 画面宽高比
