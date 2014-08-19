@@ -58,7 +58,7 @@ public class ProgramDal extends AbsDal
 				// 节目基本信息
 				int contentType = pgm.getContentType();
 				Object temp = null;
-				String sql = "SELECT * FROM " + "NS_PGMBASE" + contentType + " WHERE PGM_ID=" + pgmId;
+				String sql = "SELECT * FROM " + "NS_PGMBASE_" + contentType + " WHERE PGM_ID=" + pgmId;
 				switch (contentType)
 				{
 				case ProgramEntity.CONTENT_TYPE_MOVIE:

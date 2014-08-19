@@ -191,7 +191,7 @@ public class A7Util
 			if (pic != null)
 			{
 				ResponseEntity picResp = new ResponseEntity("Image");
-				picResp.addAttr("posterUrl", pic.getDestPath());
+				picResp.addAttr("posterUrl", pic.getFilePath());
 				retval.addChild(picResp);
 			}
 		}
@@ -221,7 +221,7 @@ public class A7Util
 			if (pic != null)
 			{
 				ResponseEntity picResp = new ResponseEntity("Image");
-				picResp.addAttr("posterUrl", pic.getDestPath());
+				picResp.addAttr("posterUrl", pic.getFilePath());
 				resp.addChild(picResp);
 			}
 		}

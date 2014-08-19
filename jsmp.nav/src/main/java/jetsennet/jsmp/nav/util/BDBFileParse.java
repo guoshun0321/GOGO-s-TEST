@@ -22,15 +22,19 @@ import jetsennet.orm.tableinfo.TableInfo;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BDBFileParse
 {
+
+	private static final Logger logger = LoggerFactory.getLogger(BDBFileParse.class);
 
 	public void parseFolder(String path) throws Exception
 	{
 
 		File file = new File(path);
-		System.out.println("path : " + file.getAbsolutePath());
+		logger.debug("path : " + file.getAbsolutePath());
 		if (file.isDirectory())
 		{
 			// 删除文件
@@ -52,21 +56,20 @@ public class BDBFileParse
 			{
 				if (f.isFile() && f.getName().endsWith(".ax"))
 				{
-					System.out.println("解析文件：" + f.getName());
+					logger.debug("解析文件：" + f.getName());
 					TableInfo ti = this.genTableInfo(f.getAbsolutePath());
 					tblInfoLst.add(ti);
 				}
 			}
 
 			// 更新数据库
-			System.out.println("数据库初始化开始！");
+			logger.debug("数据库初始化开始！");
 			MySqlDdl ddl = new MySqlDdl(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
 			for (TableInfo tbl : tblInfoLst)
 			{
-				System.out.println("初始化表：" + tbl.getTableName());
+				logger.debug("初始化表：" + tbl.getTableName());
 				ddl.delete(tbl.getTableName());
 				ddl.create(tbl);
-				System.out.println("");
 			}
 
 			// 生成文件
@@ -333,7 +336,6 @@ public class BDBFileParse
 	public static void main(String[] args) throws Exception
 	{
 		BDBFileParse reader = new BDBFileParse();
-		//        reader.parseXmlFile("F:\\JSMP\\JSMP\\trunk\\DB\\JPortal\\数据库脚本new\\dbscript\\scheme\\NS_PGM2PGM.ax");
 		reader.parseFolder("src/main/resources/dbscript/scheme");
 	}
 

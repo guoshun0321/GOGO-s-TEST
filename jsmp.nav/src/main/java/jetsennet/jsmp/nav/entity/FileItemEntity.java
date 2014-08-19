@@ -238,12 +238,27 @@ public class FileItemEntity implements Serializable
 	 */
 	@Column("LANGUAGE")
 	private String language;
+	/**
+	 * 复用方式
+	 */
+	@Column("MUX_TYPE")
+	private String muxType;
+	/**
+	 * 复用码率，单位：bps
+	 */
+	@Column("MUX_BITRATE")
+	private int muxBitrate;
 
 	private static final long serialVersionUID = 1L;
 
 	public boolean isPictrue()
 	{
 		return this.fileType >= 100;
+	}
+
+	public String getFilePath()
+	{
+		return this.destPath + this.destFilename;
 	}
 
 	public String getFileId()
@@ -684,6 +699,26 @@ public class FileItemEntity implements Serializable
 	public void setLanguage(String language)
 	{
 		this.language = language;
+	}
+
+	public String getMuxType()
+	{
+		return muxType;
+	}
+
+	public void setMuxType(String muxType)
+	{
+		this.muxType = muxType;
+	}
+
+	public int getMuxBitrate()
+	{
+		return muxBitrate;
+	}
+
+	public void setMuxBitrate(int muxBitrate)
+	{
+		this.muxBitrate = muxBitrate;
 	}
 
 }
