@@ -1,0 +1,26 @@
+加载内核
+	读取/boot目录下的内核文件
+启动初始化进程
+	第一个进程/sbin/init
+	进程编号是1
+确定运行级别
+	运行级别（0-6）
+		默认运行级别：文件/etc/inittab
+加载开机启动程序
+	/etc/rcN.d目录
+		“字母S/K+两位数字+程序名”
+		S，开启；K，关闭
+		数字越小越早处理
+		里面的文件全部为链接文件
+	/etc/init.d目录
+		真正的启动文件
+用户登录
+	三种方式：命令行、ssh、图形界面登录
+进入login shell
+	命令行：
+		先读入/etc/profile
+		依次寻找：~/.bash_profile、~/.bash_login、~/.profile
+		三个文件中只要有一个存在，就不再读入后面的文件
+	ssh：同命令行
+	图形界面：只加载/etc/profile和~/.profile
+打开non-login shell
