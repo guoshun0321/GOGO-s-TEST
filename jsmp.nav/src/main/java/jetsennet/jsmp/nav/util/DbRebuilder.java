@@ -5,6 +5,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jetsennet.jsmp.nav.entity.PgmBase11Entity;
+import jetsennet.jsmp.nav.entity.PgmBase12Entity;
+import jetsennet.jsmp.nav.entity.PgmBase13Entity;
+import jetsennet.jsmp.nav.entity.PgmBase14Entity;
+import jetsennet.jsmp.nav.entity.PgmBase15Entity;
+import jetsennet.jsmp.nav.entity.PgmBase16Entity;
 import jetsennet.orm.annotation.Table;
 import jetsennet.orm.configuration.Configuration;
 import jetsennet.orm.configuration.ConfigurationBuilderProp;
@@ -48,6 +54,19 @@ public class DbRebuilder
 		//		}
 		BDBFileParse reader = new BDBFileParse();
 		reader.parseFolder("./dbscript/scheme");
+
+		TableInfo info = factory.getTableInfo(PgmBase11Entity.class);
+		logger.debug("初始化表：" + info.getTableName());
+		info = factory.getTableInfo(PgmBase12Entity.class);
+		logger.debug("初始化表：" + info.getTableName());
+		info = factory.getTableInfo(PgmBase13Entity.class);
+		logger.debug("初始化表：" + info.getTableName());
+		info = factory.getTableInfo(PgmBase14Entity.class);
+		logger.debug("初始化表：" + info.getTableName());
+		info = factory.getTableInfo(PgmBase15Entity.class);
+		logger.debug("初始化表：" + info.getTableName());
+		info = factory.getTableInfo(PgmBase16Entity.class);
+		logger.debug("初始化表：" + info.getTableName());
 	}
 
 	public static void main(String[] args) throws Exception
