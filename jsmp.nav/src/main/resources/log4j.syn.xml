@@ -10,10 +10,9 @@
 			<param name="ConversionPattern" value="%d %-4r %-5p [%t] %37c %3x - %m%n" />
 		</layout>
 	</appender>
-	<appender name="FILE"
-		class="org.apache.log4j.DailyRollingFileAppender">
+	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
 		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
-		<param name="File" value="/tmp/jsmp.log/jsmp.log" />
+		<param name="File" value="/tmp/jsmp.log/jsmp_syn.log" />
 		<param name="Append" value="true" />
 		<param name="Threshold" value="DEBUG" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
@@ -21,10 +20,9 @@
 			<param name="ConversionPattern" value="%d %-4r %-5p [%-20t] %37c %3x - %m%n" />
 		</layout>
 	</appender>
-	<appender name="FILE1"
-		class="org.apache.log4j.DailyRollingFileAppender">
+	<appender name="FILE1" class="org.apache.log4j.DailyRollingFileAppender">
 		<errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
-		<param name="File" value="/tmp/jsmp.log/jsmp.yan4j.log" />
+		<param name="File" value="/tmp/jsmp.log/jsmp_syn.yan4j.log" />
 		<param name="Append" value="true" />
 		<param name="Threshold" value="DEBUG" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
@@ -40,13 +38,15 @@
 			<param name="ConversionPattern" value="%d %-4r %-5p [%t] %37c %3x - %m%n" />
 		</layout>
 	</appender>
-	
-	<category name="jetsennet.jsmp.nav.service.a7.NavServiceGet" additivity="false">
+
+	<category name="jetsennet.jsmp.nav.service.a7.NavServiceGet"
+		additivity="false">
 		<priority value="DEBUG" />
 		<appender-ref ref="FILE" />
 	</category>
-	
-	<category name="jetsennet.jsmp.nav.service.a7.NavServicePost" additivity="false">
+
+	<category name="jetsennet.jsmp.nav.service.a7.NavServicePost"
+		additivity="false">
 		<priority value="DEBUG" />
 		<appender-ref ref="FILE" />
 	</category>
@@ -57,12 +57,12 @@
 		<appender-ref ref="PANEL1" />
 		<appender-ref ref="FILE" />
 	</category>
-	
+
 	<category name="com.google" additivity="false">
-		<priority value="ERROR" />
+		<priority value="DEBUG" />
 		<appender-ref ref="FILE1" />
 	</category>
-	
+
 	<category name="net.rubyeye" additivity="false">
 		<priority value="ERROR" />
 		<appender-ref ref="FILE1" />

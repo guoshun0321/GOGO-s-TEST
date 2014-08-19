@@ -256,6 +256,11 @@ public class FileItemEntity implements Serializable
 		return this.fileType >= 100;
 	}
 
+	public String getFilePath()
+	{
+		return this.destPath + this.destFilename;
+	}
+
 	public String getFileId()
 	{
 		return fileId;

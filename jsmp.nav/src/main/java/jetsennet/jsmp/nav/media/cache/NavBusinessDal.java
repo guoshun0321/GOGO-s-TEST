@@ -163,28 +163,30 @@ public class NavBusinessDal
 	{
 		List<ProgramEntity> retval = null;
 
-		List<String> subAssetIds = cache.get(ProgramCache.subPgm(pAssetId));
-		List<String> subKeys = new ArrayList<>(subAssetIds.size());
-		for (String subAssetId : subAssetIds)
+		List<String> subAssetIds = cache.getT(ProgramCache.subPgm(pAssetId));
+		if (subAssetIds != null && !subAssetIds.isEmpty())
 		{
-			subKeys.add(ProgramCache.programAsset(subAssetId));
-		}
-
-		if (subKeys != null)
-		{
-			Map<String, Object> tempMap = cache.gets(subKeys);
-			Set<String> keys = tempMap.keySet();
-			retval = new ArrayList<ProgramEntity>(keys.size());
-			for (String key : keys)
+			List<String> subKeys = new ArrayList<>(subAssetIds.size());
+			for (String subAssetId : subAssetIds)
 			{
-				Object obj = tempMap.get(key);
-				if (obj != null && obj instanceof ProgramEntity)
+				subKeys.add(ProgramCache.programAsset(subAssetId));
+			}
+
+			if (subKeys != null)
+			{
+				Map<String, Object> tempMap = cache.gets(subKeys);
+				Set<String> keys = tempMap.keySet();
+				retval = new ArrayList<ProgramEntity>(keys.size());
+				for (String key : keys)
 				{
-					retval.add((ProgramEntity) obj);
+					Object obj = tempMap.get(key);
+					if (obj != null && obj instanceof ProgramEntity)
+					{
+						retval.add((ProgramEntity) obj);
+					}
 				}
 			}
 		}
-
 		return retval != null ? retval : new ArrayList<ProgramEntity>(0);
 	}
 
@@ -339,7 +341,7 @@ public class NavBusinessDal
 		String pbAssetId = cache.get(PlaybillCache.channelPlaybill(chlAssetId, day), true);
 		if (pbAssetId != null)
 		{
-			PlaybillEntity pb = cache.get(PlaybillCache.playbillKey(pbAssetId));
+			PlaybillEntity pb = cache.getT(PlaybillCache.playbillKey(pbAssetId));
 			if (pb != null)
 			{
 				retval = cache.getT(PlaybillCache.playbillItemList(pb.getAssetId()));

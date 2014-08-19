@@ -21,7 +21,7 @@ public class DbRebuilder
 
 	private static final Logger logger = LoggerFactory.getLogger(DbRebuilder.class);
 
-	public static void rebuild()
+	public static void rebuild() throws Exception
 	{
 		Configuration config = new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration();
 		IDdl ddl = Ddl.getDdl(config);
@@ -36,20 +36,21 @@ public class DbRebuilder
 		}
 
 		logger.debug(String.format("数据库初始化开始，URL：%s", config.connInfo.url));
-		List<Class<?>> clss = ClassUtil.getClasses(PACKAGE_PATH);
-		for (Class<?> cls : clss)
-		{
-			if (cls.isAnnotationPresent(Table.class))
-			{
-				TableInfo info = factory.getTableInfo(cls);
-				logger.debug("初始化表：" + info.getTableName());
-				//				ddl.delete(info.getTableName());
-				ddl.create(info);
-			}
-		}
+		//		List<Class<?>> clss = ClassUtil.getClasses(PACKAGE_PATH);
+		//		for (Class<?> cls : clss)
+		//		{
+		//			if (cls.isAnnotationPresent(Table.class))
+		//			{
+		//				TableInfo info = factory.getTableInfo(cls);
+		//				logger.debug("初始化表：" + info.getTableName());
+		//				ddl.create(info);
+		//			}
+		//		}
+		BDBFileParse reader = new BDBFileParse();
+		reader.parseFolder("./dbscript/scheme");
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{
 		DbRebuilder.rebuild();
 	}

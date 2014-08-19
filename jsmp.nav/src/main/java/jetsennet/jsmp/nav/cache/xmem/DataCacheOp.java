@@ -114,11 +114,6 @@ public class DataCacheOp
 		}
 	}
 
-	public <T> T get(String key)
-	{
-		return this.get(key, false);
-	}
-
 	public <T> T getT(String key)
 	{
 		return this.get(key, true);
