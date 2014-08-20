@@ -136,6 +136,16 @@ public class A7Util
 		contentFrameResp.addAttr("summarvShort", prog.getContentInfo());
 		// 添加导演/制片/演员信息
 		addCreatorInfo(prog, contentFrameResp);
+		List<FileItemEntity> pics = NavBusinessDal.getPgmPictures(prog.getPgmId());
+		for (FileItemEntity pic : pics)
+		{
+			if (pic != null)
+			{
+				ResponseEntity picResp = new ResponseEntity("Image");
+				picResp.addAttr("posterUrl", pic.getFilePath());
+				contentFrameResp.addChild(picResp);
+			}
+		}
 		retval.addChild(contentFrameResp);
 
 		// 子节目

@@ -63,27 +63,27 @@ public class BDBFileParse
 			}
 
 			// 更新数据库
-			logger.debug("数据库初始化开始！");
-			MySqlDdl ddl = new MySqlDdl(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
-			for (TableInfo tbl : tblInfoLst)
-			{
-				logger.debug("初始化表：" + tbl.getTableName());
-				ddl.delete(tbl.getTableName());
-				ddl.create(tbl);
-			}
-
-			// 生成文件
+			//			logger.debug("数据库初始化开始！");
+			//			MySqlDdl ddl = new MySqlDdl(new ConfigurationBuilderProp("/dbconfig.mysql.media.properties").genConfiguration());
 			//			for (TableInfo tbl : tblInfoLst)
 			//			{
-			//				String fileName = tbl.getTableName();
-			//				fileName = this.dbName2EntityName(fileName);
-			//				OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "/" + fileName + "Entity.java"));
-			//				String javaFile = this.genJavaFile(tbl);
-			//				out.write(javaFile.getBytes());
-			//				out.flush();
-			//				out.close();
-			//				out = null;
+			//				logger.debug("初始化表：" + tbl.getTableName());
+			//				ddl.delete(tbl.getTableName());
+			//				ddl.create(tbl);
 			//			}
+
+			// 生成文件
+			for (TableInfo tbl : tblInfoLst)
+			{
+				String fileName = tbl.getTableName();
+				fileName = this.dbName2EntityName(fileName);
+				OutputStream out = new BufferedOutputStream(new FileOutputStream(path + "/" + fileName + "Entity.java"));
+				String javaFile = this.genJavaFile(tbl);
+				out.write(javaFile.getBytes());
+				out.flush();
+				out.close();
+				out = null;
+			}
 		}
 		System.out.println(path);
 		System.out.println("数据库初始化完成！");
@@ -336,7 +336,7 @@ public class BDBFileParse
 	public static void main(String[] args) throws Exception
 	{
 		BDBFileParse reader = new BDBFileParse();
-		reader.parseFolder("src/main/resources/dbscript/scheme");
+		reader.parseFolder("/home/jetsen/document/github/GOGO-TEST/jsmp.nav/src/main/webapp/WEB-INF/dbscript/scheme");
 	}
 
 }

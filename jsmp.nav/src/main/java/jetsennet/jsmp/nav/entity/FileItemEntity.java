@@ -69,7 +69,7 @@ public class FileItemEntity implements Serializable
 	 * 文件时长，单位秒
 	 */
 	@Column("DURATION")
-	private int fileDuration;
+	private String fileDuration;
 	/**
 	 * 文件宽度，如图片宽度。
 	 */
@@ -84,7 +84,7 @@ public class FileItemEntity implements Serializable
 	 * 画面质量。1：标清，2：高清，3：超清
 	 */
 	@Column("VIDEO_QUALITY")
-	@IdentAnnocation(value = "format", enumValue = "0,图片,1:标清,2:高清,3:超清")
+	@IdentAnnocation(value = "format", enumValue = "0:标清,1:标清,2:高清,3:超清")
 	private int videoQuality;
 	/**
 	 * 画面宽高比
@@ -366,12 +366,12 @@ public class FileItemEntity implements Serializable
 		this.fileDesc = fileDesc;
 	}
 
-	public int getFileDuration()
+	public String getFileDuration()
 	{
 		return fileDuration;
 	}
 
-	public void setFileDuration(int fileDuration)
+	public void setFileDuration(String fileDuration)
 	{
 		this.fileDuration = fileDuration;
 	}
