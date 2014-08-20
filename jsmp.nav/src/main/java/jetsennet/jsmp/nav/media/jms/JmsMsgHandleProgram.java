@@ -40,8 +40,11 @@ public class JmsMsgHandleProgram extends AbsJmsMsgHandle
 			if (obj instanceof ProgramEntity)
 			{
 				pgm = (ProgramEntity) DbHelper.checkObj(obj);
-				dal.deleteProgram(pgm.getPgmId());
-				ProgramCache.delete(pgm);
+				if (pgm != null)
+				{
+					dal.deleteProgram(pgm.getPgmId());
+					ProgramCache.delete(pgm);
+				}
 			}
 			else
 			{

@@ -68,7 +68,7 @@ public class FileItemEntity implements Serializable
 	/**
 	 * 文件时长，单位秒
 	 */
-	@Column("FILE_DURATION")
+	@Column("DURATION")
 	private int fileDuration;
 	/**
 	 * 文件宽度，如图片宽度。
@@ -102,6 +102,11 @@ public class FileItemEntity implements Serializable
 	 */
 	@Column("BROWSE_HEIGHT")
 	private int browseHeight;
+	/**
+	 * 总帧数
+	 */
+	@Column("TOTAL_FRAMES")
+	private int totalFrames;
 	/**
 	 * 帧率
 	 */
@@ -719,6 +724,16 @@ public class FileItemEntity implements Serializable
 	public void setMuxBitrate(int muxBitrate)
 	{
 		this.muxBitrate = muxBitrate;
+	}
+
+	public int getTotalFrames()
+	{
+		return totalFrames;
+	}
+
+	public void setTotalFrames(int totalFrames)
+	{
+		this.totalFrames = totalFrames;
 	}
 
 }

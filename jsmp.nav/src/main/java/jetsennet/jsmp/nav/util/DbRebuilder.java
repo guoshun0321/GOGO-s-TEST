@@ -57,16 +57,22 @@ public class DbRebuilder
 
 		TableInfo info = factory.getTableInfo(PgmBase11Entity.class);
 		logger.debug("初始化表：" + info.getTableName());
+		ddl.create(info);
 		info = factory.getTableInfo(PgmBase12Entity.class);
 		logger.debug("初始化表：" + info.getTableName());
+		ddl.create(info);
 		info = factory.getTableInfo(PgmBase13Entity.class);
 		logger.debug("初始化表：" + info.getTableName());
+		ddl.create(info);
 		info = factory.getTableInfo(PgmBase14Entity.class);
 		logger.debug("初始化表：" + info.getTableName());
+		ddl.create(info);
 		info = factory.getTableInfo(PgmBase15Entity.class);
 		logger.debug("初始化表：" + info.getTableName());
+		ddl.create(info);
 		info = factory.getTableInfo(PgmBase16Entity.class);
 		logger.debug("初始化表：" + info.getTableName());
+		ddl.create(info);
 	}
 
 	public static void main(String[] args) throws Exception

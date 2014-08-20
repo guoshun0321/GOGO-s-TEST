@@ -1,13 +1,7 @@
 package jetsennet.jsmp.nav.syn;
 
-import jetsennet.jsmp.nav.entity.ColumnEntity;
-import jetsennet.jsmp.nav.entity.FileItemEntity;
-import jetsennet.jsmp.nav.media.jms.DataSynContentEntity;
 import jetsennet.jsmp.nav.media.jms.DataSynEntity;
-import jetsennet.jsmp.nav.media.jms.DataSynMsgTypeEnum;
-import jetsennet.jsmp.nav.media.jms.DataSynOpCodeEnum;
 import jetsennet.jsmp.nav.media.jms.DataSynXmlParse;
-import jetsennet.jsmp.nav.util.ObjectUtil;
 import junit.framework.TestCase;
 
 public class DataSynXmlParseTest extends TestCase
