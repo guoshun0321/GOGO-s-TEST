@@ -17,18 +17,18 @@ public class SynDbChannel implements ISynDb
 	{
 		List<ChannelEntity> channels = AbsDal.dal.queryAllBusinessObjs(ChannelEntity.class);
 		// 将所有频道按地区和语言进行分类
-		Map<String, List<String>> channelMap = new LinkedHashMap<>();
+		Map<String, List<Integer>> channelMap = new LinkedHashMap<>();
 		for (ChannelEntity channel : channels)
 		{
 			ChannelCache.insert(channel);
 			String key = ChannelCache.channelIndex(channel.getRegionCode(), channel.getLanguageCode());
-			List<String> lst = channelMap.get(key);
+			List<Integer> lst = channelMap.get(key);
 			if (lst == null)
 			{
 				lst = new ArrayList<>();
 				channelMap.put(key, lst);
 			}
-			lst.add(channel.getAssetId());
+			lst.add(channel.getChlId());
 		}
 		ChannelCache.insertChannelList(channelMap);
 
@@ -37,8 +37,7 @@ public class SynDbChannel implements ISynDb
 		Map<String, List<PhysicalChannelEntity>> pchlMap = new LinkedHashMap<>();
 		for (PhysicalChannelEntity pchannel : pchannels)
 		{
-			String chlAssetId = pchannel.getChlAssetId();
-			String key = ChannelCache.physicalChannelKey(chlAssetId);
+			String key = ChannelCache.physicalChannelKey(pchannel.getChlId());
 			List<PhysicalChannelEntity> lst = pchlMap.get(key);
 			if (lst == null)
 			{

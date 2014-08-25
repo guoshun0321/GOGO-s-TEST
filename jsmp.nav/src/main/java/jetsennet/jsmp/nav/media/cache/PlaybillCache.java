@@ -21,14 +21,14 @@ public class PlaybillCache extends AbsCache
 	public static void updatePlaybill(PlaybillEntity pb)
 	{
 		cache.put(playbillKey(pb.getAssetId()), pb);
-		String key = channelPlaybill(pb.getChlAssetId(), pb.getPlayDate());
+		String key = channelPlaybill(pb.getChlId(), pb.getPlayDate());
 		cache.put(key, pb.getAssetId());
 	}
 
 	public static void deletePlaybill(PlaybillEntity pb)
 	{
 		cache.del(playbillKey(pb.getAssetId()));
-		String key = channelPlaybill(pb.getChlAssetId(), pb.getPlayDate());
+		String key = channelPlaybill(pb.getChlId(), pb.getPlayDate());
 		cache.del(key);
 	}
 
@@ -125,18 +125,18 @@ public class PlaybillCache extends AbsCache
 	/**
 	 * 频道对应的节目单，按频道assetId和时间进行分类
 	 * 
-	 * @param chlAssetId
+	 * @param channelId 频道ID
 	 * @param time
 	 * @return
 	 */
-	public static final String channelPlaybill(String chlAssetId, Date time)
+	public static final String channelPlaybill(int channelId, Date time)
 	{
-		return "CHL_PLAYBILL$" + chlAssetId + "$" + DateUtil.getPreTimeOfDay(time, 0);
+		return channelPlaybill(channelId, DateUtil.getPreTimeOfDay(time, 0));
 	}
 
-	public static final String channelPlaybill(String chlAssetId, long time)
+	public static final String channelPlaybill(int channelId, long time)
 	{
-		return "CHL_PLAYBILL$" + chlAssetId + "$" + time;
+		return "CHL_PLAYBILL$" + channelId + "$" + time;
 	}
 
 	/**

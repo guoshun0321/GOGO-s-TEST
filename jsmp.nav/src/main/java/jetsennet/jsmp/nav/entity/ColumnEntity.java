@@ -63,6 +63,7 @@ public class ColumnEntity implements Serializable
 	 * 栏目序号。-1：置顶；其他：按序号排序；NULL：不参与排序。
 	 */
 	@Column("COLUMN_SEQ")
+	@IdentAnnocation("childFolderSortDirection")
 	private int columnSeq;
 	/**
 	 * 栏目路径
@@ -91,7 +92,6 @@ public class ColumnEntity implements Serializable
 	 * 0：逆序；1：正序；
 	 */
 	@Column("SORT_DIRECTION")
-	@IdentAnnocation("childFolderSortDirection")
 	private int sortDirection;
 	/**
 	 * 地域编码

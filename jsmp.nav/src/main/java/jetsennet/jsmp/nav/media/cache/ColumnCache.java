@@ -77,6 +77,15 @@ public class ColumnCache extends AbsCache
 		cache.put(key, pics);
 	}
 
+	/**
+	 * 删除栏目下所有的图片
+	 * @param assetId
+	 */
+	public static void delPicByColAssetId(String assetId)
+	{
+		cache.del(columnPicKey(assetId));
+	}
+
 	public static void deletePic(PictureEntity pic)
 	{
 		String key = columnPicKey(pic.getObjAssetId());

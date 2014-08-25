@@ -276,28 +276,28 @@ public class NavBusinessDal
 	 * @param lang
 	 * @return
 	 */
-	public static final List<String> getChannelIds(String region, String lang)
+	public static final List<Integer> getChannelIds(String region, String lang)
 	{
 		String key = ChannelCache.channelIndex(region, lang);
-		List<String> retval = cache.getT(key);
-		return retval == null ? new ArrayList<String>(0) : retval;
+		List<Integer> retval = cache.getT(key);
+		return retval == null ? new ArrayList<Integer>(0) : retval;
 	}
 
 	/**
-	 * 获取频道列表
+	 * 获取多个频道的信息
 	 * 
-	 * @param chIds
+	 * @param chIds 频道ID
 	 * @return
 	 */
-	public static final List<ChannelEntity> getChannels(List<String> chAssetIds)
+	public static final List<ChannelEntity> getChannels(List<Integer> chlIds)
 	{
 		List<ChannelEntity> retval = null;
-		if (chAssetIds != null)
+		if (chlIds != null)
 		{
-			List<String> chKeys = new ArrayList<String>(chAssetIds.size());
-			for (String chAssetId : chAssetIds)
+			List<String> chKeys = new ArrayList<String>(chlIds.size());
+			for (Integer chlId : chlIds)
 			{
-				chKeys.add(ChannelCache.channelKey(chAssetId));
+				chKeys.add(ChannelCache.channelKey(chlId));
 			}
 			Map<String, Object> chlMap = cache.gets(chKeys);
 			if (chlMap != null)
@@ -322,9 +322,9 @@ public class NavBusinessDal
 	 * @param chlId
 	 * @return
 	 */
-	public static final List<PhysicalChannelEntity> getPhysicalChannels(String chlAssetId)
+	public static final List<PhysicalChannelEntity> getPhysicalChannels(int chlId)
 	{
-		List<PhysicalChannelEntity> retval = cache.getT(ChannelCache.physicalChannelKey(chlAssetId));
+		List<PhysicalChannelEntity> retval = cache.getT(ChannelCache.physicalChannelKey(chlId));
 		return retval == null ? new ArrayList<PhysicalChannelEntity>(0) : retval;
 	}
 
@@ -335,10 +335,10 @@ public class NavBusinessDal
 	 * @param day 日期
 	 * @return
 	 */
-	public static final List<String> getPlayBillItemIds(String chlAssetId, long day)
+	public static final List<String> getPlayBillItemIds(int chlId, long day)
 	{
 		List<String> retval = null;
-		String pbAssetId = cache.get(PlaybillCache.channelPlaybill(chlAssetId, day), true);
+		String pbAssetId = cache.get(PlaybillCache.channelPlaybill(chlId, day), true);
 		if (pbAssetId != null)
 		{
 			PlaybillEntity pb = cache.getT(PlaybillCache.playbillKey(pbAssetId));
