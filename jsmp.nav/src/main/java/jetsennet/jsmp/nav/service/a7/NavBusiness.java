@@ -239,6 +239,16 @@ public class NavBusiness
 					else
 					{
 						ResponseEntity child = ResponseEntityUtil.obj2Resp(column, "ChildFolder", null);
+						// 添加图片
+						List<PictureEntity> pics = NavBusinessDal.columnPicturs(column);
+						if (pics != null && !pics.isEmpty())
+						{
+							for (PictureEntity pic : pics)
+							{
+								ResponseEntity picResp = ResponseEntityUtil.obj2Resp(pic, "Image", null);
+								child.addChild(picResp);
+							}
+						}
 						resp.addChild(child);
 					}
 				}
@@ -361,25 +371,29 @@ public class NavBusiness
 	{
 		SelectionStartRequest req = RequestEntityUtil.map2Obj(SelectionStartRequest.class, map);
 
+		// 返回结果
+		ResponseEntity tempResp = new ResponseEntity("StartResponse");
+
 		// 获取数据
 		FileItemEntity item = NavBusinessDal.getFileItemByAssetId(req.getFileAssetId());
 
-		String retval = null;
-		if (SelectionStartRequest.OTT.equals(req.getServiceCode()))
+		if (item != null)
 		{
-			retval = item.getPlayUrl();
-		}
-		else
-		{
-			// 生成token
-			String token = NavBusinessDal.addSMKey(item.getPlayUrl());
-			retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
+			String retval = null;
+			if (SelectionStartRequest.OTT.equals(req.getServiceCode()))
+			{
+				retval = item.getPlayUrl();
+			}
+			else
+			{
+				// 生成token
+				String token = NavBusinessDal.addSMKey(item.getPlayUrl());
+				retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
+			}
+
+			tempResp.addAttr("purchaseToken", retval);
 		}
 
-		// 返回结果
-		ResponseEntity tempResp = new ResponseEntity("StartResponse");
-		tempResp.addAttr("purchaseToken", retval);
-		//		tempResp.addAttr("previewAssetId", token);
 		return tempResp.toXml(null).toString();
 	}
 
@@ -388,24 +402,28 @@ public class NavBusiness
 	{
 		ChannelSelectionStartRequest req = RequestEntityUtil.map2Obj(ChannelSelectionStartRequest.class, map);
 
+		// 返回结果
+		ResponseEntity tempResp = new ResponseEntity("ChannelSelectionStartResponse");
+
 		// 获取数据
 		PlaybillItemEntity item = NavBusinessDal.getPlayBillItemByAssetId(req.getAssetId());
 
-		String retval = null;
-		if (SelectionStartRequest.OTT.equals(req.getServiceCode()))
+		if (item != null)
 		{
-			retval = item.getPlayUrl();
-		}
-		else
-		{
-			// 生成token
-			String token = NavBusinessDal.addSMKey(item.getPlayUrl());
-			retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
+			String retval = null;
+			if (SelectionStartRequest.OTT.equals(req.getServiceCode()))
+			{
+				retval = item.getPlayUrl();
+			}
+			else
+			{
+				// 生成token
+				String token = NavBusinessDal.addSMKey(item.getPlayUrl());
+				retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
+			}
+			tempResp.addAttr("purchaseToken", retval);
 		}
 
-		// 返回结果
-		ResponseEntity tempResp = new ResponseEntity("ChannelSelectionStartResponse");
-		tempResp.addAttr("purchaseToken", retval);
 		return tempResp.toXml(null).toString();
 	}
 

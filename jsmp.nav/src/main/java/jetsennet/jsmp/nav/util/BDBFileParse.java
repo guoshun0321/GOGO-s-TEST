@@ -336,7 +336,7 @@ public class BDBFileParse
 	public static void main(String[] args) throws Exception
 	{
 		BDBFileParse reader = new BDBFileParse();
-		reader.parseFolder("src/main/resources/dbscript/scheme");
+		reader.parseFolder("/home/jetsen/document/github/GOGO-TEST/jsmp.nav/src/main/webapp/WEB-INF/dbscript/scheme");
 	}
 
 }

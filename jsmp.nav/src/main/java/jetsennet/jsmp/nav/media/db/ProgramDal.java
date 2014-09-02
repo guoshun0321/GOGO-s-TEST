@@ -113,6 +113,10 @@ public class ProgramDal extends AbsDal
 				List<FileItemEntity> movies = dal.queryBusinessObjs(FileItemEntity.class, sql);
 				retval.addAll(movies);
 			}
+			else
+			{
+				logger.debug("找不到对应ID的PROGRAM：" + pgmId);
+			}
 		}
 		catch (Exception ex)
 		{

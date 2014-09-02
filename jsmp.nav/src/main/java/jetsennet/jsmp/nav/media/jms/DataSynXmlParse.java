@@ -202,10 +202,10 @@ public class DataSynXmlParse
 		{
 			String key = child.getName().trim();
 			String value = child.getText().trim();
-			//			if (Config.ISDEBUG)
-			//			{
-			//				logger.debug(String.format("处理参数：%s, %s", key, value));
-			//			}
+			if (Config.ISDEBUG)
+			{
+				logger.debug(String.format("处理参数：%s, %s", key, value));
+			}
 			FieldInfo fieldInfo = table.getFieldInfo(key);
 			if (fieldInfo != null)
 			{

@@ -1,5 +1,6 @@
 package jetsennet.jsmp.nav.syn.ui;
 
+import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.media.db.SynFromDb;
 import jetsennet.jsmp.nav.media.syn.DataSynJms;
 import jetsennet.jsmp.nav.media.syn.DataSynPeriod;
@@ -35,6 +36,7 @@ public class SetupThread
 
 				// 同步数据库数据
 				logger.info("开始从数据库同步数据！");
+				DataCacheOp.getInstance().deleteAll();
 				new SynFromDb().syn();
 				logger.info("从数据库同步数据结束！");
 

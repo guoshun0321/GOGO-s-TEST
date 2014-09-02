@@ -222,7 +222,7 @@ public class ProgramCache extends AbsCache
 		}
 		if (!assetLst.contains(assetId))
 		{
-			assetLst.add(key);
+			assetLst.add(assetId);
 		}
 		cache.put(key, assetLst);
 	}
