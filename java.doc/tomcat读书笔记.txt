@@ -61,7 +61,7 @@ LifeCycle生命周期
  * --->------------------------------>------------------------------
 
 
- Connector
+Connector
  	ProtocolHandler
  	MapperListener
 
@@ -80,6 +80,7 @@ CoyoteAdapter
 Context
 	Wrapper JspServletWrapper
 	WebappLoader
+	DirContext
 
 Socket处理流程
 	JIoEndpoint.SocketProcessor.run()
@@ -98,3 +99,70 @@ Socket处理流程
 		Context -> WebappLoader
 2、Service中包含Connector，消息通过CoyoteAdapter转发到Engine
 3、Engine中包含Pipeline，通过pipeline一层层处理
+
+Engine --> StandardEngine
+1、启动子容器HOST
+2、启动后台线程
+	该线程主要设置容器的classloader
+
+HostConfig
+初始化Host下的目录，默认扫描webapps的每一个目录
+根据webapps/$app/META-INF/context.xml文件描述生成StandardContext，同时生成ContextConfig
+调用StandardContext.startInternal()
+
+启动流程：
+
+访问流程：
+Wrapper 标识一个Servlet
+	ApplicationFilterChain
+
+NamingResources 表示一个名称服务(连接池、ejb等)
+	NamingContextListener 处理NamingResources
+
+
+======================分割线======================
+容器部分
+Engine 引擎，启动一个后台线程
+Host 表示一个webapp目录		HostConfig
+Context 表示一个应用		ContextConfig
+Wrapper 表示一个Servlet
+
+名称服务
+初始化
+	Catalina.initNaming 初始化Context工厂类为：org.apache.naming.java.javaURLContextFactory
+
+StandardServer
+	提供全局JNDI支持
+
+
+======================HTTP模块======================
+Http11Protocol
+	JIOEndpoint
+		Acceptor
+		SocketProcessor  线程池
+	Http11ConnectionHandler
+		Processor  回收利用
+			Adapter
+			Request
+				各种请求字段
+			Response
+			AbstractEndpoint  指向JIOEndpoint
+			AsyncStateMachine
+
+InputBuffer
+	AbstractInputBuffer
+		Request
+		MimeHeader
+		InputBuffer
+		InputFilter
+
+InputFilter
+
+keepAlive
+	socket处理结束后不关闭socket，重新将socket放入线程池
+
+
+Http11NioProtocol
+	NioEndpoint
+		Acceptor
+	Http11ConnectionHandler
