@@ -562,7 +562,8 @@ public class NavBusiness
 							ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(item, "Program", null);
 							itemResp.addAttr("channelId", chId.toString());
 							long startTime = day + item.getStartTime();
-							long endTime = startTime + item.getDuration() * 1000;
+							// TODO duration单位应该为秒。
+							long endTime = startTime + item.getDuration(); // * 1000;
 							itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
 							itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
 							retval.addChild(itemResp);
