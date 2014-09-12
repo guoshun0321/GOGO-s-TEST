@@ -13,22 +13,23 @@ public class ChannelCache extends AbsCache
 
 	public static void insert(ChannelEntity channel)
 	{
-		cache.put(channelKey(channel.getAssetId()), channel);
+		cache.put(channelKey(channel.getChlId()), channel);
+		cache.put(channelAssetKey(channel.getAssetId()), channel);
 	}
 
 	public static void update(ChannelEntity channel)
 	{
-		String assetId = channel.getAssetId();
-		cache.put(channelKey(assetId), channel);
+		insert(channel);
+		Integer chlId = channel.getChlId();
 		String key = channelIndex(channel.getRegionCode(), channel.getLanguageCode());
-		List<String> lst = cache.getT(key);
+		List<Integer> lst = cache.getT(key);
 		if (lst == null)
 		{
 			lst = new ArrayList<>();
 		}
-		if (!lst.contains(assetId))
+		if (!lst.contains(chlId))
 		{
-			lst.add(assetId);
+			lst.add(chlId);
 		}
 		cache.put(key, lst);
 	}
@@ -40,7 +41,7 @@ public class ChannelCache extends AbsCache
 	 */
 	public static void insertPhsical(PhysicalChannelEntity phy)
 	{
-		String key = physicalChannelKey(phy.getChlAssetId());
+		String key = physicalChannelKey(phy.getChlId());
 		List<PhysicalChannelEntity> physicals = cache.getT(key);
 		if (physicals == null)
 		{
@@ -71,7 +72,7 @@ public class ChannelCache extends AbsCache
 	 * 
 	 * @param channelMap
 	 */
-	public static void insertChannelList(Map<String, List<String>> channelMap)
+	public static void insertChannelList(Map<String, List<Integer>> channelMap)
 	{
 		Set<String> keys = channelMap.keySet();
 		for (String key : keys)
@@ -94,13 +95,18 @@ public class ChannelCache extends AbsCache
 		}
 	}
 
-	public static final String channelKey(String assetId)
+	public static final String channelKey(int chlId)
 	{
-		return "CHL$" + assetId;
+		return "CHL$" + chlId;
+	}
+
+	public static final String channelAssetKey(String assetId)
+	{
+		return "CHL_ASSET$" + assetId;
 	}
 
 	/**
-	 * 按地区和语言对频道进行分类，返回频道assetId集合
+	 * 按地区和语言对频道进行分类，返回chlId集合
 	 * 
 	 * @param region
 	 * @param lang
@@ -111,9 +117,9 @@ public class ChannelCache extends AbsCache
 		return "CHLLIST$" + region + "$" + lang;
 	}
 
-	public static final String physicalChannelKey(String assetId)
+	public static final String physicalChannelKey(int chlId)
 	{
-		return "CHL_PCHL$" + assetId;
+		return "CHL_PCHL$" + chlId;
 	}
 
 }

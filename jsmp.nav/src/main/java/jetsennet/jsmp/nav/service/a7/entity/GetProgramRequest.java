@@ -91,6 +91,10 @@ public class GetProgramRequest
 
 	public String getChannelIds()
 	{
+		if (channelIds == null)
+		{
+			channelIds = "";
+		}
 		return channelIds;
 	}
 

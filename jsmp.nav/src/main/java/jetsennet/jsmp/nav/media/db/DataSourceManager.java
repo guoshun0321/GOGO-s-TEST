@@ -70,6 +70,7 @@ public class DataSourceManager
 		MEDIA_FACTORY.getTableInfo(RelateColumnEntity.class);
 		if (Config.ISDEBUG)
 		{
+			logger.debug("media_url : " + MEDIA_FACTORY.getConfig().configFile);
 			logger.debug("nav_url : " + NAV_FACTORY.getConfig().configFile);
 		}
 	}

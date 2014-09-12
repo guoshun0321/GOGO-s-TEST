@@ -476,7 +476,7 @@ public class NavBusiness
 
 		ResponseEntity retval = new ResponseEntity("Channels");
 
-		List<String> chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
+		List<Integer> chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
 		if (chIds == null)
 		{
 			throw new UncheckedNavException("获取频道列表失败！");
@@ -498,7 +498,7 @@ public class NavBusiness
 				ResponseEntity chlResp = ResponseEntityUtil.obj2Resp(chl, "Channel", null);
 				retval.addChild(chlResp);
 
-				List<PhysicalChannelEntity> phys = NavBusinessDal.getPhysicalChannels(chl.getAssetId());
+				List<PhysicalChannelEntity> phys = NavBusinessDal.getPhysicalChannels(chl.getChlId());
 				for (PhysicalChannelEntity phy : phys)
 				{
 					chlResp.addChild(ResponseEntityUtil.obj2Resp(phy, "Parameter", null));
@@ -515,7 +515,7 @@ public class NavBusiness
 
 		// 频道信息
 		String channelIdS = req.getChannelIds().trim();
-		List<String> chIds = null;
+		List<Integer> chIds = null;
 		if (channelIdS.isEmpty())
 		{
 			chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
@@ -523,10 +523,10 @@ public class NavBusiness
 		else
 		{
 			String[] temp = channelIdS.split(",");
-			chIds = new ArrayList<String>(temp.length);
+			chIds = new ArrayList<Integer>(temp.length);
 			for (String t : temp)
 			{
-				chIds.add(t);
+				chIds.add(Integer.valueOf(t));
 			}
 		}
 
@@ -541,7 +541,7 @@ public class NavBusiness
 		int end = start + max;
 		int i = 0;
 		boolean isEnd = false;
-		for (String chId : chIds)
+		for (Integer chId : chIds)
 		{
 			for (Long day : dayLst)
 			{
@@ -562,7 +562,8 @@ public class NavBusiness
 							ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(item, "Program", null);
 							itemResp.addAttr("channelId", chId.toString());
 							long startTime = day + item.getStartTime();
-							long endTime = startTime + item.getDuration() * 1000;
+							// TODO duration单位应该为秒。
+							long endTime = startTime + item.getDuration(); // * 1000;
 							itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
 							itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
 							retval.addChild(itemResp);
