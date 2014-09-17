@@ -3,7 +3,6 @@ package jetsennet.jsmp.nav.media.jms;
 import java.util.List;
 
 import jetsennet.jsmp.nav.entity.ProgramEntity;
-import jetsennet.jsmp.nav.media.cache.ProgramCache;
 import jetsennet.jsmp.nav.media.db.DbHelper;
 import jetsennet.jsmp.nav.media.db.ProgramDal;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
@@ -23,10 +22,8 @@ public class JmsMsgHandleProgram extends AbsJmsMsgHandle
 		List<Object> objs = content.getObjs();
 		for (Object obj : objs)
 		{
-			//			DataSynDbResult dbResult = 
 			DbHelper.insertOrUpdate(obj);
 		}
-		ProgramCache.insert(objs);
 	}
 
 	@Override
@@ -43,7 +40,6 @@ public class JmsMsgHandleProgram extends AbsJmsMsgHandle
 				if (pgm != null)
 				{
 					dal.deleteProgram(pgm.getPgmId());
-					ProgramCache.delete(pgm);
 				}
 			}
 			else

@@ -3,6 +3,8 @@ package jetsennet.jsmp.nav.util;
 import java.util.Calendar;
 import java.util.Date;
 
+import jetsennet.util.SafeDateFormater;
+
 public class DateUtil
 {
 
@@ -38,6 +40,29 @@ public class DateUtil
 			calendar.add(Calendar.DAY_OF_MONTH, pre * -1);
 		}
 		return calendar.getTime();
+	}
+
+	/**
+	 * 生成时间条件(COLUMN >= yyyy-MM-dd 00:00:00 AND COLUMN <= yyyy-MM-dd 23:59:59)
+	 * 
+	 * @param column
+	 * @param date
+	 * @param pre
+	 * @return
+	 */
+	public static String genDataCondition(String column, Date date, int pre)
+	{
+		String max = SafeDateFormater.format(date, "yyyy-MM-dd") + " 23:59:59";
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_MONTH, pre * -1);
+		String min = SafeDateFormater.format(calendar.getTime(), "yyyy-MM-dd") + " 00:00:00";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(column).append(" >= ").append(min);
+		sb.append(" AND ").append(column).append(" <= ").append(max);
+		return sb.toString();
 	}
 
 }

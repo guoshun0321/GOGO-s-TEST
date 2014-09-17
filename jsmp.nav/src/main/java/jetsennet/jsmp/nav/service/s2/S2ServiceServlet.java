@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import jetsennet.jsmp.nav.service.a7.A7Util;
-import jetsennet.jsmp.nav.service.a7.ErrorHandle;
+import jetsennet.jsmp.nav.service.a7.NavBusinessUtil;
+import jetsennet.jsmp.nav.service.a7.NavErrorHandle;
 import jetsennet.jsmp.nav.util.ServletUtil;
 import jetsennet.util.IOUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class S2ServiceServlet extends HttpServlet
 {
@@ -27,7 +27,7 @@ public class S2ServiceServlet extends HttpServlet
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		ErrorHandle.illegalRequest(resp, null);
+		NavErrorHandle.illegalRequest(resp, null);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class S2ServiceServlet extends HttpServlet
 				method = method.substring(pos + 1);
 				try
 				{
-					Map<String, String> map = A7Util.requestXml2Map(ServletUtil.getStream(req));
+					Map<String, String> map = NavBusinessUtil.requestXml2Map(ServletUtil.getStream(req));
 					String str = busi.invoke(method, map);
 					resp.setHeader("Content-type", "text/html;charset=UTF-8");
 					out.write(str.getBytes("UTF-8"));
@@ -53,14 +53,14 @@ public class S2ServiceServlet extends HttpServlet
 				catch (Exception ex)
 				{
 					logger.error("", ex);
-					ErrorHandle.illegalRequest(resp, ex, null);
+					NavErrorHandle.illegalRequest(resp, ex, null);
 				}
 			}
 			else
 			{
 				String msg = "不合法的方法名称：" + method;
 				logger.error(msg);
-				ErrorHandle.illegalRequest(resp, msg);
+				NavErrorHandle.illegalRequest(resp, msg);
 			}
 		}
 		finally

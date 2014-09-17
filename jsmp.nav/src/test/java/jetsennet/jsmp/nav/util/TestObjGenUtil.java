@@ -12,7 +12,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
@@ -27,6 +26,7 @@ import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.media.db.DataSourceManager;
+import jetsennet.jsmp.nav.xmem.XmemcachedUtil;
 import jetsennet.orm.annotation.Column;
 import jetsennet.orm.session.Session;
 import jetsennet.orm.session.SqlSessionFactory;

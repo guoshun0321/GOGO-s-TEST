@@ -4,10 +4,15 @@ import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jetsennet.jsmp.nav.config.Config;
 
-public class ErrorHandle
+public class NavErrorHandle
 {
+
+	private static final Logger logger = LoggerFactory.getLogger(NavErrorHandle.class);
 
 	public static final HttpServletResponse illegalRequest(HttpServletResponse resp, String msg)
 	{
@@ -25,7 +30,7 @@ public class ErrorHandle
 			}
 			catch (Exception ex)
 			{
-
+				logger.error("", ex);
 			}
 		}
 		else
@@ -51,7 +56,7 @@ public class ErrorHandle
 			}
 			catch (Exception ex1)
 			{
-
+				logger.error("", ex);
 			}
 		}
 		else

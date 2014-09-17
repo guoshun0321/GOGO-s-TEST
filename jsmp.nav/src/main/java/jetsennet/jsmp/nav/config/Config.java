@@ -6,8 +6,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jetsennet.jsmp.nav.cache.xmem.CacheException;
-import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
+import jetsennet.jsmp.nav.xmem.XmemcachedException;
+import jetsennet.jsmp.nav.xmem.XmemcachedUtil;
 import jetsennet.util.IOUtil;
 import jetsennet.util.PropertiesUtil;
 
@@ -68,7 +68,7 @@ public class Config
 		InputStream in = null;
 		try
 		{
-			in = DataCacheOp.class.getResourceAsStream("/config.properties");
+			in = XmemcachedUtil.class.getResourceAsStream("/config.properties");
 			Properties prop = new Properties();
 			prop.load(in);
 
@@ -94,7 +94,7 @@ public class Config
 		catch (Exception ex)
 		{
 			logger.error("", ex);
-			throw new CacheException(ex);
+			throw new XmemcachedException(ex);
 		}
 		finally
 		{

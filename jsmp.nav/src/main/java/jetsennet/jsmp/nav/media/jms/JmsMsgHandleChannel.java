@@ -4,7 +4,6 @@ import java.util.List;
 
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
-import jetsennet.jsmp.nav.media.cache.ChannelCache;
 import jetsennet.jsmp.nav.media.db.DbHelper;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
@@ -29,12 +28,10 @@ public class JmsMsgHandleChannel extends AbsJmsMsgHandle
 				if (obj instanceof ChannelEntity)
 				{
 					DbHelper.insertOrUpdate(obj);
-					ChannelCache.update((ChannelEntity) obj);
 				}
 				else if (obj instanceof PhysicalChannelEntity)
 				{
 					DbHelper.insertOrUpdate(obj);
-					ChannelCache.insertPhsical((PhysicalChannelEntity) obj);
 				}
 			}
 		}

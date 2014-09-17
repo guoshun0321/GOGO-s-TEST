@@ -1,5 +1,6 @@
 package jetsennet.jsmp.nav.media.db;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,94 @@ public class PlayBillDal extends AbsDal
 	public static final int PRE_DATE = 14;
 
 	private static final Logger logger = LoggerFactory.getLogger(PlayBillDal.class);
+
+	public PlaybillEntity getPbByAssetId(String assetId)
+	{
+		PlaybillEntity retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_PLAYBILL WHERE ASSET_ID='" + assetId + "'";
+			retval = dal.querySingleObject(PlaybillEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			throw new UncheckedOrmException(ex);
+		}
+		return retval;
+	}
+
+	/**
+	 * 获取频道在某个时间范围内的节目ID集合
+	 * 
+	 * @param chIds
+	 * @param timeCond
+	 * @return
+	 */
+	public List<Integer> getPbIds(List<String> chIds, String timeCond)
+	{
+		StringBuilder sb = new StringBuilder("SELECT PB_ID FROM NS_PLAYBILL WHERE ");
+		sb.append(timeCond);
+		if (chIds != null && chIds.isEmpty())
+		{
+			sb.append(" AND CHL_ASSETID IN (");
+			for (String chId : chIds)
+			{
+				sb.append(chId).append(",");
+			}
+			sb.deleteCharAt(sb.length() - 1).append(")");
+		}
+
+		List<Integer> retval = null;
+		try
+		{
+			retval = dal.queryBusinessObjs(Integer.class, sb.toString());
+		}
+		catch (Exception ex)
+		{
+			throw new UncheckedOrmException(ex);
+		}
+		return retval;
+	}
+
+	public List<PlaybillItemEntity> getPbis(List<Integer> pbIds, int begin, int max)
+	{
+		if (pbIds == null || pbIds.isEmpty())
+		{
+			return new ArrayList<PlaybillItemEntity>(0);
+		}
+		StringBuilder sb = new StringBuilder("SELECT * FROM NS_PLAYBILLITEM WHERE PB_ID IN(");
+		for (Integer pbId : pbIds)
+		{
+			sb.append(pbId).append(",");
+		}
+		sb.deleteCharAt(sb.length() - 1).append(")").append(" LIMIT ").append(begin).append(",").append(max);
+
+		List<PlaybillItemEntity> retval = null;
+		try
+		{
+			retval = dal.queryBusinessObjs(PlaybillItemEntity.class, sb.toString());
+		}
+		catch (Exception ex)
+		{
+			throw new UncheckedOrmException(ex);
+		}
+		return retval;
+	}
+
+	public PlaybillItemEntity getPbiByAssetId(String assetId)
+	{
+		PlaybillItemEntity retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_PLAYBILLITEM WHERE ASSET_ID='" + assetId + "'";
+			retval = dal.querySingleObject(PlaybillItemEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			throw new UncheckedOrmException(ex);
+		}
+		return retval;
+	}
 
 	public List<Integer> getRecentPlayBillId()
 	{

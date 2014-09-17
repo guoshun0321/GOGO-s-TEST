@@ -1,7 +1,5 @@
 package jetsennet.jsmp.nav.media.syn;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.jms.Connection;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;

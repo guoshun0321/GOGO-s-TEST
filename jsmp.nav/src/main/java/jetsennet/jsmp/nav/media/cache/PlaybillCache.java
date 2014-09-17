@@ -42,7 +42,7 @@ public class PlaybillCache extends AbsCache
 		insertPlaybillItem(pbItem);
 		String assetId = pbItem.getAssetId();
 		String key = playbillItemList(pbItem.getPbAssetId());
-		List<String> lst = cache.getT(key);
+		List<String> lst = cache.get(key);
 		if (lst == null)
 		{
 			lst = new ArrayList<>();
@@ -59,7 +59,7 @@ public class PlaybillCache extends AbsCache
 		String assetId = pbItem.getAssetId();
 		cache.del(playbillItemKey(assetId));
 		String key = playbillItemList(pbItem.getPbAssetId());
-		List<String> lst = cache.getT(key);
+		List<String> lst = cache.get(key);
 		if (lst != null && !lst.contains(assetId))
 		{
 			lst.remove(assetId);
@@ -104,12 +104,12 @@ public class PlaybillCache extends AbsCache
 
 	public static PlaybillEntity getPlaybill(String assetId)
 	{
-		return cache.getT(playbillKey(assetId));
+		return cache.get(playbillKey(assetId));
 	}
 
 	public static PlaybillItemEntity getPlaybillItem(String assetId)
 	{
-		return cache.getT(playbillItemKey(assetId));
+		return cache.get(playbillItemKey(assetId));
 	}
 
 	public static final String playbillKey(String assetId)

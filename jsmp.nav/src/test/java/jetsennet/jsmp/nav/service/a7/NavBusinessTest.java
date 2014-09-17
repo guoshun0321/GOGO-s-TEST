@@ -35,15 +35,15 @@ public class NavBusinessTest extends TestCase
 	public void testGetRootContents() throws Exception
 	{
 		String xml = "<GetRootContents  clientId='1' deviceId='2' startAt='0' maxItems='2'/>";
-		GetFolderContentsRequest req = RequestEntityUtil.map2Obj(GetFolderContentsRequest.class, A7Util.requestXml2Map(xml));
+		GetFolderContentsRequest req = RequestEntityUtil.map2Obj(GetFolderContentsRequest.class, NavBusinessUtil.requestXml2Map(xml));
 
 		NavBusiness nb = new NavBusiness();
-		String str = nb.getRootContents(A7Util.requestXml2Map(xml));
+		String str = nb.getRootContents(NavBusinessUtil.requestXml2Map(xml));
 		assertNotNull(str);
 		System.out.println(str);
 
 		xml = "<GetRootContents  clientId='1' deviceId='2' startAt='4' maxItems='10'/>";
-		str = nb.getRootContents(A7Util.requestXml2Map(xml));
+		str = nb.getRootContents(NavBusinessUtil.requestXml2Map(xml));
 		assertNotNull(str);
 		System.out.println(str);
 	}
@@ -144,12 +144,12 @@ public class NavBusinessTest extends TestCase
 		String xml = "<?xml version='1.0' encoding=\"UTF-8\" ?> <GetChannels clientId='1232' deviceId='123'/>";
 
 		NavBusiness nb = new NavBusiness();
-		String str = nb.getChannels(A7Util.requestXml2Map(xml));
+		String str = nb.getChannels(NavBusinessUtil.requestXml2Map(xml));
 		assertNotNull(str);
 		System.out.println(str);
 
 		xml = "<?xml version='1.0' encoding=\"UTF-8\" ?> <GetChannels clientId='1232' deviceId='123' startAt='20' maxItems='5'/>";
-		str = nb.getChannels(A7Util.requestXml2Map(xml));
+		str = nb.getChannels(NavBusinessUtil.requestXml2Map(xml));
 		assertNotNull(str);
 		System.out.println(str);
 	}

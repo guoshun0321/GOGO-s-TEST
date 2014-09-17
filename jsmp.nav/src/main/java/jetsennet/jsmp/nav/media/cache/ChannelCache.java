@@ -21,7 +21,7 @@ public class ChannelCache extends AbsCache
 		String assetId = channel.getAssetId();
 		cache.put(channelKey(assetId), channel);
 		String key = channelIndex(channel.getRegionCode(), channel.getLanguageCode());
-		List<String> lst = cache.getT(key);
+		List<String> lst = cache.get(key);
 		if (lst == null)
 		{
 			lst = new ArrayList<>();
@@ -41,7 +41,7 @@ public class ChannelCache extends AbsCache
 	public static void insertPhsical(PhysicalChannelEntity phy)
 	{
 		String key = physicalChannelKey(phy.getChlAssetId());
-		List<PhysicalChannelEntity> physicals = cache.getT(key);
+		List<PhysicalChannelEntity> physicals = cache.get(key);
 		if (physicals == null)
 		{
 			physicals = new ArrayList<>();

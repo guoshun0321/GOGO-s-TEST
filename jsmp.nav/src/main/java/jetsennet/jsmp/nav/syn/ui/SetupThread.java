@@ -1,10 +1,8 @@
 package jetsennet.jsmp.nav.syn.ui;
 
-import jetsennet.jsmp.nav.cache.xmem.DataCacheOp;
-import jetsennet.jsmp.nav.media.db.SynFromDb;
 import jetsennet.jsmp.nav.media.syn.DataSynJms;
-import jetsennet.jsmp.nav.media.syn.DataSynPeriod;
 import jetsennet.jsmp.nav.monitor.Monitor;
+import jetsennet.jsmp.nav.xmem.XmemcachedUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +33,14 @@ public class SetupThread
 				Monitor.getInstance().start();
 
 				// 同步数据库数据
-				logger.info("开始从数据库同步数据！");
-				DataCacheOp.getInstance().deleteAll();
-				new SynFromDb().syn();
-				logger.info("从数据库同步数据结束！");
+				logger.info("清楚缓存");
+				XmemcachedUtil.getInstance().deleteAll();
 
 				// 启动JMS同步模块
 				DataSynJms.getInstance().start();
 
 				// 启动周期性数据核对模块
-				DataSynPeriod.getInstance().start();
+				//				DataSynPeriod.getInstance().start();
 
 				frame.startSyn();
 				this.isStart = true;
@@ -68,7 +64,7 @@ public class SetupThread
 			try
 			{
 				// 关闭周期性数据核对模块
-				DataSynPeriod.getInstance().stop();
+				//				DataSynPeriod.getInstance().stop();
 
 				// 关闭JMS同步模块
 				DataSynJms.getInstance().stop();

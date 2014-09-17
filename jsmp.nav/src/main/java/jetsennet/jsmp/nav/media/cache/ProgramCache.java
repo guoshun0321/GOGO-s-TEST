@@ -156,7 +156,7 @@ public class ProgramCache extends AbsCache
 			if (columnId > 0)
 			{
 				String key = columnPgm(columnAssetId);
-				List<String> columnPgmIds = cache.getT(key);
+				List<String> columnPgmIds = cache.get(key);
 				if (columnPgmIds == null)
 				{
 					columnPgmIds = new ArrayList<>();
@@ -191,7 +191,7 @@ public class ProgramCache extends AbsCache
 		{
 			String columnAssetId = pgm.getColumnAssetid();
 			String key = columnPgm(columnAssetId);
-			List<String> columnPgmIds = cache.getT(key);
+			List<String> columnPgmIds = cache.get(key);
 			if (columnPgmIds == null)
 			{
 				columnPgmIds = new ArrayList<>();
@@ -215,7 +215,7 @@ public class ProgramCache extends AbsCache
 	public static void insertSub(String pAssetId, String assetId)
 	{
 		String key = subPgm(pAssetId);
-		List<String> assetLst = cache.getT(key);
+		List<String> assetLst = cache.get(key);
 		if (assetLst == null)
 		{
 			assetLst = new ArrayList<>();
@@ -230,7 +230,7 @@ public class ProgramCache extends AbsCache
 	public static void removeSub(String pAssetId, String assetId)
 	{
 		String key = subPgm(pAssetId);
-		List<String> assetLst = cache.getT(key);
+		List<String> assetLst = cache.get(key);
 		if (assetLst == null)
 		{
 			assetLst = new ArrayList<>();

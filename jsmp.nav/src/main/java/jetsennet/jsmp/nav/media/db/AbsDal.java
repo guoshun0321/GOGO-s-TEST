@@ -8,7 +8,7 @@ public class AbsDal
 
 	public static SqlSessionFactory factory = DataSourceManager.MEDIA_FACTORY;
 
-	public static BaseDaoNew dal = new BaseDaoNew(factory.getConfig());;
+	public static BaseDaoNew dal = new BaseDaoNew(factory.getConfig());
 
 	public AbsDal()
 	{

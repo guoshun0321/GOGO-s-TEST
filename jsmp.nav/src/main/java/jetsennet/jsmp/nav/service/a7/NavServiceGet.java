@@ -51,14 +51,14 @@ public class NavServiceGet extends HttpServlet
 				catch (Throwable ex)
 				{
 					logger.error("", ex);
-					ErrorHandle.illegalRequest(resp, ex, null);
+					NavErrorHandle.illegalRequest(resp, ex, null);
 				}
 			}
 			else
 			{
 				String msg = "找不到method参数！";
 				logger.error(msg);
-				ErrorHandle.illegalRequest(resp, msg);
+				NavErrorHandle.illegalRequest(resp, msg);
 			}
 		}
 		finally
@@ -87,7 +87,7 @@ public class NavServiceGet extends HttpServlet
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
 		logger.error("NavServiceGet不支持POST操作！");
-		ErrorHandle.illegalRequest(resp, "NavServiceGet不支持POST操作！");
+		NavErrorHandle.illegalRequest(resp, "NavServiceGet不支持POST操作！");
 	}
 
 }

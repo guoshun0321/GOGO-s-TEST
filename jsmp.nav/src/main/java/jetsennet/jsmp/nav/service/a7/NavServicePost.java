@@ -29,7 +29,7 @@ public class NavServicePost extends HttpServlet
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
 		logger.error("NavServicePost不支持GET操作！");
-		ErrorHandle.illegalRequest(resp, "NavServicePost不支持GET操作！");
+		NavErrorHandle.illegalRequest(resp, "NavServicePost不支持GET操作！");
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class NavServicePost extends HttpServlet
 					{
 						logger.debug("POST CONTENT : " + content);
 					}
-					Map<String, String> map = A7Util.requestXml2Map(content);
+					Map<String, String> map = NavBusinessUtil.requestXml2Map(content);
 					String str = busi.invoke(method, map);
 					resp.setHeader("Content-type", "text/html;charset=UTF-8");
 					out.write(str.getBytes("UTF-8"));
@@ -64,14 +64,14 @@ public class NavServicePost extends HttpServlet
 				catch (Throwable ex)
 				{
 					logger.error("", ex);
-					ErrorHandle.illegalRequest(resp, ex, null);
+					NavErrorHandle.illegalRequest(resp, ex, null);
 				}
 			}
 			else
 			{
 				String msg = "不合法的方法名称：" + method;
 				logger.error(msg);
-				ErrorHandle.illegalRequest(resp, msg);
+				NavErrorHandle.illegalRequest(resp, msg);
 			}
 		}
 		finally

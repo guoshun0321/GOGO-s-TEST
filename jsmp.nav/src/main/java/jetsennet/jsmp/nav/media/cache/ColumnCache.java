@@ -20,7 +20,7 @@ public class ColumnCache extends AbsCache
 
 		String assetId = column.getAssetId();
 		String key = column.getParentId() == 0 ? topColumn() : subColumn(column.getParentAssetid(), column.getRegionCode());
-		List<String> assetIds = cache.getT(key);
+		List<String> assetIds = cache.get(key);
 		assetIds = assetIds == null ? new ArrayList<String>() : assetIds;
 		if (!assetIds.contains(assetId))
 		{
@@ -35,7 +35,7 @@ public class ColumnCache extends AbsCache
 
 		String assetId = column.getAssetId();
 		String key = column.getParentId() == 0 ? topColumn() : subColumn(column.getParentAssetid(), column.getRegionCode());
-		List<String> assetIds = cache.getT(key);
+		List<String> assetIds = cache.get(key);
 		assetIds = assetIds == null ? new ArrayList<String>() : assetIds;
 		assetIds.remove(assetId);
 		cache.put(key, assetIds);
@@ -54,7 +54,7 @@ public class ColumnCache extends AbsCache
 	public static void insertPic(PictureEntity pic)
 	{
 		String key = columnPicKey(pic.getObjAssetId());
-		List<PictureEntity> pics = cache.getT(key);
+		List<PictureEntity> pics = cache.get(key);
 		if (pics == null)
 		{
 			pics = new ArrayList<>();
@@ -80,7 +80,7 @@ public class ColumnCache extends AbsCache
 	public static void deletePic(PictureEntity pic)
 	{
 		String key = columnPicKey(pic.getObjAssetId());
-		List<PictureEntity> pics = cache.getT(key);
+		List<PictureEntity> pics = cache.get(key);
 		if (pics != null)
 		{
 			int pos = -1;

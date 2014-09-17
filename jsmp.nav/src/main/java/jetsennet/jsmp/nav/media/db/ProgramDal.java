@@ -16,6 +16,11 @@ import jetsennet.jsmp.nav.entity.PgmBase16Entity;
 import jetsennet.jsmp.nav.entity.PgmBase9Entity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
+import jetsennet.orm.executor.resultset.RowsResultSetExtractor;
+import jetsennet.orm.session.Session;
+import jetsennet.orm.sql.FilterUtil;
+import jetsennet.orm.sql.SelectEntity;
+import jetsennet.orm.sql.Sql;
 import jetsennet.sqlclient.SqlCondition;
 import jetsennet.sqlclient.SqlLogicType;
 import jetsennet.sqlclient.SqlParamType;
@@ -28,6 +33,205 @@ public class ProgramDal extends AbsDal
 {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProgramDal.class);
+
+	public ProgramEntity getPgmByAssetId(String assetId)
+	{
+		ProgramEntity retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_PROGRAM WHERE ASSET_ID='" + assetId + "'";
+			retval = dal.querySingleObject(ProgramEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	public List<ProgramEntity> getPgmsByAssetId(List<String> assetIds)
+	{
+		List<ProgramEntity> retval = null;
+		SelectEntity sql = Sql.select("*").from("NS_PROGRAM").where(FilterUtil.in("ASSET_ID", assetIds));
+		Session session = dal.getSession();
+		retval = session.query(sql, new RowsResultSetExtractor<>(ProgramEntity.class, session.getTableInfo(ProgramEntity.class)));
+		return retval;
+	}
+
+	public List<ProgramEntity> getSubPgms(String assetId)
+	{
+		List<ProgramEntity> retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_PROGRAM WHERE PARENT_ASSET_ID='" + assetId + "'";
+			retval = dal.queryBusinessObjs(ProgramEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	public List<ProgramEntity> getColumnPgms(String assetId, int begin, int max)
+	{
+		List<ProgramEntity> retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_PROGRAM WHERE COLUMN_ASSETID='" + assetId + "' LIMIT " + begin + ", " + max;
+			retval = dal.queryBusinessObjs(ProgramEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	public int getColumnPgmSize(String assetId)
+	{
+		int retval = 0;
+		try
+		{
+			String sql = "SELECT COUNT(0) FROM NS_PROGRAM WHERE COLUMN_ASSETID='" + assetId + "'";
+			retval = dal.querySingleObject(int.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	public List<String> getPgmAssetIdByColumn(String assetId)
+	{
+		List<String> retval = null;
+		try
+		{
+			String sql = "SELECT ASSET_ID FROM NS_PROGRAM WHERE PARENT_ASSET_ID='" + assetId + "'";
+			retval = dal.queryBusinessObjs(String.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	/**
+	 * 获取节目基本信息
+	 * 
+	 * @param prog
+	 * @return
+	 */
+	public Object getPgmBase(ProgramEntity prog)
+	{
+		Object retval = null;
+		int pgmId = prog.getPgmId();
+		int contentType = prog.getContentType();
+		String sql = "SELECT * FROM NS_PGMBASE_" + contentType + " WHERE PGM_ID=" + pgmId;
+		try
+		{
+			switch (contentType)
+			{
+			case ProgramEntity.CONTENT_TYPE_MOVIE:
+				retval = dal.querySingleObject(PgmBase9Entity.class, sql);
+				break;
+			case ProgramEntity.CONTENT_TYPE_TV:
+				retval = dal.querySingleObject(PgmBase10Entity.class, sql);
+				break;
+			case ProgramEntity.CONTENT_TYPE_VARITY:
+				retval = dal.querySingleObject(PgmBase11Entity.class, sql);
+				break;
+			case ProgramEntity.CONTENT_TYPE_COM:
+				retval = dal.querySingleObject(PgmBase12Entity.class, sql);
+				break;
+			case ProgramEntity.CONTENT_TYPE_DOC:
+				retval = dal.querySingleObject(PgmBase13Entity.class, sql);
+				break;
+			case ProgramEntity.CONTENT_TYPE_MUSIC:
+				retval = dal.querySingleObject(PgmBase14Entity.class, sql);
+				break;
+			case ProgramEntity.CONTENT_TYPE_TXT:
+				retval = dal.querySingleObject(PgmBase15Entity.class, sql);
+				break;
+			case ProgramEntity.CONTENT_TYPE_CHL:
+				retval = dal.querySingleObject(PgmBase16Entity.class, sql);
+				break;
+			}
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	/**
+	 * 获取节目的图片信息
+	 * 
+	 * @param pgmId
+	 * @return
+	 */
+	public List<FileItemEntity> getPgmPic(int pgmId)
+	{
+		List<FileItemEntity> retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_FILEITEM WHERE PGM_ID=" + pgmId + " AND FILE_TYPE >" + 200;
+			retval = dal.queryBusinessObjs(FileItemEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	public List<FileItemEntity> getPgmFile(int pgmId)
+	{
+		List<FileItemEntity> retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_FILEITEM WHERE PGM_ID=" + pgmId + " AND FILE_TYPE <=" + 200;
+			retval = dal.queryBusinessObjs(FileItemEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	public FileItemEntity getFileByAssetId(String assetId)
+	{
+		FileItemEntity retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_FILEITEM WHERE ASSET_ID=" + assetId;
+			retval = dal.querySingleObject(FileItemEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
+
+	public List<CreatorEntity> getCreator(int pgmId)
+	{
+		List<CreatorEntity> retval = null;
+		try
+		{
+			String sql = "SELECT * FROM NS_CREATOR WHERE PGM_ID=" + pgmId;
+			retval = dal.queryBusinessObjs(CreatorEntity.class, sql);
+		}
+		catch (Exception ex)
+		{
+			logger.error("", ex);
+		}
+		return retval;
+	}
 
 	public List<Integer> getPgmIds()
 	{
@@ -130,18 +334,17 @@ public class ProgramDal extends AbsDal
 		try
 		{
 			SqlCondition cond = new SqlCondition("PGM_ID", Integer.toString(pgmId), SqlLogicType.And, SqlRelationType.Equal, SqlParamType.Numeric);
-			dal.delete(ProgramEntity.class, cond);
-			dal.delete(PgmBase9Entity.class, cond);
-			dal.delete(PgmBase10Entity.class, cond);
-			dal.delete(PgmBase11Entity.class, cond);
-			dal.delete(PgmBase12Entity.class, cond);
-			dal.delete(PgmBase13Entity.class, cond);
-			dal.delete(PgmBase14Entity.class, cond);
-			dal.delete(PgmBase15Entity.class, cond);
-			dal.delete(PgmBase16Entity.class, cond);
-			dal.delete(CreatorEntity.class, cond);
-			dal.delete(DescauthorizeEntity.class, cond);
-			dal.delete(FileItemEntity.class, cond);
+			String sql = "SELECT * FROM NS_PROGRAM WHRER PGM_ID = " + pgmId;
+			ProgramEntity pgm = dal.querySingleObject(ProgramEntity.class, sql);
+			if (pgm != null)
+			{
+				dal.delete(ProgramEntity.class, cond);
+				sql = "DELETE FROM NS_PGMBASE_" + pgm.getContentType() + " WHERE PGM_ID=" + pgmId;
+				dal.getSession().delete(sql);
+				dal.delete(CreatorEntity.class, cond);
+				dal.delete(DescauthorizeEntity.class, cond);
+				dal.delete(FileItemEntity.class, cond);
+			}
 		}
 		catch (Exception ex)
 		{

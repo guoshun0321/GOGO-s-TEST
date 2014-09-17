@@ -4,9 +4,7 @@ import java.util.List;
 
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
-import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.media.cache.PlaybillCache;
-import jetsennet.jsmp.nav.media.cache.ProgramCache;
 import jetsennet.jsmp.nav.media.db.AbsDal;
 import jetsennet.jsmp.nav.media.db.DataSynDbResult;
 import jetsennet.jsmp.nav.media.db.DbHelper;
@@ -35,14 +33,12 @@ public class JmsMsgHandlePlaybill extends AbsJmsMsgHandle
 				if (old == null)
 				{
 					AbsDal.dal.saveBusinessObjs(pb);
-					PlaybillCache.updatePlaybill(pb);
 				}
 				else
 				{
 					if (pb.getUpdateTime() >= old.getUpdateTime())
 					{
 						AbsDal.dal.updateBusinessObjs(false, pb);
-						PlaybillCache.updatePlaybill(pb);
 					}
 				}
 			}
@@ -53,14 +49,12 @@ public class JmsMsgHandlePlaybill extends AbsJmsMsgHandle
 				if (old == null)
 				{
 					AbsDal.dal.saveBusinessObjs(pbItem);
-					PlaybillCache.updatePlaybillItem(pbItem);
 				}
 				else
 				{
 					if (pbItem.getUpdateTime() >= old.getUpdateTime())
 					{
 						AbsDal.dal.updateBusinessObjs(false, pbItem);
-						PlaybillCache.updatePlaybillItem(pbItem);
 					}
 				}
 			}
@@ -79,19 +73,11 @@ public class JmsMsgHandlePlaybill extends AbsJmsMsgHandle
 		{
 			if (obj instanceof PlaybillEntity)
 			{
-				DataSynDbResult dbResult = DbHelper.delete(obj);
-				if (isValid(dbResult))
-				{
-					PlaybillCache.deletePlaybill((PlaybillEntity) dbResult.obj);
-				}
+				DbHelper.delete(obj);
 			}
 			else if (obj instanceof PlaybillItemEntity)
 			{
-				DataSynDbResult dbResult = DbHelper.delete(obj);
-				if (isValid(dbResult))
-				{
-					PlaybillCache.deletePlaybillItem((PlaybillItemEntity) dbResult.obj);
-				}
+				DbHelper.delete(obj);
 			}
 			else
 			{

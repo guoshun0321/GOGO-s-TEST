@@ -3,11 +3,12 @@ package jetsennet.jsmp.nav.service.a7;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import jetsennet.jsmp.nav.config.Config;
+import jetsennet.jsmp.nav.config.SysConfig;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.FileItemEntity;
@@ -15,9 +16,6 @@ import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
-import jetsennet.jsmp.nav.media.cache.NavBusinessDal;
-import jetsennet.jsmp.nav.monitor.MethodInvokeMMsg;
-import jetsennet.jsmp.nav.monitor.Monitor;
 import jetsennet.jsmp.nav.service.a7.entity.ChannelSelectionStartRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetChannelsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetFolderContentsRequest;
@@ -28,8 +26,13 @@ import jetsennet.jsmp.nav.service.a7.entity.RequestEntityUtil;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntity;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntityUtil;
 import jetsennet.jsmp.nav.service.a7.entity.SelectionStartRequest;
-import jetsennet.jsmp.nav.util.ArrayUtil;
+import jetsennet.jsmp.nav.service.a7.pipeline.INavPlugin;
+import jetsennet.jsmp.nav.service.a7.pipeline.NavPipeline;
+import jetsennet.jsmp.nav.service.a7.pipeline.NavPipelineContext;
+import jetsennet.jsmp.nav.service.a7.pipeline.NavPluginCache;
+import jetsennet.jsmp.nav.service.a7.pipeline.NavPluginMonitor;
 import jetsennet.jsmp.nav.util.DataMockUtil;
+import jetsennet.jsmp.nav.util.DateUtil;
 import jetsennet.jsmp.nav.util.IdentAnnocation;
 import jetsennet.jsmp.nav.util.UncheckedNavException;
 
@@ -39,66 +42,76 @@ import org.slf4j.LoggerFactory;
 public class NavBusiness
 {
 
+	private NavDataHandle navDal;
+
+	private NavPipeline pipeline;
 	/**
 	 * 方法映射map
 	 */
-	private static Map<String, Method> methodMap;
+	private static final Map<String, Method> methodMap = NavBusinessUtil.genMethodMap(NavBusiness.class);
 	/**
 	 * 日志
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(NavBusiness.class);
 
-	static
+	public NavBusiness()
 	{
-		try
-		{
-			methodMap = new HashMap<String, Method>();
-			Method[] methods = NavBusiness.class.getMethods();
-			for (Method method : methods)
-			{
-				if (method.isAnnotationPresent(IdentAnnocation.class))
-				{
-					methodMap.put(method.getAnnotation(IdentAnnocation.class).value(), method);
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			logger.error("", ex);
-			throw new UncheckedNavException(ex);
-		}
+		super();
+		this.navDal = new NavDataHandle();
+		this.pipeline = new NavPipeline();
+		pipeline.addPlugin(new NavPluginMonitor());
+		pipeline.addPlugin(new NavPluginCache());
 	}
 
-	public String invoke(String method, Map<String, String> map) throws Throwable
+	/**
+	 * a7接口相关方法调用
+	 * 
+	 * @param method
+	 * @param map
+	 * @return
+	 * @throws Throwable
+	 */
+	public String invoke(String method, Map<String, String> params) throws Throwable
 	{
-		String retval = null;
 		Method m = methodMap.get(method);
-		if (m != null)
+		if (m == null)
 		{
-			MethodInvokeMMsg msg = new MethodInvokeMMsg();
-			msg.setStartTime(System.currentTimeMillis());
-			msg.setMethodName(m.getName());
+			logger.error("不存在方法：" + method);
+			throw new UncheckedNavException("不存在方法：" + method);
+		}
+
+		String retval = null;
+
+		NavPipelineContext context = pipeline.resetContext(m, params);
+		INavPlugin last = pipeline.before();
+		if (context.isContinue())
+		{
 			try
 			{
 				if (Config.ISDEBUG)
 				{
 					logger.debug("调用方法：" + m.getName());
 				}
-				retval = (String) m.invoke(this, new Object[] { map });
+				retval = (String) m.invoke(this, new Object[] { params });
+				context.setRetObj(retval);
 			}
 			catch (InvocationTargetException ex)
 			{
-				msg.setException(true);
-				throw ex.getTargetException();
+				logger.info("", ex);
+				context.error(ex.getMessage());
 			}
-			msg.setEndTime(System.currentTimeMillis());
-			Monitor.getInstance().put(msg);
 		}
-		else
+		if (!context.isBreakError())
 		{
-			logger.error("不存在方法：" + method);
-			throw new UncheckedNavException("不存在方法：" + method);
+			pipeline.after(last);
 		}
+
+		// 出现错误时，抛出异常
+		if (context.isError() || context.isBreakError())
+		{
+			throw new UncheckedNavException(context.getErrorMsg());
+		}
+
 		return retval;
 	}
 
@@ -134,7 +147,8 @@ public class NavBusiness
 		ResponseEntity retval = new ResponseEntity("FolderContents");
 
 		// 栏目自身信息FolderFrame
-		ColumnEntity column = NavBusinessDal.getColumnByAssetId(entity.getAssetId());
+		String assetId = entity.getAssetId();
+		ColumnEntity column = navDal.getColumnByAssetId(assetId);
 		if (entity.getIncludeFolderProperties())
 		{
 			ResponseEntity temp = new ResponseEntity("FolderFrame");
@@ -151,14 +165,14 @@ public class NavBusiness
 		// 子栏目ChildFolder
 		if (entity.getIncludeSubFolder())
 		{
-			List<ColumnEntity> cols = NavBusinessDal.subColumns(column);
+			List<ColumnEntity> cols = navDal.subColumns(column);
 			for (ColumnEntity col : cols)
 			{
 				ResponseEntity tempResp = ResponseEntityUtil.obj2Resp(col, "ChildFolder", null);
 				tempResp.addAttr("selectableltemSortby", column.getSortRule());
 				tempResp.addAttr("selectableltemSortDirection", Integer.toString(column.getSortDirection()));
 
-				List<PictureEntity> pics = NavBusinessDal.columnPicturs(col);
+				List<PictureEntity> pics = navDal.columnPicturs(col);
 				if (pics != null && !pics.isEmpty())
 				{
 					for (PictureEntity pic : pics)
@@ -173,28 +187,26 @@ public class NavBusiness
 		}
 
 		// 节目信息ContentItem
-		int retStart = -1;
-		int retTotal = 0;
-		int retSelTotal = 0;
+		int retStart = -1; // 下一次请求的开始字段
+		int retTotal = 0; // 节目总数
+		int retSelTotal = 0; // 本次获取的节目数
 		if (entity.getIncludeSelectableItem())
 		{
-			List<String> programIds = NavBusinessDal.columnProgramIds(column.getAssetId());
-			if (programIds != null && !programIds.isEmpty())
+			int begin = entity.getStartAt();
+			int max = entity.getMaxItems();
+			retTotal = navDal.getColumnPgmSize(assetId);
+			if (retTotal > 0 && retTotal > begin)
 			{
-				// 分页信息
-				int start = entity.getStartAt();
-				int end = start + entity.getMaxItems();
-				retTotal = programIds.size();
-				if (retTotal > end)
-				{
-					retStart = end;
-				}
-
-				// 填充ContentItem数据
-				List<ProgramEntity> pgms = NavBusinessDal.getPrograms(ArrayUtil.subList(programIds, start, end));
+				List<ProgramEntity> pgms = navDal.getColumnPgms(assetId, begin, max);
 				for (ProgramEntity pgm : pgms)
 				{
-					retval.addChild(A7Util.getContent(pgm, column));
+					retval.addChild(navDal.getContent(pgm, column));
+				}
+				retSelTotal = pgms.size();
+				// 当还有剩余数据要取时，设在retStart的值
+				if (retTotal > (begin + retSelTotal))
+				{
+					retStart = begin + retSelTotal;
 				}
 			}
 		}
@@ -213,53 +225,43 @@ public class NavBusiness
 	{
 		GetRootContentsRequest entity = RequestEntityUtil.map2Obj(GetRootContentsRequest.class, map);
 
-		List<ColumnEntity> topColumns = NavBusinessDal.getTopColumns();
-
 		ResponseEntity resp = new ResponseEntity("RootContents");
 		// 分页处理
 		int begin = entity.getStartAt();
 		begin = begin < 0 ? 0 : begin;
-		// 最后一个的后一位
-		int end = begin + entity.getMaxItems();
-		int lastPos = -1;
+		int max = entity.getMaxItems();
 
-		int j = -1;
+		List<ColumnEntity> topColumns = navDal.getTopColumns(entity.getLanguageCode(), entity.getRegionCode(), begin, max);
+
 		for (ColumnEntity column : topColumns)
 		{
-			if (column.getLanguageCode().equals(entity.getLanguageCode()) && column.getRegionCode().equals(entity.getRegionCode()))
+			ResponseEntity child = ResponseEntityUtil.obj2Resp(column, "ChildFolder", null);
+			// 添加图片
+			List<PictureEntity> pics = navDal.columnPicturs(column);
+			if (pics != null && !pics.isEmpty())
 			{
-				j++;
-				if (j >= begin)
+				for (PictureEntity pic : pics)
 				{
-					if (j == end)
-					{
-						lastPos = j;
-						break;
-					}
-					else
-					{
-						ResponseEntity child = ResponseEntityUtil.obj2Resp(column, "ChildFolder", null);
-						// 添加图片
-						List<PictureEntity> pics = NavBusinessDal.columnPicturs(column);
-						if (pics != null && !pics.isEmpty())
-						{
-							for (PictureEntity pic : pics)
-							{
-								ResponseEntity picResp = ResponseEntityUtil.obj2Resp(pic, "Image", null);
-								child.addChild(picResp);
-							}
-						}
-						resp.addChild(child);
-					}
+					ResponseEntity picResp = ResponseEntityUtil.obj2Resp(pic, "Image", null);
+					child.addChild(picResp);
 				}
 			}
-
+			resp.addChild(child);
 		}
-		resp.addAttr("totalResults", Integer.toString(resp.getChildSize()));
+
+		int size = resp.getChildSize();
+		resp.addAttr("totalResults", size);
+
+		int lastPos = -1;
+		if (size > 0 && size == max)
+		{
+			lastPos = begin + size;
+		}
 		if (lastPos > 0)
 		{
 			resp.addAttr("restartAtToken", Integer.toString(lastPos));
 		}
+
 		return resp.toXml(null).toString();
 	}
 
@@ -312,7 +314,7 @@ public class NavBusiness
 	public String getItemData(Map<String, String> map)
 	{
 		GetItemDataRequest req = RequestEntityUtil.map2Obj(GetItemDataRequest.class, map);
-		return A7Util.getContentItem(NavBusinessDal.getProgramByAssetId(req.getTitleAssetId()), null).toXml(null).toString();
+		return navDal.getContentItem(navDal.getProgramByAssetId(req.getTitleAssetId()), null).toXml(null).toString();
 	}
 
 	@IdentAnnocation("GetEntitlement")
@@ -375,7 +377,7 @@ public class NavBusiness
 		ResponseEntity tempResp = new ResponseEntity("StartResponse");
 
 		// 获取数据
-		FileItemEntity item = NavBusinessDal.getFileItemByAssetId(req.getFileAssetId());
+		FileItemEntity item = navDal.getFileItemByAssetId(req.getFileAssetId());
 
 		if (item != null)
 		{
@@ -387,7 +389,7 @@ public class NavBusiness
 			else
 			{
 				// 生成token
-				String token = NavBusinessDal.addSMKey(item.getPlayUrl());
+				String token = navDal.addSMKey(item.getPlayUrl());
 				retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
 			}
 
@@ -406,7 +408,7 @@ public class NavBusiness
 		ResponseEntity tempResp = new ResponseEntity("ChannelSelectionStartResponse");
 
 		// 获取数据
-		PlaybillItemEntity item = NavBusinessDal.getPlayBillItemByAssetId(req.getAssetId());
+		PlaybillItemEntity item = navDal.getPlayBillItemByAssetId(req.getAssetId());
 
 		if (item != null)
 		{
@@ -418,7 +420,7 @@ public class NavBusiness
 			else
 			{
 				// 生成token
-				String token = NavBusinessDal.addSMKey(item.getPlayUrl());
+				String token = navDal.addSMKey(item.getPlayUrl());
 				retval = Config.SM_RTSP + ";purchaseToken=" + token + ";serverID=" + Config.SM_SERVERID;
 			}
 			tempResp.addAttr("purchaseToken", retval);
@@ -449,12 +451,14 @@ public class NavBusiness
 	@IdentAnnocation("AddSavedProgram")
 	public String addSavedProgram(Map<String, String> map)
 	{
+		// TODO test
 		return "";
 	}
 
 	@IdentAnnocation("SetResumePoint")
 	public String setResumePoint(Map<String, String> map)
 	{
+		// TODO test
 		return "";
 	}
 
@@ -476,35 +480,26 @@ public class NavBusiness
 
 		ResponseEntity retval = new ResponseEntity("Channels");
 
-		List<String> chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
-		if (chIds == null)
-		{
-			throw new UncheckedNavException("获取频道列表失败！");
-		}
 		int start = req.getStartAt() >= 0 ? req.getStartAt() : 0;
 		int max = req.getMaxItems();
 		int end = start + max;
-		if (end < chIds.size())
+		List<ChannelEntity> channels = navDal.getChannels(req.getRegionCode(), req.getLanguageCode(), start, max);
+		for (ChannelEntity chl : channels)
+		{
+			ResponseEntity chlResp = ResponseEntityUtil.obj2Resp(chl, "Channel", null);
+			retval.addChild(chlResp);
+
+			List<PhysicalChannelEntity> phys = navDal.getPhysicalChannels(chl.getChlId());
+			for (PhysicalChannelEntity phy : phys)
+			{
+				chlResp.addChild(ResponseEntityUtil.obj2Resp(phy, "Parameter", null));
+			}
+		}
+		if (channels.size() == max)
 		{
 			retval.addAttr("restartAtToken", end);
 		}
-		chIds = ArrayUtil.subList(chIds, start, end);
-		if (chIds != null)
-		{
-			List<ChannelEntity> channels = NavBusinessDal.getChannels(chIds);
 
-			for (ChannelEntity chl : channels)
-			{
-				ResponseEntity chlResp = ResponseEntityUtil.obj2Resp(chl, "Channel", null);
-				retval.addChild(chlResp);
-
-				List<PhysicalChannelEntity> phys = NavBusinessDal.getPhysicalChannels(chl.getAssetId());
-				for (PhysicalChannelEntity phy : phys)
-				{
-					chlResp.addChild(ResponseEntityUtil.obj2Resp(phy, "Parameter", null));
-				}
-			}
-		}
 		return retval.toXml(null).toString();
 	}
 
@@ -518,7 +513,7 @@ public class NavBusiness
 		List<String> chIds = null;
 		if (channelIdS.isEmpty())
 		{
-			chIds = NavBusinessDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
+			chIds = navDal.getChannelIds(req.getRegionCode(), req.getLanguageCode());
 		}
 		else
 		{
@@ -530,55 +525,30 @@ public class NavBusiness
 			}
 		}
 
-		// 日期信息
-		List<Long> dayLst = A7Util.calPlayListTime(req);
+		int days = req.getDays();
+		days = days > SysConfig.PRE_DATE ? SysConfig.PRE_DATE : days;
+		String timeCond = DateUtil.genDataCondition("PLAY_DATE", new Date(), days);
 
-		// 分页
-		ResponseEntity retval = new ResponseEntity("Programs");
+		List<Integer> pbIds = navDal.getPbIds(chIds, timeCond);
 		int start = req.getStartAt();
 		start = start >= 0 ? start : 0;
 		int max = req.getMaxItems();
 		int end = start + max;
-		int i = 0;
-		boolean isEnd = false;
-		for (String chId : chIds)
+		List<PlaybillItemEntity> pbis = navDal.getPbis(pbIds, start, max);
+		ResponseEntity retval = new ResponseEntity("Programs");
+		for (PlaybillItemEntity pbi : pbis)
 		{
-			for (Long day : dayLst)
-			{
-				List<String> itemIds = NavBusinessDal.getPlayBillItemIds(chId, day);
-				for (String itemId : itemIds)
-				{
-					if (i >= start)
-					{
-						if (i == end)
-						{
-							retval.addAttr("restartAtToken", Integer.toString(i));
-							isEnd = true;
-							break;
-						}
-						else
-						{
-							PlaybillItemEntity item = NavBusinessDal.getPlayBillItemByAssetId(itemId);
-							ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(item, "Program", null);
-							itemResp.addAttr("channelId", chId.toString());
-							long startTime = day + item.getStartTime();
-							long endTime = startTime + item.getDuration() * 1000;
-							itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
-							itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
-							retval.addChild(itemResp);
-						}
-					}
-					i++;
-				}
-				if (isEnd)
-				{
-					break;
-				}
-			}
-			if (isEnd)
-			{
-				break;
-			}
+			ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(pbi, "Program", null);
+			//			itemResp.addAttr("channelId", chId.toString());
+			//			long startTime = day + pbi.getStartTime();
+			//			long endTime = startTime + pbi.getDuration() * 1000;
+			//			itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
+			//			itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
+			retval.addChild(itemResp);
+		}
+		if (pbis.size() == max)
+		{
+			retval.addAttr("restartAtToken", end);
 		}
 		retval.addAttr("totalResults", retval.getChildSizeS());
 		return retval.toXml(null).toString();
@@ -587,6 +557,7 @@ public class NavBusiness
 	@IdentAnnocation("GetAssociatedPrograms")
 	public String getAssociatedPrograms(Map<String, String> map)
 	{
+		// TODO test
 		throw new UnsupportedOperationException("GetAssociatedPrograms");
 	}
 

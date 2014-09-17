@@ -1,4 +1,4 @@
-package jetsennet.jsmp.nav.cache.xmem;
+package jetsennet.jsmp.nav.xmem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import com.google.code.yanf4j.core.impl.StandardSocketOption;
  * 
  * @author 郭祥
  */
-public class DataCacheOp
+public class XmemcachedUtil
 {
 
 	/**
@@ -37,16 +37,16 @@ public class DataCacheOp
 	/**
 	 * 日志
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(DataCacheOp.class);
+	private static final Logger logger = LoggerFactory.getLogger(XmemcachedUtil.class);
 
-	private static final DataCacheOp instance = new DataCacheOp();
+	private static final XmemcachedUtil instance = new XmemcachedUtil();
 
-	private DataCacheOp()
+	private XmemcachedUtil()
 	{
 		try
 		{
 			builder = new XMemcachedClientBuilder(AddrUtil.getAddresses(Config.CACHE_SERVERS));
-			//        builder.setFailureMode(true);
+			//			        builder.setFailureMode(true);
 			// 使用二进制文件  
 			builder.setCommandFactory(new BinaryCommandFactory());
 			// 连接池大小
@@ -65,11 +65,14 @@ public class DataCacheOp
 		}
 	}
 
-	public static DataCacheOp getInstance()
+	public static XmemcachedUtil getInstance()
 	{
 		return instance;
 	}
 
+	/**
+	 * 清空缓存
+	 */
 	public void deleteAll()
 	{
 		try
@@ -86,6 +89,12 @@ public class DataCacheOp
 		}
 	}
 
+	/**
+	 * put数据，数据过期时间为默认过期时间（Config.CACHE_TIMEOUT）
+	 * 
+	 * @param key
+	 * @param value
+	 */
 	public void put(String key, Object value)
 	{
 		putTimeout(key, value, Config.CACHE_TIMEOUT);
@@ -114,7 +123,13 @@ public class DataCacheOp
 		}
 	}
 
-	public <T> T getT(String key)
+	/**
+	 * 从缓存获取数据，结果为null（key不存在或者对应值为null时），直接返回null
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public <T> T get(String key)
 	{
 		return this.get(key, true);
 	}
@@ -234,7 +249,7 @@ public class DataCacheOp
 		{
 			logger.error("", ex);
 			this.client = null;
-			throw new CacheException(ex);
+			throw new XmemcachedException(ex);
 		}
 	}
 
@@ -257,7 +272,7 @@ public class DataCacheOp
 		catch (Exception ex)
 		{
 			logger.error("", ex);
-			throw new CacheException(ex);
+			throw new XmemcachedException(ex);
 		}
 		finally
 		{
@@ -275,17 +290,17 @@ public class DataCacheOp
 		if (ex instanceof MemcachedException)
 		{
 			logger.error("Memcached客户端操作失败！", ex);
-			throw new CacheException(ex);
+			throw new XmemcachedException(ex);
 		}
 		else if (ex instanceof TimeoutException)
 		{
 			logger.error("Memcached客户端操作超时！", ex);
-			throw new CacheException(ex);
+			throw new XmemcachedException(ex);
 		}
 		else
 		{
 			logger.error("", ex);
-			throw new CacheException(ex);
+			throw new XmemcachedException(ex);
 		}
 	}
 
