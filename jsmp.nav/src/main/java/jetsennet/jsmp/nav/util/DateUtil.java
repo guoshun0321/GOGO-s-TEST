@@ -60,8 +60,8 @@ public class DateUtil
 		String min = SafeDateFormater.format(calendar.getTime(), "yyyy-MM-dd") + " 00:00:00";
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(column).append(" >= ").append(min);
-		sb.append(" AND ").append(column).append(" <= ").append(max);
+		sb.append(column).append(" >= '").append(min);
+		sb.append("' AND ").append(column).append(" <= '").append(max).append("'");
 		return sb.toString();
 	}
 

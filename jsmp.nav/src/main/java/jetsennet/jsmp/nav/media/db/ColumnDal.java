@@ -14,7 +14,7 @@ public class ColumnDal extends AbsDal
 		ColumnEntity retval = null;
 		try
 		{
-			String sql = "SELECT * FROM NS_COLUMN WHERE OBJ_ASSETID = '" + assetId + "'";
+			String sql = "SELECT * FROM NS_COLUMN WHERE ASSET_ID = '" + assetId + "'";
 			retval = dal.querySingleObject(ColumnEntity.class, sql);
 		}
 		catch (Exception ex)
@@ -62,7 +62,11 @@ public class ColumnDal extends AbsDal
 		List<ColumnEntity> retval = null;
 		try
 		{
-			String sql = "SELECT * FROM NS_COLUMN WHERE PARENT_ID = " + pColumnId + " AND REGION_CODE = '" + region + "'";
+			String sql = "SELECT * FROM NS_COLUMN WHERE PARENT_ID = " + pColumnId;
+			if (region != null && !region.trim().isEmpty())
+			{
+				sql += " AND REGION_CODE = '" + region + "'";
+			}
 			retval = dal.queryBusinessObjs(ColumnEntity.class, sql);
 		}
 		catch (Exception ex)

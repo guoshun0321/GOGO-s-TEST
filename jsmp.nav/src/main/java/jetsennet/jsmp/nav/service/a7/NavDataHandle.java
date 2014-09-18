@@ -2,7 +2,10 @@ package jetsennet.jsmp.nav.service.a7;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import jetsennet.jsmp.nav.config.Config;
+import jetsennet.jsmp.nav.config.SysConfig;
 import jetsennet.jsmp.nav.entity.ChannelEntity;
 import jetsennet.jsmp.nav.entity.ColumnEntity;
 import jetsennet.jsmp.nav.entity.CreatorEntity;
@@ -14,9 +17,12 @@ import jetsennet.jsmp.nav.entity.ProgramEntity;
 import jetsennet.jsmp.nav.media.db.ChannelDal;
 import jetsennet.jsmp.nav.media.db.ColumnDal;
 import jetsennet.jsmp.nav.media.db.PlayBillDal;
+import jetsennet.jsmp.nav.media.db.PlayBillInfoMap;
 import jetsennet.jsmp.nav.media.db.ProgramDal;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntity;
 import jetsennet.jsmp.nav.service.a7.entity.ResponseEntityUtil;
+import jetsennet.jsmp.nav.xmem.XmemcachedException;
+import jetsennet.jsmp.nav.xmem.XmemcachedUtil;
 
 public class NavDataHandle
 {
@@ -42,7 +48,7 @@ public class NavDataHandle
 
 	public List<ColumnEntity> subColumns(ColumnEntity column)
 	{
-		List<ColumnEntity> retval = columnDal.getSubColumn(column.getParentId(), column.getRegionCode());
+		List<ColumnEntity> retval = columnDal.getSubColumn(column.getColumnId(), column.getRegionCode());
 		return retval == null ? new ArrayList<ColumnEntity>(0) : retval;
 	}
 
@@ -83,9 +89,9 @@ public class NavDataHandle
 		return pgmDal.getPgmsByAssetId(pgmAssetIds);
 	}
 
-	public List<ProgramEntity> getSubPrograms(String pAssetId)
+	public List<ProgramEntity> getSubPrograms(int parentId)
 	{
-		List<ProgramEntity> retval = pgmDal.getSubPgms(pAssetId);
+		List<ProgramEntity> retval = pgmDal.getSubPgms(parentId);
 		return retval == null ? new ArrayList<ProgramEntity>(0) : retval;
 	}
 
@@ -132,7 +138,7 @@ public class NavDataHandle
 		retval.addChild(contentFrameResp);
 
 		// 子节目
-		List<ProgramEntity> subProgs = this.getSubPrograms(prog.getAssetId());
+		List<ProgramEntity> subProgs = this.getSubPrograms(prog.getParentId());
 		if (subProgs != null && subProgs.size() > 0)
 		{
 			// 如果存在子节目，添加子节目信息
@@ -304,8 +310,10 @@ public class NavDataHandle
 
 	public String addSMKey(String playUrl)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String token = UUID.randomUUID().toString();
+		String key = SysConfig.selectionStartKey(token);
+		XmemcachedUtil.getInstance().putTimeout(key, playUrl, Config.SM_TIMEOUT);
+		return token;
 	}
 
 	public List<String> getChannelIds(String region, String lang)
@@ -320,10 +328,9 @@ public class NavDataHandle
 		return retval == null ? new ArrayList<ChannelEntity>(0) : retval;
 	}
 
-	public List<Integer> getPbIds(List<String> chIds, String timeCond)
+	public PlayBillInfoMap getPbIds(List<String> chIds, String timeCond)
 	{
-		List<Integer> retval = pbDal.getPbIds(chIds, timeCond);
-		return retval == null ? new ArrayList<Integer>(0) : retval;
+		return pbDal.getPbIds(chIds, timeCond);
 	}
 
 	public List<PlaybillItemEntity> getPbis(List<Integer> pbIds, int begin, int max)

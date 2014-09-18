@@ -71,7 +71,7 @@ public class NavPipeline
 		}
 		while (temp != null)
 		{
-			if (context.isContinue())
+			if (!context.isError() || !context.isBreakError())
 			{
 				temp.actionAfter(context.getM(), context.getParams(), context.getRetObj());
 				temp = temp.pre();

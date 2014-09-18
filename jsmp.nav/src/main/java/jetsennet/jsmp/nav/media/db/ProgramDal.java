@@ -58,12 +58,12 @@ public class ProgramDal extends AbsDal
 		return retval;
 	}
 
-	public List<ProgramEntity> getSubPgms(String assetId)
+	public List<ProgramEntity> getSubPgms(int parentId)
 	{
 		List<ProgramEntity> retval = null;
 		try
 		{
-			String sql = "SELECT * FROM NS_PROGRAM WHERE PARENT_ASSET_ID='" + assetId + "'";
+			String sql = "SELECT * FROM NS_PROGRAM WHERE PARENT_ID=" + parentId;
 			retval = dal.queryBusinessObjs(ProgramEntity.class, sql);
 		}
 		catch (Exception ex)
@@ -208,7 +208,7 @@ public class ProgramDal extends AbsDal
 		FileItemEntity retval = null;
 		try
 		{
-			String sql = "SELECT * FROM NS_FILEITEM WHERE ASSET_ID=" + assetId;
+			String sql = "SELECT * FROM NS_FILEITEM WHERE ASSET_ID='" + assetId + "'";
 			retval = dal.querySingleObject(FileItemEntity.class, sql);
 		}
 		catch (Exception ex)

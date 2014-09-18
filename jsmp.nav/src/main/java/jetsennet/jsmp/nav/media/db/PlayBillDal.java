@@ -1,5 +1,6 @@
 package jetsennet.jsmp.nav.media.db;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,7 +8,10 @@ import java.util.List;
 import jetsennet.jsmp.nav.entity.PlaybillEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.util.DateUtil;
+import jetsennet.orm.executor.resultset.AbsResultSetHandle;
+import jetsennet.orm.executor.resultset.IResultSetHandle;
 import jetsennet.orm.util.UncheckedOrmException;
+import jetsennet.util.TwoTuple;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,30 +45,44 @@ public class PlayBillDal extends AbsDal
 	 * @param timeCond
 	 * @return
 	 */
-	public List<Integer> getPbIds(List<String> chIds, String timeCond)
+	public PlayBillInfoMap getPbIds(List<String> chIds, String timeCond)
 	{
-		StringBuilder sb = new StringBuilder("SELECT PB_ID FROM NS_PLAYBILL WHERE ");
+		StringBuilder sb = new StringBuilder("SELECT PB_ID, CHL_ASSETID, PLAY_DATE FROM NS_PLAYBILL WHERE ");
 		sb.append(timeCond);
-		if (chIds != null && chIds.isEmpty())
+		if (chIds != null && !chIds.isEmpty())
 		{
 			sb.append(" AND CHL_ASSETID IN (");
 			for (String chId : chIds)
 			{
-				sb.append(chId).append(",");
+				sb.append("'").append(chId).append("'").append(",");
 			}
 			sb.deleteCharAt(sb.length() - 1).append(")");
 		}
 
-		List<Integer> retval = null;
+		final PlayBillInfoMap infoMap = new PlayBillInfoMap();
 		try
 		{
-			retval = dal.queryBusinessObjs(Integer.class, sb.toString());
+			dal.getSession().query(sb.toString(), new AbsResultSetHandle()
+			{
+				@Override
+				public Object handle(ResultSet rs) throws Exception
+				{
+					while (rs.next())
+					{
+						int pbId = rs.getInt("PB_ID");
+						String chlAssetId = rs.getString("CHL_ASSETID");
+						Date date = rs.getTimestamp("PLAY_DATE");
+						infoMap.add(pbId, chlAssetId, date);
+					}
+					return null;
+				}
+			});
 		}
 		catch (Exception ex)
 		{
 			throw new UncheckedOrmException(ex);
 		}
-		return retval;
+		return infoMap;
 	}
 
 	public List<PlaybillItemEntity> getPbis(List<Integer> pbIds, int begin, int max)

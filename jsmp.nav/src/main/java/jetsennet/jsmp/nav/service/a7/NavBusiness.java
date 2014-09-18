@@ -16,6 +16,8 @@ import jetsennet.jsmp.nav.entity.PhysicalChannelEntity;
 import jetsennet.jsmp.nav.entity.PictureEntity;
 import jetsennet.jsmp.nav.entity.PlaybillItemEntity;
 import jetsennet.jsmp.nav.entity.ProgramEntity;
+import jetsennet.jsmp.nav.media.db.PlayBillInfoMap;
+import jetsennet.jsmp.nav.media.db.PlayBillInfoMap.PlayBillInfoEntry;
 import jetsennet.jsmp.nav.service.a7.entity.ChannelSelectionStartRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetChannelsRequest;
 import jetsennet.jsmp.nav.service.a7.entity.GetFolderContentsRequest;
@@ -112,7 +114,7 @@ public class NavBusiness
 			throw new UncheckedNavException(context.getErrorMsg());
 		}
 
-		return retval;
+		return (String) context.getRetObj();
 	}
 
 	@IdentAnnocation("GetUpdateInfo")
@@ -153,7 +155,7 @@ public class NavBusiness
 		{
 			ResponseEntity temp = new ResponseEntity("FolderFrame");
 			temp.addAttr("assetld", column.getAssetId());
-			if (column.getParentId() >= 0)
+			if (column.getParentId() > 0)
 			{
 				temp.addAttr("parentAssetld", column.getParentAssetid());
 			}
@@ -529,21 +531,22 @@ public class NavBusiness
 		days = days > SysConfig.PRE_DATE ? SysConfig.PRE_DATE : days;
 		String timeCond = DateUtil.genDataCondition("PLAY_DATE", new Date(), days);
 
-		List<Integer> pbIds = navDal.getPbIds(chIds, timeCond);
+		PlayBillInfoMap pbInfo = navDal.getPbIds(chIds, timeCond);
 		int start = req.getStartAt();
 		start = start >= 0 ? start : 0;
 		int max = req.getMaxItems();
 		int end = start + max;
-		List<PlaybillItemEntity> pbis = navDal.getPbis(pbIds, start, max);
+		List<PlaybillItemEntity> pbis = navDal.getPbis(pbInfo.getPbIds(), start, max);
 		ResponseEntity retval = new ResponseEntity("Programs");
 		for (PlaybillItemEntity pbi : pbis)
 		{
 			ResponseEntity itemResp = ResponseEntityUtil.obj2Resp(pbi, "Program", null);
-			//			itemResp.addAttr("channelId", chId.toString());
-			//			long startTime = day + pbi.getStartTime();
-			//			long endTime = startTime + pbi.getDuration() * 1000;
-			//			itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
-			//			itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
+			PlayBillInfoEntry info = pbInfo.getInfo(pbi.getPbId());
+			itemResp.addAttr("channelId", info.chlAssetId);
+			long startTime = info.startTime + pbi.getStartTime();
+			long endTime = startTime + pbi.getDuration() * 1000;
+			itemResp.addAttr("startDateTime", ResponseEntityUtil.dateFormat(startTime));
+			itemResp.addAttr("endDateTime", ResponseEntityUtil.dateFormat(endTime));
 			retval.addChild(itemResp);
 		}
 		if (pbis.size() == max)

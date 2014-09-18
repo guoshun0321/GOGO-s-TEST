@@ -162,6 +162,21 @@ public class TestObjGenUtil1
 			}
 			multiInsert(level3Chs);
 
+			// PictureEntity
+			List<ColumnEntity> columns = new ArrayList<>(20);
+			columns.addAll(level1Chs);
+			columns.addAll(level2Chs);
+			columns.addAll(level3Chs);
+			List<PictureEntity> pics = new ArrayList<>(40);
+			for (ColumnEntity column : columns)
+			{
+				clearMap(special);
+				special.put("OBJ_ID", Integer.toString(column.getColumnId()));
+				special.put("OBJ_ASSETID", column.getAssetId());
+				pics.addAll(TestObjGenUtil1.genObj(PictureEntity.class, 2, special, picId));
+			}
+			multiInsert(pics);
+
 			List<ProgramEntity> progs = new ArrayList<ProgramEntity>(baseColumn * 500);
 			List<ProgramEntity> prog4Chls = new ArrayList<ProgramEntity>(baseColumn * 500);
 			clearMap(special);
@@ -200,7 +215,6 @@ public class TestObjGenUtil1
 			List<PgmBase9Entity> pgmBases = new ArrayList<PgmBase9Entity>(progSize);
 			List<DescauthorizeEntity> authors = new ArrayList<DescauthorizeEntity>(progSize);
 			List<CreatorEntity> creators = new ArrayList<CreatorEntity>(progSize * 8);
-			List<PictureEntity> pics = new ArrayList<PictureEntity>(progSize * 3);
 			List<FileItemEntity> files = new ArrayList<FileItemEntity>(progSize * 4);
 			for (ProgramEntity prog : allProgs)
 			{
@@ -231,19 +245,21 @@ public class TestObjGenUtil1
 				clearMap(special);
 				special.put("PGM_ID", prog.getPgmId());
 				special.put("PGM_ASSETID", prog.getAssetId());
-				pics.addAll(TestObjGenUtil1.genObj(PictureEntity.class, 2, special, picId));
+				special.put("VIDEO_QUALITY", 2);
+				special.put("FILE_TYPE", 50);
+				files.addAll(TestObjGenUtil1.genObj(FileItemEntity.class, 2, special, fileId));
 
 				clearMap(special);
 				special.put("PGM_ID", prog.getPgmId());
 				special.put("PGM_ASSETID", prog.getAssetId());
 				special.put("VIDEO_QUALITY", 2);
+				special.put("FILE_TYPE", 201);
 				files.addAll(TestObjGenUtil1.genObj(FileItemEntity.class, 2, special, fileId));
 
 			}
 			multiInsert(pgmBases);
 			multiInsert(creators);
 			multiInsert(authors);
-			multiInsert(pics);
 			multiInsert(files);
 
 			List<ChannelEntity> chls = new ArrayList<ChannelEntity>(prog4Chls.size());
@@ -269,15 +285,14 @@ public class TestObjGenUtil1
 			{
 				clearMap(special);
 				special.put("CHL_ID", channel.getChlId());
+				special.put("CHL_ASSETID", channel.getAssetId());
 				special.put("PLAY_DATE", now);
 				bills.addAll(TestObjGenUtil1.genObj(PlaybillEntity.class, 1, special, pbId));
 
 				clearMap(special);
 				special.put("CHL_ID", channel.getChlId());
+				special.put("CHL_ASSETID", channel.getAssetId());
 				special.put("PLAY_DATE", DateUtil.preDate(now, 1));
-				special.put("ASSET_ID", "UUID");
-				special.put("LANGUAGE_CODE", "zh_CN");
-				special.put("REGION_CODE", "");
 				bills.addAll(TestObjGenUtil1.genObj(PlaybillEntity.class, 1, special, pbId));
 			}
 			multiInsert(bills);
