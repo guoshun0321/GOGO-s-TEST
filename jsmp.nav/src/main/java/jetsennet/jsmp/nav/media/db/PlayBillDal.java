@@ -51,10 +51,10 @@ public class PlayBillDal extends AbsDal
 		sb.append(timeCond);
 		if (chIds != null && !chIds.isEmpty())
 		{
-			sb.append(" AND CHL_ASSETID IN (");
+			sb.append(" AND CHL_ID IN (");
 			for (String chId : chIds)
 			{
-				sb.append("'").append(chId).append("'").append(",");
+				sb.append(chId).append(",");
 			}
 			sb.deleteCharAt(sb.length() - 1).append(")");
 		}

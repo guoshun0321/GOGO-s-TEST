@@ -79,6 +79,20 @@ public class DataSynXmlParse
 			logger.error("", ex);
 			throw new DataSynException(ex);
 		}
+		finally
+		{
+			if (in != null)
+			{
+				try
+				{
+					in.close();
+				}
+				catch (Exception ex)
+				{
+					// ignore
+				}
+			}
+		}
 		return retval;
 	}
 

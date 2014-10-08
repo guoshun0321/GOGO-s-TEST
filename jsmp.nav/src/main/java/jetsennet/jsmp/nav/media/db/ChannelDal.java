@@ -59,7 +59,7 @@ public class ChannelDal extends AbsDal
 
 	public List<String> getChannelIds(String region, String lang)
 	{
-		SelectEntity sel = Sql.select("ASSET_ID").from("NS_CHANNEL");
+		SelectEntity sel = Sql.select("CHL_ID").from("NS_CHANNEL");
 		FilterNode temp = null;
 		if (region != null && !region.isEmpty())
 		{

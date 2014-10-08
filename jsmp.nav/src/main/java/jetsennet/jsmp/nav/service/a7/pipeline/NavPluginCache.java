@@ -12,7 +12,19 @@ import jetsennet.jsmp.nav.xmem.XmemcachedUtil;
 public class NavPluginCache extends AbsNavPlugin
 {
 
+	/**
+	 * 本次操作是否命中
+	 */
+	private boolean isHit;
+	/**
+	 * 日志
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(NavPluginCache.class);
+
+	public NavPluginCache()
+	{
+		clear();
+	}
 
 	public void actionBefore(Method m, Map<String, String> map)
 	{
@@ -29,6 +41,7 @@ public class NavPluginCache extends AbsNavPlugin
 				}
 				context.setRetObj(retval);
 				context.breakFinish();
+				isHit = true;
 			}
 			else
 			{
@@ -47,7 +60,7 @@ public class NavPluginCache extends AbsNavPlugin
 	public void actionAfter(Method m, Map<String, String> map, Object obj)
 	{
 		Object retObj = context.getRetObj();
-		if (!context.isError() && !context.isBreakError())
+		if (!context.isError() && !context.isBreakError() && !isHit)
 		{
 			String url = context.getUrl();
 			XmemcachedUtil.getInstance().put(url, retObj);
@@ -56,6 +69,12 @@ public class NavPluginCache extends AbsNavPlugin
 
 	public void actionException(Method m, Map<String, String> map)
 	{
+	}
+
+	@Override
+	public void clear()
+	{
+		this.isHit = false;
 	}
 
 }

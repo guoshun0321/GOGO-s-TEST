@@ -15,6 +15,8 @@ public interface INavPlugin
 	public INavPlugin next();
 
 	public INavPlugin pre();
+	
+	public void clear();
 
 	public void actionBefore(Method m, Map<String, String> map);
 

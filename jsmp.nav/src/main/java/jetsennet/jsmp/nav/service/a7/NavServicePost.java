@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class NavServicePost extends HttpServlet
 {
 
-	private static final NavBusiness busi = new NavBusiness();
+	private final NavBusiness busi = new NavBusiness();
 	/**
 	 * 日志
 	 */

@@ -105,7 +105,7 @@ public class XmemcachedUtil
 	 * 
 	 * @param key
 	 * @param value
-	 * @param timeout
+	 * @param timeout 单位为秒
 	 */
 	public void putTimeout(String key, Object value, int timeout)
 	{
@@ -113,7 +113,7 @@ public class XmemcachedUtil
 		{
 			if (Config.ISDEBUG)
 			{
-				logger.debug(String.format("向缓存添加数据: %s , %s, %s", key, value, timeout));
+				logger.debug(String.format("向缓存添加数据: %s , %s, %s秒", key, value, timeout));
 			}
 			client.set(key, timeout, value);
 		}

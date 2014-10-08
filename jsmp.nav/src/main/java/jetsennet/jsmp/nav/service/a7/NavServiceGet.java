@@ -20,7 +20,7 @@ import jetsennet.util.IOUtil;
 public class NavServiceGet extends HttpServlet
 {
 
-	private static final NavBusiness busi = new NavBusiness();
+	private final NavBusiness busi = new NavBusiness();
 	/**
 	 * 日志
 	 */

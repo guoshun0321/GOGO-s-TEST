@@ -334,7 +334,7 @@ public class ProgramDal extends AbsDal
 		try
 		{
 			SqlCondition cond = new SqlCondition("PGM_ID", Integer.toString(pgmId), SqlLogicType.And, SqlRelationType.Equal, SqlParamType.Numeric);
-			String sql = "SELECT * FROM NS_PROGRAM WHRER PGM_ID = " + pgmId;
+			String sql = "SELECT * FROM NS_PROGRAM WHERE PGM_ID = " + pgmId;
 			ProgramEntity pgm = dal.querySingleObject(ProgramEntity.class, sql);
 			if (pgm != null)
 			{
