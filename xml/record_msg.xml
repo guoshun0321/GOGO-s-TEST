@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mg:msg xmlns:mg="http://www.fangdd.com/newhouse/dc/msg_handle"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.fangdd.com/newhouse/dc/msg_handle msg_schema.xsd">
+	<mg:validate>
+		<mg:field mg:name="assistant_id" mg:type="int" />
+		<mg:field mg:name="city_id" mg:type="int" />
+		<mg:field mg:name="company_id" mg:type="int" />
+		<mg:field mg:name="store_id" mg:type="int" />
+		<mg:field mg:name="agent_id" mg:type="int" />
+		<mg:field mg:name="project_id" mg:type="int" />
+		<mg:field mg:name="time" mg:type="string" />
+	</mg:validate>
+	<mg:persistent></mg:persistent>
+	<mg:handles></mg:handles>
+</mg:msg>

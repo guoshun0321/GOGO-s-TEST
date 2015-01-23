@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.fangdd.com/newhouse/dc/msg_handle"
+	xmlns:tns="http://www.fangdd.com/newhouse/dc/msg_handle"
+	elementFormDefault="qualified">
+
+	<attribute name="name" type="string" />
+	<attribute name="type" type="string" />
+	<attribute name="valid" type="string" />
+
+	<element name="field">
+		<complexType>
+			<attribute ref="tns:name" use="required" />
+			<attribute ref="tns:type" use="required" />
+			<attribute ref="tns:valid" use="optional" />
+		</complexType>
+	</element>
+
+	<element name="validate">
+		<complexType>
+			<sequence>
+				<element ref="tns:field" maxOccurs="unbounded" minOccurs="0"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="msg">
+		<complexType>
+			<sequence>
+				<element ref="tns:validate"></element>
+				<element name="persistent"></element>
+				<element name="handles"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+</schema>
